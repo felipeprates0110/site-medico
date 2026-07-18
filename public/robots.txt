@@ -1,0 +1,22 @@
+# Robots.txt para Site Médico
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://drpedrofelipe.com.br/sitemap.xml
+
+# Disallow admin or private areas (if any in the future)
+# Disallow: /admin
+# Disallow: /api
+
+# Google
+User-agent: Googlebot
+Allow: /
+
+# Bing
+User-agent: Bingbot
+Allow: /
+
+# Crawl-delay (optional - ajustar se necessário)
+# Crawl-delay: 1
