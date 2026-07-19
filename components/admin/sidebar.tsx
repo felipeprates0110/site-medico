@@ -16,6 +16,8 @@ import {
   Settings,
   LogOut,
   HelpCircle,
+  FileText,
+  FolderTree,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
@@ -50,6 +52,16 @@ const menuItems = [
     title: "Tratamentos",
     href: "/admin/tratamentos",
     icon: Pill,
+  },
+  {
+    title: "Blog (Artigos)",
+    href: "/admin/blog",
+    icon: FileText,
+  },
+  {
+    title: "Blog (Categorias)",
+    href: "/admin/blog/categorias",
+    icon: FolderTree,
   },
   {
     title: "Convênios",
