@@ -25,7 +25,7 @@ export function AdSenseUnit({ slot, format = "auto", className = "" }: AdSenseUn
       </span>
       <div className="min-h-[90px] w-full flex items-center justify-center pt-4">
         {/* Placeholder para ambiente de desenvolvimento */}
-        {process.env.NODE_env === "development" ? (
+        {process.env.NODE_ENV === "development" ? (
           <span className="text-slate-300 font-medium text-sm">Anúncio AdSense ({slot})</span>
         ) : (
           <ins

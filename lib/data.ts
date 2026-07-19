@@ -145,3 +145,50 @@ export async function getContactInfo() {
     fallbackContactInfo
   );
 }
+
+export async function getPublishedArticles() {
+  return withFallback(
+    "getPublishedArticles",
+    async () => {
+      const { data, error } = await supabase
+        .from("blog_articles")
+        .select(`
+          id,
+          title,
+          slug,
+          excerpt,
+          cover_image_url,
+          created_at,
+          published_at,
+          category:blog_categories(name)
+        `)
+        .eq("status", "published")
+        .order("published_at", { ascending: false });
+
+      if (error) throw error;
+      return data ?? [];
+    },
+    []
+  );
+}
+
+export async function getPublishedArticleBySlug(slug: string) {
+  return withFallback(
+    "getPublishedArticleBySlug",
+    async () => {
+      const { data, error } = await supabase
+        .from("blog_articles")
+        .select(`
+          *,
+          category:blog_categories(name)
+        `)
+        .eq("slug", slug)
+        .eq("status", "published")
+        .maybeSingle();
+
+      if (error) throw error;
+      return data;
+    },
+    null
+  );
+}
