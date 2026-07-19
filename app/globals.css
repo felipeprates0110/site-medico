@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 /* Dark mode só com classe .dark — evita cards pretos no modo escuro do SO */
 @custom-variant dark (&:where(.dark, .dark *));
