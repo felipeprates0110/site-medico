@@ -132,17 +132,6 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Info Note */}
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
-            Login padrão: <strong>admin@drpedrofelipe.com.br</strong>
-            <br />
-            Senha inicial: <strong>admin123</strong>
-          </p>
-          <p className="text-xs text-gray-500 mt-2">
-            Altere sua senha após o primeiro login
-          </p>
-        </div>
       </div>
     </div>
   );

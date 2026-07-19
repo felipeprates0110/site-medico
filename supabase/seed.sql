@@ -4,9 +4,8 @@
 -- Execute APÓS o schema.sql
 -- Idempotente: pode rodar mais de uma vez com segurança
 --
--- Senha admin inicial: TrocarSenha123!
--- Email: admin@drpedrofelipe.com.br
--- ⚠️ Troque a senha após o primeiro login!
+-- Email admin: admin@drpedrofelipe.com.br
+-- Senha: definida no banco (não documentar senha em arquivos públicos)
 -- ============================================
 
 -- ============================================
@@ -15,12 +14,14 @@
 INSERT INTO users (email, password_hash, name, role, is_active)
 VALUES (
   'admin@drpedrofelipe.com.br',
-  '$2b$10$Q7GFqT2hCNyCGgLaiQv8cO1D9AnzKBshtR8x2rXUF8HV9CcvWfB9C',
+  '$2b$10$gCzgfcrQhhQ65o61BsPxauB1WlEwbenyprkxiJZTUEBfIqnMBHTwS',
   'Dr. Pedro Felipe Prates Silva',
   'admin',
   true
 )
-ON CONFLICT (email) DO NOTHING;
+ON CONFLICT (email) DO UPDATE
+SET password_hash = EXCLUDED.password_hash,
+    updated_at = NOW();
 
 -- ============================================
 -- CONFIGURAÇÕES DO SITE
