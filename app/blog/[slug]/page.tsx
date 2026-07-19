@@ -8,15 +8,13 @@ import { AffiliateBox } from "@/components/blog/AffiliateBox";
 
 export const revalidate = 3600;
 
-interface Props {
-  params: { slug: string };
-}
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
   const { data: article } = await supabaseAdmin
     .from("blog_articles")
     .select("title, seo_title, seo_description, cover_image_url")
-    .eq("slug", params.slug)
+    .eq("slug", resolvedParams.slug)
     .eq("status", "published")
     .single();
 
@@ -35,7 +33,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function BlogPostPage({ params }: Props) {
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params;
   const { data: article } = await supabaseAdmin
     .from("blog_articles")
     .select(`
@@ -43,7 +42,7 @@ export default async function BlogPostPage({ params }: Props) {
       category:blog_categories(name),
       author:users(name)
     `)
-    .eq("slug", params.slug)
+    .eq("slug", resolvedParams.slug)
     .eq("status", "published")
     .single();
 

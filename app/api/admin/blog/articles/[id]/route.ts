@@ -5,9 +5,10 @@ import { supabaseAdmin } from "@/lib/supabase";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params;
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
@@ -16,7 +17,7 @@ export async function GET(
     const { data, error } = await supabaseAdmin
       .from("blog_articles")
       .select("*")
-      .eq("id", params.id)
+      .eq("id", resolvedParams.id)
       .single();
 
     if (error) throw error;
@@ -29,9 +30,10 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params;
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
@@ -44,7 +46,7 @@ export async function PUT(
     const { data: currentArticle } = await supabaseAdmin
       .from("blog_articles")
       .select("status, published_at")
-      .eq("id", params.id)
+      .eq("id", resolvedParams.id)
       .single();
 
     let published_at = currentArticle?.published_at;
@@ -67,7 +69,7 @@ export async function PUT(
         seo_description,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", params.id)
+      .eq("id", resolvedParams.id)
       .select()
       .single();
 
@@ -81,9 +83,10 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params;
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
@@ -92,7 +95,7 @@ export async function DELETE(
     const { error } = await supabaseAdmin
       .from("blog_articles")
       .delete()
-      .eq("id", params.id);
+      .eq("id", resolvedParams.id);
 
     if (error) throw error;
 
