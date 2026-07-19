@@ -6,7 +6,7 @@ import {
   fallbackSiteConfig,
   fallbackSpecialties,
 } from "./fallback-data";
-import { supabase } from "./supabase";
+import { isSupabaseConfigured, supabase } from "./supabase";
 
 function useLocalDataOnly() {
   return process.env.USE_LOCAL_DATA === "true";
@@ -17,7 +17,7 @@ async function withFallback<T>(
   fetcher: () => Promise<T>,
   fallback: T
 ): Promise<T> {
-  if (useLocalDataOnly()) {
+  if (useLocalDataOnly() || !isSupabaseConfigured()) {
     return fallback;
   }
 
