@@ -1,5 +1,6 @@
 -- Schema do Banco de Dados - Site Médico
 -- Supabase PostgreSQL
+-- Idempotente: pode ser executado mais de uma vez sem erro
 
 -- Habilitar extensões necessárias
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -19,8 +20,7 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Índice para busca rápida por email
-CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 
 -- ============================================
 -- TABELA DE CONFIGURAÇÕES DO SITE
@@ -86,9 +86,8 @@ CREATE TABLE IF NOT EXISTS specialties (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Índice para slug único
-CREATE INDEX idx_specialties_slug ON specialties(slug);
-CREATE INDEX idx_specialties_active ON specialties(is_active);
+CREATE INDEX IF NOT EXISTS idx_specialties_slug ON specialties(slug);
+CREATE INDEX IF NOT EXISTS idx_specialties_active ON specialties(is_active);
 
 -- ============================================
 -- TABELA DE TRATAMENTOS
@@ -109,9 +108,8 @@ CREATE TABLE IF NOT EXISTS treatments (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Índice para slug único
-CREATE INDEX idx_treatments_slug ON treatments(slug);
-CREATE INDEX idx_treatments_active ON treatments(is_active);
+CREATE INDEX IF NOT EXISTS idx_treatments_slug ON treatments(slug);
+CREATE INDEX IF NOT EXISTS idx_treatments_active ON treatments(is_active);
 
 -- ============================================
 -- TABELA DE CONVÊNIOS
@@ -126,9 +124,8 @@ CREATE TABLE IF NOT EXISTS insurance_plans (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Índice para categoria
-CREATE INDEX idx_insurance_category ON insurance_plans(category);
-CREATE INDEX idx_insurance_active ON insurance_plans(is_active);
+CREATE INDEX IF NOT EXISTS idx_insurance_category ON insurance_plans(category);
+CREATE INDEX IF NOT EXISTS idx_insurance_active ON insurance_plans(is_active);
 
 -- ============================================
 -- TABELA DE AVALIAÇÕES
@@ -142,15 +139,14 @@ CREATE TABLE IF NOT EXISTS reviews (
   service TEXT,
   verified BOOLEAN DEFAULT false,
   approved BOOLEAN DEFAULT false,
-  source TEXT DEFAULT 'site', -- 'site', 'doctoralia', 'google'
+  source TEXT DEFAULT 'site',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Índices para filtros
-CREATE INDEX idx_reviews_approved ON reviews(approved);
-CREATE INDEX idx_reviews_rating ON reviews(rating);
-CREATE INDEX idx_reviews_date ON reviews(date DESC);
+CREATE INDEX IF NOT EXISTS idx_reviews_approved ON reviews(approved);
+CREATE INDEX IF NOT EXISTS idx_reviews_rating ON reviews(rating);
+CREATE INDEX IF NOT EXISTS idx_reviews_date ON reviews(date DESC);
 
 -- ============================================
 -- TABELA DE MÍDIA/IMAGENS
@@ -166,8 +162,7 @@ CREATE TABLE IF NOT EXISTS media (
   uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Índice por tipo
-CREATE INDEX idx_media_type ON media(type);
+CREATE INDEX IF NOT EXISTS idx_media_type ON media(type);
 
 -- ============================================
 -- TABELA DE FAQ
@@ -183,9 +178,8 @@ CREATE TABLE IF NOT EXISTS faq_items (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Índice para categoria
-CREATE INDEX idx_faq_category ON faq_items(category);
-CREATE INDEX idx_faq_active ON faq_items(is_active);
+CREATE INDEX IF NOT EXISTS idx_faq_category ON faq_items(category);
+CREATE INDEX IF NOT EXISTS idx_faq_active ON faq_items(is_active);
 
 -- ============================================
 -- TABELA DE LOGS DE AUDITORIA
@@ -201,10 +195,9 @@ CREATE TABLE IF NOT EXISTS audit_logs (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Índice para busca por usuário e data
-CREATE INDEX idx_audit_user ON audit_logs(user_id);
-CREATE INDEX idx_audit_date ON audit_logs(created_at DESC);
-CREATE INDEX idx_audit_table ON audit_logs(table_name);
+CREATE INDEX IF NOT EXISTS idx_audit_user ON audit_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_audit_date ON audit_logs(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_audit_table ON audit_logs(table_name);
 
 -- ============================================
 -- FUNÇÃO PARA ATUALIZAR updated_at AUTOMATICAMENTE
@@ -217,28 +210,36 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Criar triggers para updated_at
+-- Triggers (recria se já existirem)
+DROP TRIGGER IF EXISTS update_site_config_updated_at ON site_config;
 CREATE TRIGGER update_site_config_updated_at BEFORE UPDATE ON site_config
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_contact_info_updated_at ON contact_info;
 CREATE TRIGGER update_contact_info_updated_at BEFORE UPDATE ON contact_info
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_addresses_updated_at ON addresses;
 CREATE TRIGGER update_addresses_updated_at BEFORE UPDATE ON addresses
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_specialties_updated_at ON specialties;
 CREATE TRIGGER update_specialties_updated_at BEFORE UPDATE ON specialties
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_treatments_updated_at ON treatments;
 CREATE TRIGGER update_treatments_updated_at BEFORE UPDATE ON treatments
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_insurance_plans_updated_at ON insurance_plans;
 CREATE TRIGGER update_insurance_plans_updated_at BEFORE UPDATE ON insurance_plans
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_reviews_updated_at ON reviews;
 CREATE TRIGGER update_reviews_updated_at BEFORE UPDATE ON reviews
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_faq_items_updated_at ON faq_items;
 CREATE TRIGGER update_faq_items_updated_at BEFORE UPDATE ON faq_items
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
@@ -246,7 +247,6 @@ CREATE TRIGGER update_faq_items_updated_at BEFORE UPDATE ON faq_items
 -- POLÍTICAS DE ROW LEVEL SECURITY (RLS)
 -- ============================================
 
--- Habilitar RLS
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE site_config ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contact_info ENABLE ROW LEVEL SECURITY;
@@ -259,32 +259,38 @@ ALTER TABLE media ENABLE ROW LEVEL SECURITY;
 ALTER TABLE faq_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
 
--- Políticas para leitura pública (dados do site)
+DROP POLICY IF EXISTS "Public read for site_config" ON site_config;
 CREATE POLICY "Public read for site_config" ON site_config FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public read for contact_info" ON contact_info;
 CREATE POLICY "Public read for contact_info" ON contact_info FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public read for addresses" ON addresses;
 CREATE POLICY "Public read for addresses" ON addresses FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public read for active specialties" ON specialties;
 CREATE POLICY "Public read for active specialties" ON specialties FOR SELECT USING (is_active = true);
+
+DROP POLICY IF EXISTS "Public read for active treatments" ON treatments;
 CREATE POLICY "Public read for active treatments" ON treatments FOR SELECT USING (is_active = true);
+
+DROP POLICY IF EXISTS "Public read for active insurance" ON insurance_plans;
 CREATE POLICY "Public read for active insurance" ON insurance_plans FOR SELECT USING (is_active = true);
+
+DROP POLICY IF EXISTS "Public read for approved reviews" ON reviews;
 CREATE POLICY "Public read for approved reviews" ON reviews FOR SELECT USING (approved = true);
+
+DROP POLICY IF EXISTS "Public read for media" ON media;
 CREATE POLICY "Public read for media" ON media FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public read for active faq" ON faq_items;
 CREATE POLICY "Public read for active faq" ON faq_items FOR SELECT USING (is_active = true);
 
--- Políticas para escrita apenas por usuários autenticados
--- (Vamos configurar auth.uid() quando configurar o Supabase Auth)
-
 -- ============================================
--- INSERIR USUÁRIO ADMIN PADRÃO
+-- DADOS INICIAIS
 -- ============================================
--- Senha padrão: "admin123" (TROCAR IMEDIATAMENTE após primeiro login)
--- Hash gerado com bcrypt rounds=10
-INSERT INTO users (email, password_hash, name, role)
-VALUES (
-  'admin@drpedrofelipe.com.br',
-  '$2a$10$rQ3LhJ8qVvZ.gxKGxYxpyOxH0zN9Nw5P7pq2X6qwYxN5zT8bJ9yWS',
-  'Dr. Pedro Felipe Prates Silva',
-  'admin'
-) ON CONFLICT (email) DO NOTHING;
+-- Execute supabase/seed.sql após este arquivo para popular o banco.
+-- Senha admin inicial: TrocarSenha123! (email: admin@drpedrofelipe.com.br)
 
 -- ============================================
 -- COMENTÁRIOS NAS TABELAS

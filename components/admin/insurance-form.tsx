@@ -19,7 +19,7 @@ const insuranceSchema = z.object({
   is_active: z.boolean().default(true),
 });
 
-type InsuranceFormValues = z.infer<typeof insuranceSchema>;
+type InsuranceFormValues = z.input<typeof insuranceSchema>;
 
 interface InsuranceFormProps {
   initialData?: InsurancePlan;

@@ -24,7 +24,7 @@ const specialtySchema = z.object({
   common_conditions: z.array(z.string()).default([]),
 });
 
-type SpecialtyFormValues = z.infer<typeof specialtySchema>;
+type SpecialtyFormValues = z.input<typeof specialtySchema>;
 
 interface SpecialtyFormProps {
   initialData?: Specialty;

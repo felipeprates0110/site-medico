@@ -20,7 +20,7 @@ const faqSchema = z.object({
   is_active: z.boolean().default(true),
 });
 
-type FAQFormValues = z.infer<typeof faqSchema>;
+type FAQFormValues = z.input<typeof faqSchema>;
 
 interface FAQFormProps {
   initialData?: FAQItem;

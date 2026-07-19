@@ -213,8 +213,8 @@ export default async function Home() {
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {specialties.map((specialty: { id: string }) => (
-              <SpecialtyCard key={specialty.id} specialty={specialty as any} />
+            {specialties.map((specialty) => (
+              <SpecialtyCard key={specialty.id} specialty={specialty} />
             ))}
           </div>
         </div>
@@ -313,8 +313,8 @@ export default async function Home() {
             </p>
           </div>
           <div className="mb-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {featuredReviews.map((review: { id: string }) => (
-              <ReviewCard key={review.id} review={review as any} />
+            {featuredReviews.map((review) => (
+              <ReviewCard key={review.id} review={review} />
             ))}
           </div>
           <div className="text-center">

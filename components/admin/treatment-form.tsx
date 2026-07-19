@@ -25,7 +25,7 @@ const treatmentSchema = z.object({
   preventive_care: z.array(z.string()).default([]),
 });
 
-type TreatmentFormValues = z.infer<typeof treatmentSchema>;
+type TreatmentFormValues = z.input<typeof treatmentSchema>;
 
 interface TreatmentFormProps {
   initialData?: Treatment;

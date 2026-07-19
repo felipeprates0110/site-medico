@@ -1,15 +1,13 @@
 import { Star, Quote } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import type { Review } from "@/types";
+
+export type ReviewCardData = Review & {
+  source?: string;
+};
 
 interface ReviewCardProps {
-  review: {
-    id: string;
-    author: string;
-    date: string;
-    rating: number;
-    comment: string;
-    source?: string;
-  };
+  review: ReviewCardData;
 }
 
 export function ReviewCard({ review }: ReviewCardProps) {

@@ -13,14 +13,21 @@ const iconMap: Record<string, ComponentType<{ className?: string }>> = {
   pill: Pill,
 };
 
+export type SpecialtyCardData = {
+  id: string;
+  title: string;
+  slug: string;
+  icon: string;
+  short_description?: string;
+  shortDescription?: string;
+};
+
+function getShortDescription(specialty: SpecialtyCardData) {
+  return specialty.short_description ?? specialty.shortDescription ?? "";
+}
+
 interface SpecialtyCardProps {
-  specialty: {
-    id: string;
-    title: string;
-    slug: string;
-    short_description: string;
-    icon: string;
-  };
+  specialty: SpecialtyCardData;
 }
 
 export function SpecialtyCard({ specialty }: SpecialtyCardProps) {
@@ -40,7 +47,7 @@ export function SpecialtyCard({ specialty }: SpecialtyCardProps) {
             {specialty.title}
           </h3>
           <p className="mb-6 line-clamp-3 leading-relaxed text-gray-700">
-            {specialty.short_description}
+            {getShortDescription(specialty)}
           </p>
           <div className="flex items-center text-sm font-semibold text-primary-700">
             Saiba mais
