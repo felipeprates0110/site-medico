@@ -20,45 +20,36 @@ export default async function BlogFeedPage() {
   const authorName = siteConfig?.doctor_name || "Dr. Pedro Felipe";
 
   return (
-    <div className="bg-[#f8fafc] min-h-screen">
-      <div className="max-w-6xl mx-auto px-4 w-full mt-8">
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto mt-24 w-full max-w-6xl px-4 lg:mt-28">
         <AdSenseUnit slot="superior_banner" />
       </div>
 
-      <section className="max-w-4xl mx-auto px-4 py-16 md:py-24 text-center">
-        <div className="inline-block mb-4 px-3 py-1 rounded-full bg-rose-50 border border-rose-100 text-[#be123c] text-sm font-semibold tracking-wide">
-          Centro de Excelência em Cardiologia
-        </div>
-        <h1 className="text-4xl md:text-6xl font-black text-[#0f172a] tracking-tight leading-tight mb-6">
+      <section className="mx-auto max-w-4xl px-4 py-14 text-center md:py-20">
+        <p className="section-eyebrow mb-4 inline-block">RitmoBlog</p>
+        <h1 className="mb-6 text-4xl font-bold tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
           A ciência de cuidar do{" "}
-          <span className="text-[#be123c]">ritmo</span> da sua vida.
+          <span className="text-primary-600">ritmo</span> da sua vida.
         </h1>
-        <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+        <p className="mx-auto max-w-2xl text-lg leading-relaxed text-gray-600 md:text-xl">
           Informação médica de alto padrão sobre prevenção, arritmias e
           longevidade, produzida por especialistas de referência.
         </p>
       </section>
 
-      <main className="max-w-6xl mx-auto px-4 pb-20 w-full">
-        <div className="flex items-center justify-between mb-10">
-          <h2 className="text-3xl font-extrabold text-[#0f172a] tracking-tight">
-            Publicações Recentes
+      <main className="mx-auto w-full max-w-6xl px-4 pb-20">
+        <div className="mb-10 flex items-center justify-between">
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900 md:text-3xl">
+            Publicações recentes
           </h2>
         </div>
 
         {articles.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {articles.map((article: any) => {
-              const colors = [
-                "text-[#be123c]",
-                "text-[#0284c7]",
-                "text-emerald-600",
-                "text-indigo-600",
-                "text-amber-600",
-              ];
-              const colorIndex = article.category?.name
-                ? article.category.name.length % colors.length
-                : 0;
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {articles.map((article) => {
+              const category = Array.isArray(article.category)
+                ? article.category[0]
+                : article.category;
 
               return (
                 <BlogCard
@@ -66,17 +57,16 @@ export default async function BlogFeedPage() {
                   title={article.title}
                   slug={article.slug}
                   excerpt={article.excerpt || ""}
-                  category={article.category?.name || "Geral"}
+                  category={category?.name || "Cardiologia"}
                   authorName={authorName}
                   coverImageUrl={article.cover_image_url}
-                  categoryColor={colors[colorIndex]}
                 />
               );
             })}
           </div>
         ) : (
-          <div className="text-center py-20 bg-white rounded-2xl border border-slate-100 shadow-sm">
-            <p className="text-slate-500 text-lg">
+          <div className="rounded-2xl border border-gray-100 bg-white py-20 text-center shadow-sm">
+            <p className="text-lg text-gray-500">
               Nenhum artigo publicado ainda.
             </p>
           </div>

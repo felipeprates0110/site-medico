@@ -30,12 +30,12 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-4">
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-600 text-white">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-600 text-white">
                 <Heart className="h-5 w-5" fill="currentColor" />
               </div>
               <div>
                 <span className="block text-lg font-bold text-white">Dr. Pedro Felipe</span>
-                <span className="text-xs text-primary-300">{siteConfig.doctor.crm}</span>
+                <span className="text-xs text-primary-400">{siteConfig.doctor.crm}</span>
               </div>
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-gray-400">

@@ -8,7 +8,7 @@ interface BlogCardProps {
   category: string;
   authorName: string;
   coverImageUrl?: string;
-  categoryColor?: string; // e.g., "text-[#be123c]"
+  categoryColor?: string;
 }
 
 export function BlogCard({
@@ -18,11 +18,11 @@ export function BlogCard({
   category,
   authorName,
   coverImageUrl,
-  categoryColor = "text-[#be123c]",
+  categoryColor = "text-primary-600",
 }: BlogCardProps) {
   return (
-    <article className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden hover:-translate-y-1 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] transition-all duration-300 flex flex-col group h-full">
-      <div className="h-56 bg-slate-100 w-full relative overflow-hidden">
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary-200 hover:shadow-lg">
+      <div className="relative h-52 w-full overflow-hidden bg-gray-100">
         {coverImageUrl ? (
           <Image
             src={coverImageUrl}
@@ -31,30 +31,30 @@ export function BlogCard({
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-slate-400">
-            <span>[Imagem]</span>
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-100 to-primary-50 text-sm font-medium text-gray-400">
+            RitmoBlog
           </div>
         )}
       </div>
-      <div className="p-8 flex flex-col flex-grow">
+      <div className="flex flex-grow flex-col p-7">
         <span
-          className={`text-xs font-bold tracking-widest uppercase mb-3 block ${categoryColor}`}
+          className={`mb-3 block text-xs font-bold uppercase tracking-widest ${categoryColor}`}
         >
           {category}
         </span>
-        <h3 className="text-xl font-extrabold text-[#0f172a] mb-4 leading-snug group-hover:text-[#0284c7] transition-colors relative">
+        <h3 className="relative mb-3 text-xl font-bold leading-snug text-gray-900 transition-colors duration-300 group-hover:text-primary-700">
           <Link href={`/blog/${slug}`} className="before:absolute before:inset-0">
             {title}
           </Link>
         </h3>
-        <p className="text-slate-600 text-sm mb-6 flex-grow leading-relaxed line-clamp-3">
+        <p className="mb-6 line-clamp-3 flex-grow text-sm leading-relaxed text-gray-600">
           {excerpt}
         </p>
-        <div className="flex items-center gap-3 mt-auto pt-6 border-t border-slate-100">
-          <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-500">
+        <div className="mt-auto flex items-center gap-3 border-t border-gray-100 pt-5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-xs font-bold text-white">
             {authorName.charAt(0)}
           </div>
-          <span className="text-sm text-slate-600 font-medium">{authorName}</span>
+          <span className="text-sm font-medium text-gray-600">{authorName}</span>
         </div>
       </div>
     </article>

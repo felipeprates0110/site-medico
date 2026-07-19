@@ -5,25 +5,25 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: "Inter", var(--font-geist-sans);
+  --font-sans: var(--font-plus-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
 
-  /* Healthtech palette — teal suave, confiança clínica */
+  /* Premium clínico — autoridade (navy) + accent cirúrgico (teal) */
   --color-primary-50: #f0fdfa;
   --color-primary-100: #ccfbf1;
   --color-primary-200: #99f6e4;
   --color-primary-300: #5eead4;
   --color-primary-400: #2dd4bf;
   --color-primary-500: #14b8a6;
-  --color-primary-600: #0d9488;
-  --color-primary-700: #0f766e;
+  --color-primary-600: #0f766e;
+  --color-primary-700: #0d5f59;
   --color-primary-800: #115e59;
   --color-primary-900: #134e4a;
   --color-primary-950: #042f2e;
 
-  --color-accent-50: #eff6ff;
-  --color-accent-100: #dbeafe;
-  --color-accent-500: #3b82f6;
-  --color-accent-600: #2563eb;
+  --color-accent-50: #f8fafc;
+  --color-accent-100: #f1f5f9;
+  --color-accent-500: #334155;
+  --color-accent-600: #1e293b;
 
   --color-gray-50: #f8fafc;
   --color-gray-100: #f1f5f9;
@@ -49,10 +49,10 @@
   --card-foreground: #0f172a;
   --popover: #ffffff;
   --popover-foreground: #0f172a;
-  --primary: #0d9488;
+  --primary: #0f766e;
   --primary-foreground: #ffffff;
-  --secondary: #f0fdfa;
-  --secondary-foreground: #0f766e;
+  --secondary: #f8fafc;
+  --secondary-foreground: #0f172a;
   --muted: #f1f5f9;
   --muted-foreground: #64748b;
   --accent: #f0fdfa;
@@ -61,8 +61,8 @@
   --destructive-foreground: #ffffff;
   --border: #e2e8f0;
   --input: #e2e8f0;
-  --ring: #14b8a6;
-  --radius: 1rem;
+  --ring: #0f766e;
+  --radius: 0.75rem;
 }
 
 .dark {
@@ -104,29 +104,17 @@
 }
 
 @layer utilities {
-  .healthtech-blob {
-    border-radius: 50%;
-    filter: blur(80px);
-    pointer-events: none;
-  }
-
-  .healthtech-grid {
-    background-image:
-      linear-gradient(to right, rgb(13 148 136 / 0.04) 1px, transparent 1px),
-      linear-gradient(to bottom, rgb(13 148 136 / 0.04) 1px, transparent 1px);
-    background-size: 48px 48px;
-  }
-
-  .healthtech-glass {
-    background: rgb(255 255 255 / 0.72);
+  .premium-glass {
+    background: rgb(255 255 255 / 0.85);
     backdrop-filter: blur(16px);
-    border: 1px solid rgb(255 255 255 / 0.8);
+    -webkit-backdrop-filter: blur(16px);
   }
 
-  .healthtech-gradient-text {
-    background: linear-gradient(135deg, #0d9488 0%, #2563eb 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .section-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-primary-600);
   }
 }
