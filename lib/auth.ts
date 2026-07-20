@@ -3,6 +3,15 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { supabaseAdmin } from "./supabase";
 
+const nextAuthSecret =
+  process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET;
+
+if (!nextAuthSecret && process.env.NODE_ENV === "production") {
+  console.error(
+    "[next-auth] NEXTAUTH_SECRET ausente. Configure esta variável na Vercel."
+  );
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -13,38 +22,43 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("Email e senha são obrigatórios");
+          return null;
         }
 
-        // Buscar usuário no Supabase
-        const { data: user, error } = await supabaseAdmin
-          .from("users")
-          .select("*")
-          .eq("email", credentials.email)
-          .eq("is_active", true)
-          .single();
+        try {
+          // Buscar usuário no Supabase
+          const { data: user, error } = await supabaseAdmin
+            .from("users")
+            .select("*")
+            .eq("email", credentials.email)
+            .eq("is_active", true)
+            .single();
 
-        if (error || !user) {
-          throw new Error("Credenciais inválidas");
+          if (error || !user) {
+            return null;
+          }
+
+          // Verificar senha
+          const passwordMatch = await compare(
+            credentials.password,
+            user.password_hash
+          );
+
+          if (!passwordMatch) {
+            return null;
+          }
+
+          // Retornar dados do usuário (sem a senha)
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          };
+        } catch (error) {
+          console.error("[next-auth] Erro ao autenticar:", error);
+          return null;
         }
-
-        // Verificar senha
-        const passwordMatch = await compare(
-          credentials.password,
-          user.password_hash
-        );
-
-        if (!passwordMatch) {
-          throw new Error("Credenciais inválidas");
-        }
-
-        // Retornar dados do usuário (sem a senha)
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        };
       },
     }),
   ],
@@ -74,7 +88,7 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 dias
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: nextAuthSecret,
 };
 
 // Tipos estendidos do NextAuth
