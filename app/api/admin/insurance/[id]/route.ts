@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase";
+import { revalidatePublicSite } from "@/lib/revalidate-public";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -70,6 +71,8 @@ export async function PUT(request: Request, { params }: RouteParams) {
     },
   ]);
 
+  revalidatePublicSite();
+
   return NextResponse.json(data);
 }
 
@@ -105,6 +108,8 @@ export async function DELETE(_request: Request, { params }: RouteParams) {
       old_data: oldData,
     },
   ]);
+
+  revalidatePublicSite();
 
   return NextResponse.json({ success: true });
 }

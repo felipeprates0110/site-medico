@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase";
+import { revalidatePublicSite } from "@/lib/revalidate-public";
 
 // GET - Buscar configurações do perfil
 export async function GET() {
@@ -69,6 +70,8 @@ export async function PUT(request: NextRequest) {
       record_id: data.id,
       new_data: data,
     });
+
+    revalidatePublicSite();
 
     return NextResponse.json(data);
   } catch (error) {

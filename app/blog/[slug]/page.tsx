@@ -7,7 +7,7 @@ import { AdSenseUnit } from "@/components/blog/AdSenseUnit";
 import { AffiliateBox } from "@/components/blog/AffiliateBox";
 import { DEFAULT_DOCTOR_PHOTO } from "@/lib/doctor-photo";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export async function generateMetadata({
   params,

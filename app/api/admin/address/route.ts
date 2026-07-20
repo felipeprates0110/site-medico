@@ -4,7 +4,6 @@ import { authOptions } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase";
 import { revalidatePublicSite } from "@/lib/revalidate-public";
 
-// GET - Buscar informações de contato
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
@@ -14,9 +13,9 @@ export async function GET() {
     }
 
     const { data, error } = await supabaseAdmin
-      .from("contact_info")
+      .from("addresses")
       .select("*")
-      .single();
+      .order("is_primary", { ascending: false });
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
@@ -25,14 +24,13 @@ export async function GET() {
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(
-      { error: "Erro ao buscar contato" },
+      { error: "Erro ao buscar endereços" },
       { status: 500 }
     );
   }
 }
 
-// PUT - Atualizar informações de contato
-export async function PUT(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -42,15 +40,29 @@ export async function PUT(request: NextRequest) {
 
     const body = await request.json();
 
+    // Se este for o endereço principal, remove a flag dos demais
+    if (body.is_primary) {
+      await supabaseAdmin
+        .from("addresses")
+        .update({ is_primary: false })
+        .eq("is_primary", true);
+    }
+
     const { data, error } = await supabaseAdmin
-      .from("contact_info")
-      .update({
-        phone: body.phone,
-        whatsapp: body.whatsapp,
-        email: body.email,
-        updated_by: session.user.id,
-      })
-      .eq("id", body.id)
+      .from("addresses")
+      .insert([
+        {
+          clinic_name: body.clinic_name,
+          street: body.street,
+          neighborhood: body.neighborhood,
+          city: body.city,
+          state: body.state,
+          zip: body.zip,
+          latitude: body.latitude || null,
+          longitude: body.longitude || null,
+          is_primary: body.is_primary ?? false,
+        },
+      ])
       .select()
       .single();
 
@@ -58,11 +70,10 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // Log de auditoria
     await supabaseAdmin.from("audit_logs").insert({
       user_id: session.user.id,
-      action: "UPDATE",
-      table_name: "contact_info",
+      action: "CREATE",
+      table_name: "addresses",
       record_id: data.id,
       new_data: data,
     });
@@ -72,7 +83,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(
-      { error: "Erro ao atualizar contato" },
+      { error: "Erro ao criar endereço" },
       { status: 500 }
     );
   }

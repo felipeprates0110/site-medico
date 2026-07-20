@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     "Informação médica de alto padrão sobre prevenção, arritmias e longevidade, produzida por especialistas de referência.",
 };
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export default async function BlogFeedPage() {
   const [articles, siteConfig] = await Promise.all([

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase";
+import { revalidatePublicSite } from "@/lib/revalidate-public";
 
 export async function GET() {
   try {
@@ -68,6 +69,8 @@ export async function POST(request: Request) {
       .single();
 
     if (error) throw error;
+
+    revalidatePublicSite();
 
     return NextResponse.json(data);
   } catch (error: any) {

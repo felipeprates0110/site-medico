@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase";
+import { revalidatePublicSite } from "@/lib/revalidate-public";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -48,6 +49,8 @@ export async function POST(request: Request) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  revalidatePublicSite();
 
   return NextResponse.json(data);
 }

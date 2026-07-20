@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase";
+import { revalidatePublicSite } from "@/lib/revalidate-public";
 
 export async function GET(
   request: Request,
@@ -75,6 +76,8 @@ export async function PUT(
 
     if (error) throw error;
 
+    revalidatePublicSite();
+
     return NextResponse.json(data);
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -98,6 +101,8 @@ export async function DELETE(
       .eq("id", resolvedParams.id);
 
     if (error) throw error;
+
+    revalidatePublicSite();
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

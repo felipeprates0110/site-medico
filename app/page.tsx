@@ -25,6 +25,9 @@ import {
   getPublishedArticles,
 } from "@/lib/data";
 
+// Rede de segurança: se a revalidação on-demand falhar, a home refaz no máximo em 60s
+export const revalidate = 60;
+
 const careerHighlights = [
   "Especialista em Eletrofisiologia Clínica e Invasiva pela UNIFESP/EPM",
   "Atuação em cardiologia, arritmologia e prevenção cardiovascular",
