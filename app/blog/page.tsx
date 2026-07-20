@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { getPublishedArticles, getSiteConfig } from "@/lib/data";
 import { AdSenseUnit } from "@/components/blog/AdSenseUnit";
 import { BlogCard } from "@/components/blog/BlogCard";
+import { DEFAULT_DOCTOR_PHOTO } from "@/lib/doctor-photo";
 
 export const metadata: Metadata = {
   title: "RitmoBlog - Excelência em Cardiologia e Arritmologia",
@@ -18,6 +19,7 @@ export default async function BlogFeedPage() {
   ]);
 
   const authorName = siteConfig?.doctor_name || "Dr. Pedro Felipe";
+  const authorPhoto = siteConfig?.profile_photo_url || DEFAULT_DOCTOR_PHOTO;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -59,6 +61,7 @@ export default async function BlogFeedPage() {
                   excerpt={article.excerpt || ""}
                   category={category?.name || "Cardiologia"}
                   authorName={authorName}
+                  authorPhotoUrl={authorPhoto}
                   coverImageUrl={article.cover_image_url}
                 />
               );

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Award, GraduationCap, Briefcase, Heart, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WhatsAppButton } from "@/components/whatsapp-button";
+import { DEFAULT_DOCTOR_PHOTO } from "@/lib/doctor-photo";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -14,40 +15,42 @@ export default function SobrePage() {
   return (
     <div className="flex flex-col">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-blue-50 to-white py-16">
+      <section className="bg-gray-50 pt-28 pb-16 lg:pt-32">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Image */}
-            <div className="relative aspect-[3/4] rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 shadow-xl overflow-hidden">
-              <div className="absolute inset-0 flex items-center justify-center text-white/20 text-6xl font-bold">
-                Foto do Dr.
-              </div>
+          <div className="grid items-center gap-12 lg:grid-cols-2">
+            <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-gray-100 shadow-xl ring-1 ring-gray-200/80">
+              <img
+                src={DEFAULT_DOCTOR_PHOTO}
+                alt="Dr. Pedro Felipe Prates Silva"
+                className="h-full w-full object-cover object-top"
+              />
             </div>
-            
+
             <div>
-              <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl mb-6">
+              <p className="section-eyebrow mb-4">Sobre</p>
+              <h1 className="mb-6 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
                 Dr. Pedro Felipe Prates Silva
               </h1>
-              <div className="flex flex-wrap gap-2 mb-6">
-                <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-4 py-2 text-sm font-medium text-blue-700">
+              <div className="mb-6 flex flex-wrap gap-2">
+                <span className="inline-flex items-center gap-1 rounded-lg bg-primary-50 px-4 py-2 text-sm font-medium text-primary-700">
                   <Award className="h-4 w-4" />
                   CRM DF 18951
                 </span>
-                <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-4 py-2 text-sm font-medium text-blue-700">
+                <span className="inline-flex items-center gap-1 rounded-lg bg-primary-50 px-4 py-2 text-sm font-medium text-primary-700">
                   RQE 16475
                 </span>
-                <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-4 py-2 text-sm font-medium text-blue-700">
+                <span className="inline-flex items-center gap-1 rounded-lg bg-primary-50 px-4 py-2 text-sm font-medium text-primary-700">
                   RQE 16476
                 </span>
               </div>
-              <p className="text-xl text-gray-700 leading-relaxed mb-8">
+              <p className="mb-8 text-xl leading-relaxed text-gray-700">
                 Cardiologista e Arritmologista com formação em Eletrofisiologia Clínica e
                 Invasiva pela UNIFESP/EPM, dedicado ao diagnóstico e tratamento de
                 arritmias cardíacas com excelência e humanização.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col gap-4 sm:flex-row">
                 <WhatsAppButton />
-                <Button asChild variant="outline">
+                <Button asChild variant="outline" className="rounded-xl">
                   <Link href="/especialidades">Ver especialidades</Link>
                 </Button>
               </div>

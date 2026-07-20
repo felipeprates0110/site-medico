@@ -6,7 +6,7 @@ export const siteConfig = {
   description:
     "Cardiologista e Arritmologista especialista em Eletrofisiologia Clínica e Invasiva. Tratamento de arritmias cardíacas, fibrilação atrial e ablação por cateter em Brasília - DF. CRM DF 18951.",
   url: "https://drpedrofelipe.com.br",
-  ogImage: "https://drpedrofelipe.com.br/og-image.jpg",
+  ogImage: "https://drpedrofelipe.com.br/images/dr-pedro-felipe.png",
   keywords: [
     "cardiologista brasília",
     "cardiologista gama df",

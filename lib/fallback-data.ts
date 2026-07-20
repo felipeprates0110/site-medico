@@ -2,6 +2,7 @@ import { faqItems } from "@/data/faq";
 import { insurancePlans } from "@/data/insurance";
 import { reviews as staticReviews } from "@/data/reviews";
 import { specialties as staticSpecialties } from "@/data/specialties";
+import { DEFAULT_DOCTOR_PHOTO } from "@/lib/doctor-photo";
 import { siteConfig as metadataConfig } from "@/lib/metadata";
 import type {
   ContactInfo,
@@ -22,7 +23,7 @@ export const fallbackSiteConfig: SiteConfig = {
   specialty: metadataConfig.doctor.specialty,
   subspecialty: metadataConfig.doctor.subspecialty,
   bio: metadataConfig.description,
-  profile_photo_url: null,
+  profile_photo_url: DEFAULT_DOCTOR_PHOTO,
   updated_at: timestamp,
 };
 

@@ -8,6 +8,7 @@ interface BlogCardProps {
   category: string;
   authorName: string;
   coverImageUrl?: string;
+  authorPhotoUrl?: string;
   categoryColor?: string;
 }
 
@@ -18,6 +19,7 @@ export function BlogCard({
   category,
   authorName,
   coverImageUrl,
+  authorPhotoUrl,
   categoryColor = "text-primary-600",
 }: BlogCardProps) {
   return (
@@ -51,9 +53,20 @@ export function BlogCard({
           {excerpt}
         </p>
         <div className="mt-auto flex items-center gap-3 border-t border-gray-100 pt-5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-xs font-bold text-white">
-            {authorName.charAt(0)}
-          </div>
+          {authorPhotoUrl ? (
+            <div className="relative h-8 w-8 overflow-hidden rounded-full bg-gray-100 ring-1 ring-gray-200">
+              <Image
+                src={authorPhotoUrl}
+                alt={authorName}
+                fill
+                className="object-cover object-top"
+              />
+            </div>
+          ) : (
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-xs font-bold text-white">
+              {authorName.charAt(0)}
+            </div>
+          )}
           <span className="text-sm font-medium text-gray-600">{authorName}</span>
         </div>
       </div>

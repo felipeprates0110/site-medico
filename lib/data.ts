@@ -6,6 +6,7 @@ import {
   fallbackSiteConfig,
   fallbackSpecialties,
 } from "./fallback-data";
+import { resolveDoctorPhoto } from "./doctor-photo";
 import { isSupabaseConfigured, supabase } from "./supabase";
 
 function useLocalDataOnly() {
@@ -115,7 +116,7 @@ export async function getFAQItems() {
 }
 
 export async function getSiteConfig() {
-  return withFallback(
+  const config = await withFallback(
     "getSiteConfig",
     async () => {
       const { data, error } = await supabase
@@ -128,6 +129,11 @@ export async function getSiteConfig() {
     },
     fallbackSiteConfig
   );
+
+  return {
+    ...config,
+    profile_photo_url: resolveDoctorPhoto(config.profile_photo_url),
+  };
 }
 
 export async function getContactInfo() {

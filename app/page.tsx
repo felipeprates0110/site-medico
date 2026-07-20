@@ -5,7 +5,6 @@ import {
   Users,
   Clock,
   Star,
-  Heart,
   Activity,
   ShieldCheck,
   ChevronRight,
@@ -104,18 +103,12 @@ export default async function Home() {
 
             <div className="relative">
               <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-gray-100 shadow-xl ring-1 ring-gray-200/80 sm:aspect-[5/6]">
-                {siteConfig.profile_photo_url ? (
-                  <img
-                    src={siteConfig.profile_photo_url}
-                    alt={siteConfig.doctor_name}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-800 to-gray-950">
-                    <Heart className="h-28 w-28 text-white/15" fill="currentColor" />
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-950/40 via-transparent to-transparent" />
+                <img
+                  src={siteConfig.profile_photo_url}
+                  alt={siteConfig.doctor_name || "Dr. Pedro Felipe"}
+                  className="h-full w-full object-cover object-top"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-950/45 via-transparent to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                   <p className="text-lg font-bold">{siteConfig.doctor_name || "Dr. Pedro Felipe"}</p>
                   <p className="mt-1 text-sm text-white/80">
@@ -174,9 +167,9 @@ export default async function Home() {
           <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
             <div className="relative order-2 overflow-hidden rounded-2xl shadow-xl ring-1 ring-gray-200/80 lg:order-1">
               <img
-                src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=800"
-                alt="Ambiente clínico de excelência"
-                className="aspect-[4/3] w-full object-cover"
+                src={siteConfig.profile_photo_url}
+                alt={siteConfig.doctor_name || "Dr. Pedro Felipe"}
+                className="aspect-[4/5] w-full object-cover object-top sm:aspect-[4/3]"
               />
             </div>
             <div className="order-1 lg:order-2">
@@ -264,6 +257,7 @@ export default async function Home() {
                     excerpt={article.excerpt || ""}
                     category={category?.name || "Cardiologia"}
                     authorName={siteConfig.doctor_name || "Dr. Pedro Felipe"}
+                    authorPhotoUrl={siteConfig.profile_photo_url}
                     coverImageUrl={article.cover_image_url}
                   />
                 );

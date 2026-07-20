@@ -5,6 +5,7 @@ import { getPublishedArticleBySlug, getSiteConfig } from "@/lib/data";
 import { AuthorBox } from "@/components/blog/AuthorBox";
 import { AdSenseUnit } from "@/components/blog/AdSenseUnit";
 import { AffiliateBox } from "@/components/blog/AffiliateBox";
+import { DEFAULT_DOCTOR_PHOTO } from "@/lib/doctor-photo";
 
 export const revalidate = 3600;
 
@@ -127,7 +128,7 @@ export default async function BlogPostPage({
               siteConfig?.bio ||
               "Especialista dedicado a traduzir a medicina complexa em prevenção prática para o dia a dia."
             }
-            photoUrl={siteConfig?.profile_photo_url || undefined}
+            photoUrl={siteConfig?.profile_photo_url || DEFAULT_DOCTOR_PHOTO}
           />
 
           <div
