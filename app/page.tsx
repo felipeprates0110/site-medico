@@ -104,7 +104,7 @@ export default async function Home() {
             <div className="relative">
               <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-gray-100 shadow-xl ring-1 ring-gray-200/80 sm:aspect-[5/6]">
                 <img
-                  src={siteConfig.profile_photo_url}
+                  src={siteConfig.profile_photo_url || "/images/dr-pedro-felipe.png"}
                   alt={siteConfig.doctor_name || "Dr. Pedro Felipe"}
                   className="h-full w-full object-cover object-top"
                 />
@@ -167,7 +167,7 @@ export default async function Home() {
           <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
             <div className="relative order-2 overflow-hidden rounded-2xl shadow-xl ring-1 ring-gray-200/80 lg:order-1">
               <img
-                src={siteConfig.profile_photo_url}
+                src={siteConfig.profile_photo_url || "/images/dr-pedro-felipe.png"}
                 alt={siteConfig.doctor_name || "Dr. Pedro Felipe"}
                 className="aspect-[4/5] w-full object-cover object-top sm:aspect-[4/3]"
               />
