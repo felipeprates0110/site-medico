@@ -1,4 +1,5 @@
 import { Star } from "lucide-react";
+import type { ReactNode } from "react";
 import { reviewStats } from "@/data/reviews";
 
 /** Wordmark tipográfico nas cores da marca Google — só visual. */
@@ -61,7 +62,7 @@ function Stars() {
 }
 
 type PlatformBadgeProps = {
-  brand: React.ReactNode;
+  brand: ReactNode;
   rating: string;
   total: number;
   label: string;
@@ -90,7 +91,7 @@ function PlatformBadge({ brand, rating, total, label }: PlatformBadgeProps) {
 
 /**
  * Selos visuais Google + Doctoralia — decorativos, sem link.
- * Números oficiais vêm de reviewStats (Doctoralia).
+ * Números oficiais vêm de reviewStats (fonte Doctoralia do site).
  */
 export function ReviewsPlatformBadges() {
   const rating = reviewStats.average.toFixed(1);
@@ -112,9 +113,4 @@ export function ReviewsPlatformBadges() {
       />
     </div>
   );
-}
-
-/** Mantido por compatibilidade — preferir ReviewsPlatformBadges. */
-export function GoogleReviewsBadge() {
-  return <ReviewsPlatformBadges />;
 }
