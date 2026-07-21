@@ -3,6 +3,7 @@
 import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/lib/metadata";
+import { cn } from "@/lib/utils";
 
 interface WhatsAppButtonProps {
   message?: string;
@@ -34,14 +35,13 @@ export function WhatsAppButton({
       asChild
       variant={variant}
       size={size}
-      className={className}
+      // Cores padrão do WhatsApp; className vem por último e sobrescreve (ex.: botão branco no CTA)
+      className={cn(
+        "border-0 bg-green-600 text-white shadow-lg shadow-green-600/20 hover:bg-green-700 focus-visible:ring-green-600",
+        className
+      )}
     >
-      <a
-        href={whatsappUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="bg-green-600 hover:bg-green-700 text-white"
-      >
+      <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
         <MessageCircle className="h-5 w-5" />
         {children || "Agendar via WhatsApp"}
       </a>
