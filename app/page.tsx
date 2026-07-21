@@ -24,6 +24,7 @@ import {
   getFAQItems,
   getPublishedArticles,
 } from "@/lib/data";
+import { reviewStats } from "@/data/reviews";
 
 // Rede de segurança: se a revalidação on-demand falhar, a home refaz no máximo em 60s
 export const revalidate = 60;
@@ -48,17 +49,12 @@ export default async function Home() {
 
   const featuredReviews = reviews.slice(0, 3);
   const featuredArticles = articles.slice(0, 3);
-  const averageRating =
-    reviews.length > 0
-      ? (
-          reviews.reduce((acc: number, r: { rating: number }) => acc + r.rating, 0) /
-          reviews.length
-        ).toFixed(1)
-      : "5.0";
 
+  // Totais do Doctoralia (reviewStats), não o tamanho da amostra em tela —
+  // assim "230+" e "5.0" batem com a página /avaliacoes e o schema SEO.
   const authorityStats = [
-    { value: `${reviews.length}+`, label: "Avaliações de pacientes" },
-    { value: averageRating, label: "Nota média" },
+    { value: `${reviewStats.total}+`, label: "Avaliações de pacientes" },
+    { value: reviewStats.average.toFixed(1), label: "Nota média" },
     { value: `${insurance.length}+`, label: "Convênios aceitos" },
     { value: "UNIFESP", label: "Formação de excelência" },
   ];
@@ -297,7 +293,7 @@ export default async function Home() {
               O que dizem os pacientes
             </h2>
             <p className="mt-3 text-base text-gray-600">
-              Mais de {reviews.length} avaliações reais e verificadas.
+              Mais de {reviewStats.total} avaliações reais e verificadas.
             </p>
           </div>
           <div className="mb-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">

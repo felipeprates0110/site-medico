@@ -102,6 +102,8 @@ export const reviews: Review[] = [
   },
 ];
 
+// Totais oficiais do Doctoralia — fonte única para home, /avaliacoes e SEO.
+// A lista abaixo é só uma amostra exibida no site (não o total completo).
 export const reviewStats = {
   total: 230,
   average: 5.0,

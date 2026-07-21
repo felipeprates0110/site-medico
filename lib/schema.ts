@@ -1,3 +1,4 @@
+import { reviewStats } from "@/data/reviews";
 import { siteConfig } from "./metadata";
 
 // Schema.org - Physician
@@ -38,8 +39,8 @@ export const physicianSchema = {
   },
   aggregateRating: {
     "@type": "AggregateRating",
-    ratingValue: "5",
-    reviewCount: "230",
+    ratingValue: reviewStats.average.toFixed(1),
+    reviewCount: String(reviewStats.total),
     bestRating: "5",
     worstRating: "1",
   },
@@ -116,8 +117,10 @@ export const localBusinessSchema = {
   },
   aggregateRating: {
     "@type": "AggregateRating",
-    ratingValue: "5",
-    reviewCount: "230",
+    ratingValue: reviewStats.average.toFixed(1),
+    reviewCount: String(reviewStats.total),
+    bestRating: "5",
+    worstRating: "1",
   },
   sameAs: [
     // Adicionar links de redes sociais quando disponível

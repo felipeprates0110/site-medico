@@ -93,7 +93,10 @@ export async function getApprovedReviews() {
         .order("date", { ascending: false });
 
       if (error) throw error;
-      return data ?? [];
+      // Banco vazio ≠ sucesso útil: usa a amostra local (Doctoralia)
+      // para a home e os cards não ficarem zerados.
+      if (!data || data.length === 0) return fallbackReviews;
+      return data;
     },
     fallbackReviews
   );
