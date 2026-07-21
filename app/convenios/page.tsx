@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Shield, Building2, Users, Briefcase } from "lucide-react";
+import { Users } from "lucide-react";
 import { insurancePlans } from "@/data/insurance";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 
@@ -10,28 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default function ConveniosPage() {
-  const privateInsurance = insurancePlans.filter((p) => p.category === "private");
-  const publicInsurance = insurancePlans.filter((p) => p.category === "public");
-  const corporateInsurance = insurancePlans.filter((p) => p.category === "corporate");
   const totalPlans = insurancePlans.length;
-
-  const categoryInfo = {
-    private: {
-      icon: Building2,
-      title: "Planos Privados",
-      color: "blue",
-    },
-    public: {
-      icon: Shield,
-      title: "Planos Públicos e Estatais",
-      color: "green",
-    },
-    corporate: {
-      icon: Briefcase,
-      title: "Planos Corporativos",
-      color: "purple",
-    },
-  };
+  const sortedPlans = [...insurancePlans].sort((a, b) =>
+    a.name.localeCompare(b.name, "pt-BR")
+  );
 
   return (
     <div className="flex flex-col">
@@ -64,85 +46,14 @@ export default function ConveniosPage() {
         </div>
       </section>
 
-      {/* Private Insurance */}
+      {/* Lista única de convênios */}
       <section className="py-12 bg-white">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
-              <Building2 className="h-6 w-6" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">
-                {categoryInfo.private.title}
-              </h2>
-              <p className="text-sm text-gray-600">
-                {privateInsurance.length} planos
-              </p>
-            </div>
-          </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {privateInsurance.map((plan) => (
+            {sortedPlans.map((plan) => (
               <div
                 key={plan.id}
                 className="p-4 rounded-lg border bg-white hover:border-blue-300 hover:shadow-sm transition-all"
-              >
-                <span className="text-gray-700 font-medium">{plan.name}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Public Insurance */}
-      <section className="py-12 bg-gray-50">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100 text-green-600">
-              <Shield className="h-6 w-6" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">
-                {categoryInfo.public.title}
-              </h2>
-              <p className="text-sm text-gray-600">
-                {publicInsurance.length} planos
-              </p>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {publicInsurance.map((plan) => (
-              <div
-                key={plan.id}
-                className="p-4 rounded-lg border bg-white hover:border-green-300 hover:shadow-sm transition-all"
-              >
-                <span className="text-gray-700 font-medium">{plan.name}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Corporate Insurance */}
-      <section className="py-12 bg-white">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-purple-100 text-purple-600">
-              <Briefcase className="h-6 w-6" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">
-                {categoryInfo.corporate.title}
-              </h2>
-              <p className="text-sm text-gray-600">
-                {corporateInsurance.length} planos
-              </p>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {corporateInsurance.map((plan) => (
-              <div
-                key={plan.id}
-                className="p-4 rounded-lg border bg-white hover:border-purple-300 hover:shadow-sm transition-all"
               >
                 <span className="text-gray-700 font-medium">{plan.name}</span>
               </div>
