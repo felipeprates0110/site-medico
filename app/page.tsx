@@ -15,7 +15,8 @@ import { WhatsAppButton } from "@/components/whatsapp-button";
 import { SpecialtyCard } from "@/components/specialty-card";
 import { ReviewCard } from "@/components/review-card";
 import { BlogCard } from "@/components/blog/BlogCard";
-import { Card, CardContent } from "@/components/ui/card";
+import { GoogleReviewsBadge } from "@/components/google-reviews-badge";
+import { FAQAccordion } from "@/components/faq-accordion";
 import {
   getSpecialties,
   getApprovedReviews,
@@ -50,13 +51,11 @@ export default async function Home() {
   const featuredReviews = reviews.slice(0, 3);
   const featuredArticles = articles.slice(0, 3);
 
-  // Totais do Doctoralia (reviewStats), não o tamanho da amostra em tela —
-  // assim "230+" e "5.0" batem com a página /avaliacoes e o schema SEO.
+  // Totais do Doctoralia (reviewStats). O 4º slot é o selo visual (não texto).
   const authorityStats = [
     { value: `${reviewStats.total}+`, label: "Avaliações de pacientes" },
     { value: reviewStats.average.toFixed(1), label: "Nota média" },
     { value: `${insurance.length}+`, label: "Convênios aceitos" },
-    { value: "UNIFESP", label: "Formação de excelência" },
   ];
 
   return (
@@ -126,15 +125,20 @@ export default async function Home() {
       {/* Autoridade */}
       <section className="border-y border-gray-100 bg-gray-50">
         <div className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
-          <div className="grid grid-cols-2 gap-8 lg:grid-cols-4 lg:gap-6">
+          <div className="grid grid-cols-2 items-center gap-8 lg:grid-cols-4 lg:gap-6">
             {authorityStats.map((stat) => (
               <div key={stat.label} className="text-center lg:text-left">
                 <p className="text-3xl font-bold tracking-tight text-gray-900">
                   {stat.value}
                 </p>
-                <p className="mt-1 text-sm font-medium text-gray-500">{stat.label}</p>
+                <p className="mt-1 text-sm font-medium text-gray-500">
+                  {stat.label}
+                </p>
               </div>
             ))}
+            <div className="col-span-2 flex justify-center lg:col-span-1 lg:justify-start">
+              <GoogleReviewsBadge />
+            </div>
           </div>
         </div>
       </section>
@@ -321,19 +325,7 @@ export default async function Home() {
               Perguntas frequentes
             </h2>
           </div>
-          <div className="space-y-3">
-            {faq.slice(0, 6).map((item: { id: string; question: string; answer: string }) => (
-              <Card
-                key={item.id}
-                className="overflow-hidden rounded-xl border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-primary-200 hover:shadow-md"
-              >
-                <CardContent className="p-6">
-                  <h4 className="mb-2 font-bold text-gray-950">{item.question}</h4>
-                  <p className="leading-relaxed text-gray-600">{item.answer}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <FAQAccordion items={faq.slice(0, 6)} />
           <div className="mt-10 text-center">
             <WhatsAppButton size="lg" className="rounded-xl" />
           </div>

@@ -3,86 +3,49 @@ import type { FAQItem } from "@/types";
 export const faqItems: FAQItem[] = [
   {
     id: "1",
-    question: "Como posso agendar uma consulta?",
+    question:
+      'Sinto o meu coração "pular um batimento" ou acelerar do nada. Isso sempre é perigoso?',
     answer:
-      "Você pode agendar uma consulta através do WhatsApp clicando no botão de agendamento do site, ligando diretamente para o consultório, ou preenchendo o formulário de contato. Respondemos rapidamente e confirmamos o melhor horário disponível.",
-    category: "agendamento",
+      'Nem toda alteração no ritmo do coração indica uma doença grave. Sensações de "falhas", palpitações ou aceleração rápida podem ocorrer por conta de extrassístoles benignas, estresse, consumo de cafeína ou ansiedade. No entanto, apenas uma avaliação cardiológica detalhada, acompanhada de exames como o Eletrocardiograma e o Holter 24 horas, pode diferenciar uma arritmia benigna de uma condição que exige tratamento.',
+    category: "tratamentos",
   },
   {
     id: "2",
-    question: "Quais convênios são aceitos?",
+    question: "O que é a Ablação por Cateter e como ela trata as arritmias?",
     answer:
-      "Atendemos 52 planos de saúde, incluindo Amil, Camed, Postal Saúde, GAMA Saúde, Notre Dame, Omint, BRB Saúde, Geap, Saúde Caixa, SulAmerica, entre outros. Também atendemos pacientes particulares. Consulte a lista completa na página de convênios ou entre em contato para confirmar se seu plano é aceito.",
-    category: "convenios",
+      "A ablação por cateter é um procedimento minimamente invasivo, realizado através de um cateterismo específico. O arritmologista mapeia o sistema elétrico do coração para localizar o foco exato da alteração e aplica energia (radiofrequência ou crioablação) para cauterizar esse ponto. Para diversos tipos de taquicardias, a ablação oferece uma taxa de cura elevada, permitindo que muitos pacientes fiquem livres do uso diário de medicamentos.",
+    category: "tratamentos",
   },
   {
     id: "3",
-    question: "Qual o valor da consulta particular?",
+    question:
+      "Fibrilação Atrial: qual é o risco dessa arritmia e qual a sua relação com o AVC?",
     answer:
-      "O valor da consulta cardiológica e arritmológica particular é R$ 200,00. Formas de pagamento: dinheiro, cartão de crédito, cartão de débito ou transferência bancária.",
-    category: "geral",
+      "A Fibrilação Atrial é a arritmia sustentada mais comum na população. Ela faz com que os átrios (câmaras superiores do coração) tremam em vez de contrair ritmicamente, o que pode levar ao acúmulo de sangue e formação de coágulos. Se um coágulo se soltar, ele pode viajar até o cérebro e provocar um Acidente Vascular Cerebral (AVC). Por isso, o tratamento foca tanto em controlar o ritmo ou a frequência cardíaca quanto na prevenção de coágulos com o uso de anticoagulantes, quando indicado.",
+    category: "tratamentos",
   },
   {
     id: "4",
-    question: "O ecocardiograma e o eletrocardiograma podem identificar uma possível artéria entupida?",
+    question:
+      "Quem tem arritmia cardíaca ou usa marca-passo pode praticar atividades físicas?",
     answer:
-      "Sim. São exames valiosos na avaliação de doença coronária. O eletrocardiograma pode mostrar sinais de isquemia ou infarto prévio, enquanto o ecocardiograma avalia a função e mobilidade do coração, podendo identificar áreas comprometidas.",
+      "Na maioria dos casos, sim! A prática de exercícios físicos costuma ser uma importante aliada da saúde cardiovascular. No entanto, a liberação e a intensidade adequada dependem da causa da arritmia e da avaliação médica. Pacientes com marca-passo ou desfibrilador (CDI) geralmente podem manter uma rotina ativa e saudável, desde que façam o acompanhamento regular para ajuste dos dispositivos e passem por avaliação prévia.",
     category: "tratamentos",
   },
   {
     id: "5",
-    question: "O que é ablação por cateter?",
+    question:
+      "Qual é a diferença entre um marca-passo e um Cardiodesfibrilador Implantável (CDI)?",
     answer:
-      "A ablação por cateter é um procedimento minimamente invasivo para tratamento definitivo de arritmias cardíacas. Um cateter fino é inserido através de vaso sanguíneo até o coração, onde identifica e elimina o foco da arritmia. É realizado com anestesia local, sem cortes.",
+      "Embora ambos sejam dispositivos implantáveis para monitorar o ritmo cardíaco, eles têm funções distintas. Marca-passo: indicado para quando o coração bate muito devagar (bradicardias). Ele envia impulsos elétricos para manter a frequência cardíaca adequada. CDI: além de atuar como marca-passo se necessário, o CDI monitora e identifica arritmias graves e rápidas (como a taquicardia ventricular), sendo capaz de emitir um choque interno para reverter uma parada cardíaca e prevenir a morte súbita.",
     category: "tratamentos",
   },
   {
     id: "6",
-    question: "Fibrilação atrial tem cura?",
+    question:
+      "Quando devo procurar um médico cardiologista ou arritmologista com urgência?",
     answer:
-      "A fibrilação atrial pode ser tratada de forma definitiva através de ablação por cateter, dependendo do tipo e das características de cada paciente. Em alguns casos, mais de um procedimento pode ser necessário. Além disso, o controle de fatores de risco como obesidade, apneia do sono e hipertensão é fundamental.",
-    category: "tratamentos",
-  },
-  {
-    id: "7",
-    question: "Onde fica o consultório?",
-    answer:
-      "O consultório fica na IDC - Instituto de Doenças Cardiovasculares, no Térreo do SHLS 716, Conjunto B, Bloco C — Centro Médico de Brasília, Asa Sul / Plano Piloto, Brasília/DF, CEP 70390-700.",
-    category: "geral",
-  },
-  {
-    id: "8",
-    question: "Qual a diferença entre cardiologista e arritmologista?",
-    answer:
-      "O cardiologista é o médico especialista em doenças do coração de forma geral. O arritmologista é um cardiologista que fez subespecialização focada especificamente em arritmias cardíacas (alterações do ritmo do coração), tendo expertise avançada em diagnóstico e tratamento dessas condições, incluindo ablação por cateter, avaliação de portadores de marca-passo e indicação do dispositivo quando necessário.",
-    category: "geral",
-  },
-  {
-    id: "9",
-    question: "Preciso de encaminhamento médico para consultar?",
-    answer:
-      "Não é necessário encaminhamento para consulta particular. Para consultas por convênio, verifique com seu plano de saúde se é necessária guia de encaminhamento, pois varia de acordo com cada operadora.",
-    category: "agendamento",
-  },
-  {
-    id: "10",
-    question: "Quanto tempo dura uma consulta?",
-    answer:
-      "A consulta inicial geralmente dura de 30 a 45 minutos, tempo necessário para uma avaliação completa, anamnese detalhada, exame físico e orientações. Consultas de retorno costumam ser mais breves, mas sempre com tempo adequado para esclarecer todas as dúvidas.",
-    category: "geral",
-  },
-  {
-    id: "11",
-    question: "Realiza atendimento de urgência?",
-    answer:
-      "O consultório atende por agendamento. Em casos de urgência cardíaca (dor no peito intensa, falta de ar grave, desmaio), procure imediatamente o pronto-socorro mais próximo ou ligue 192 (SAMU).",
-    category: "agendamento",
-  },
-  {
-    id: "12",
-    question: "Que exames devo levar na primeira consulta?",
-    answer:
-      "Traga todos os exames cardiológicos que já realizou (eletrocardiograma, ecocardiograma, Holter, teste ergométrico, cateterismo, etc.), exames de sangue recentes, relatórios de outros médicos e lista de medicamentos em uso. Isso ajuda na avaliação completa do seu quadro.",
+      "Você deve buscar atendimento imediato em um pronto-socorro se as palpitações vierem acompanhadas de: desmaios (síncopes) ou sensação iminente de perda de consciência; dor ou aperto forte no peito; falta de ar intensa e repentina; tonturas severas ou queda abrupta da pressão arterial. Para tonturas leves pontuais, palpitações esporádicas ou para uma avaliação preventiva de rotina, agende uma consulta eletiva no consultório.",
     category: "agendamento",
   },
 ];

@@ -281,70 +281,40 @@ FROM (VALUES
 WHERE NOT EXISTS (SELECT 1 FROM insurance_plans LIMIT 1);
 
 -- ============================================
--- FAQ (12 perguntas)
+-- FAQ (6 perguntas — Arritmia e Cardiologia Geral)
 -- ============================================
 INSERT INTO faq_items (question, answer, category, display_order, is_active)
 SELECT question, answer, category, display_order, true
 FROM (VALUES
   (
-    'Como posso agendar uma consulta?',
-    'Você pode agendar uma consulta através do WhatsApp clicando no botão de agendamento do site, ligando diretamente para o consultório, ou preenchendo o formulário de contato. Respondemos rapidamente e confirmamos o melhor horário disponível.',
-    'agendamento', 1
+    'Sinto o meu coração "pular um batimento" ou acelerar do nada. Isso sempre é perigoso?',
+    'Nem toda alteração no ritmo do coração indica uma doença grave. Sensações de "falhas", palpitações ou aceleração rápida podem ocorrer por conta de extrassístoles benignas, estresse, consumo de cafeína ou ansiedade. No entanto, apenas uma avaliação cardiológica detalhada, acompanhada de exames como o Eletrocardiograma e o Holter 24 horas, pode diferenciar uma arritmia benigna de uma condição que exige tratamento.',
+    'tratamentos', 1
   ),
   (
-    'Quais convênios são aceitos?',
-    'Atendemos 47 planos de saúde, incluindo Camed, Postal Saúde, GAMA Saúde, NotreDame Intermédica, Omint, BRB Saúde, Bradesco Saúde, Geap Saúde, Unimed, Amil, SulAmérica, entre outros. Também atendemos pacientes particulares.',
-    'convenios', 2
+    'O que é a Ablação por Cateter e como ela trata as arritmias?',
+    'A ablação por cateter é um procedimento minimamente invasivo, realizado através de um cateterismo específico. O arritmologista mapeia o sistema elétrico do coração para localizar o foco exato da alteração e aplica energia (radiofrequência ou crioablação) para cauterizar esse ponto. Para diversos tipos de taquicardias, a ablação oferece uma taxa de cura elevada, permitindo que muitos pacientes fiquem livres do uso diário de medicamentos.',
+    'tratamentos', 2
   ),
   (
-    'Qual o valor da consulta particular?',
-    'O valor da consulta cardiológica e arritmológica particular é R$ 200,00. Formas de pagamento: dinheiro, cartão de crédito, cartão de débito ou transferência bancária.',
-    'geral', 3
+    'Fibrilação Atrial: qual é o risco dessa arritmia e qual a sua relação com o AVC?',
+    'A Fibrilação Atrial é a arritmia sustentada mais comum na população. Ela faz com que os átrios (câmaras superiores do coração) tremam em vez de contrair ritmicamente, o que pode levar ao acúmulo de sangue e formação de coágulos. Se um coágulo se soltar, ele pode viajar até o cérebro e provocar um Acidente Vascular Cerebral (AVC). Por isso, o tratamento foca tanto em controlar o ritmo ou a frequência cardíaca quanto na prevenção de coágulos com o uso de anticoagulantes, quando indicado.',
+    'tratamentos', 3
   ),
   (
-    'O ecocardiograma e o eletrocardiograma podem identificar uma possível artéria entupida?',
-    'Sim. São exames valiosos na avaliação de doença coronária. O eletrocardiograma pode mostrar sinais de isquemia ou infarto prévio, enquanto o ecocardiograma avalia a função e mobilidade do coração.',
+    'Quem tem arritmia cardíaca ou usa marca-passo pode praticar atividades físicas?',
+    'Na maioria dos casos, sim! A prática de exercícios físicos costuma ser uma importante aliada da saúde cardiovascular. No entanto, a liberação e a intensidade adequada dependem da causa da arritmia e da avaliação médica. Pacientes com marca-passo ou desfibrilador (CDI) geralmente podem manter uma rotina ativa e saudável, desde que façam o acompanhamento regular para ajuste dos dispositivos e passem por avaliação prévia.',
     'tratamentos', 4
   ),
   (
-    'O que é ablação por cateter?',
-    'A ablação por cateter é um procedimento minimamente invasivo para tratamento definitivo de arritmias cardíacas. Um cateter fino é inserido através de vaso sanguíneo até o coração, onde identifica e elimina o foco da arritmia.',
+    'Qual é a diferença entre um marca-passo e um Cardiodesfibrilador Implantável (CDI)?',
+    'Embora ambos sejam dispositivos implantáveis para monitorar o ritmo cardíaco, eles têm funções distintas. Marca-passo: indicado para quando o coração bate muito devagar (bradicardias). Ele envia impulsos elétricos para manter a frequência cardíaca adequada. CDI: além de atuar como marca-passo se necessário, o CDI monitora e identifica arritmias graves e rápidas (como a taquicardia ventricular), sendo capaz de emitir um choque interno para reverter uma parada cardíaca e prevenir a morte súbita.',
     'tratamentos', 5
   ),
   (
-    'Fibrilação atrial tem cura?',
-    'A fibrilação atrial pode ser tratada de forma definitiva através de ablação por cateter, dependendo do tipo e das características de cada paciente. Em alguns casos, mais de um procedimento pode ser necessário. Além disso, o controle de fatores de risco como obesidade, apneia do sono e hipertensão é fundamental.',
-    'tratamentos', 6
-  ),
-  (
-    'Onde fica o consultório?',
-    'O consultório fica no Life Centro Cardiológico, Q EQ 47-49 PROJEÇÃO 4, SALAS 701, 702 E 708, Gama - Brasília/DF, CEP 72405-498. Oferecemos estacionamento no local.',
-    'geral', 7
-  ),
-  (
-    'Qual a diferença entre cardiologista e arritmologista?',
-    'O cardiologista é especialista em doenças do coração de forma geral. O arritmologista é cardiologista com subespecialização em arritmias cardíacas, com expertise em ablação por cateter, avaliação de portadores de marca-passo e indicação do dispositivo quando necessário.',
-    'geral', 8
-  ),
-  (
-    'Preciso de encaminhamento médico para consultar?',
-    'Não é necessário encaminhamento para consulta particular. Para convênio, verifique com seu plano se é necessária guia de encaminhamento.',
-    'agendamento', 9
-  ),
-  (
-    'Quanto tempo dura uma consulta?',
-    'A consulta inicial dura de 30 a 45 minutos para avaliação completa. Consultas de retorno são mais breves, mas sempre com tempo para esclarecer dúvidas.',
-    'geral', 10
-  ),
-  (
-    'Realiza atendimento de urgência?',
-    'O consultório atende por agendamento. Em urgência cardíaca (dor no peito intensa, falta de ar grave, desmaio), procure o pronto-socorro ou ligue 192 (SAMU).',
-    'agendamento', 11
-  ),
-  (
-    'Que exames devo levar na primeira consulta?',
-    'Traga todos os exames cardiológicos já realizados (ECG, ecocardiograma, Holter, teste ergométrico, cateterismo), exames de sangue recentes, relatórios médicos e lista de medicamentos em uso.',
-    'agendamento', 12
+    'Quando devo procurar um médico cardiologista ou arritmologista com urgência?',
+    'Você deve buscar atendimento imediato em um pronto-socorro se as palpitações vierem acompanhadas de: desmaios (síncopes) ou sensação iminente de perda de consciência; dor ou aperto forte no peito; falta de ar intensa e repentina; tonturas severas ou queda abrupta da pressão arterial. Para tonturas leves pontuais, palpitações esporádicas ou para uma avaliação preventiva de rotina, agende uma consulta eletiva no consultório.',
+    'agendamento', 6
   )
 ) AS v(question, answer, category, display_order)
 WHERE NOT EXISTS (SELECT 1 FROM faq_items LIMIT 1);
