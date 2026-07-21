@@ -18,11 +18,23 @@ function telHref(phone: string) {
   return `tel:${phone.replace(/\D/g, "")}`;
 }
 
-function mapsEmbedUrl(lat: number | null, lng: number | null, query: string) {
-  if (lat != null && lng != null) {
-    return `https://www.google.com/maps?q=${lat},${lng}&z=16&output=embed`;
+/**
+ * Monta a URL do iframe do Google Maps.
+ * Preferimos o embed do estabelecimento (place), porque mostra o pin certo
+ * e o cartão com nome, endereço e avaliações — igual ao “Compartilhar > Incorporar mapa”.
+ */
+function resolveMapsEmbedUrl(options: {
+  officialEmbedUrl?: string;
+  clinicName: string;
+  city: string;
+}) {
+  if (options.officialEmbedUrl) {
+    return options.officialEmbedUrl;
   }
-  return `https://www.google.com/maps?q=${encodeURIComponent(query)}&z=16&output=embed`;
+
+  // Busca pelo nome do lugar (melhor que lat/lng sozinho, que vira um pin genérico)
+  const placeQuery = `${options.clinicName}, ${options.city}`;
+  return `https://www.google.com/maps?q=${encodeURIComponent(placeQuery)}&hl=pt-BR&z=17&output=embed`;
 }
 
 export default async function ContatoPage() {
@@ -36,6 +48,11 @@ export default async function ContatoPage() {
     siteConfig.doctor.address.mapsUrl ||
     `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`;
   const wazeLink = siteConfig.doctor.address.wazeUrl;
+  const embedSrc = resolveMapsEmbedUrl({
+    officialEmbedUrl: siteConfig.doctor.address.mapsEmbedUrl,
+    clinicName: address.clinic_name,
+    city: address.city,
+  });
 
   return (
     <div className="flex flex-col">
@@ -190,10 +207,10 @@ export default async function ContatoPage() {
               </div>
             </div>
 
-            <div className="relative min-h-[320px] lg:min-h-full rounded-xl bg-gray-200 overflow-hidden shadow-sm">
+            <div className="relative min-h-[420px] lg:min-h-[520px] rounded-xl bg-gray-200 overflow-hidden shadow-sm">
               <iframe
                 title={`Mapa — ${address.clinic_name}`}
-                src={mapsEmbedUrl(address.latitude, address.longitude, mapsQuery)}
+                src={embedSrc}
                 className="absolute inset-0 h-full w-full border-0"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

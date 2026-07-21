@@ -29,16 +29,19 @@ export const siteConfig = {
     whatsapp: "5561996270787",
     email: "pedrofelipe@ritmocardio.com.br",
     address: {
-      street: "SHLS 716, Conjunto B, Bloco C — Centro Médico de Brasília",
-      neighborhood: "Asa Sul",
+      street: "Térreo — SHLS 716, Conjunto B, Bloco C — Centro Médico de Brasília",
+      neighborhood: "Asa Sul / Plano Piloto",
       city: "Brasília",
       state: "DF",
       zip: "70390-700",
       clinic: "IDC - Instituto de Doenças Cardiovasculares",
-      // Coordenadas do SHLS 716 / Centro Médico de Brasília
-      latitude: -15.8278852,
-      longitude: -47.9284578,
+      // Coordenadas oficiais do Google Place (IDC Brasília)
+      latitude: -15.8276092,
+      longitude: -47.9286098,
       mapsUrl: "https://maps.app.goo.gl/UP3nskobzLyg1uAh9",
+      // Embed do estabelecimento (mostra pin + cartão com nome, endereço e avaliações)
+      mapsEmbedUrl:
+        "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3839.05!2d-47.9286098!3d-15.8276092!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935a2ffd708d80cf%3A0xebf86a9002d55d73!2sIDC%20-%20Instituto%20Doen%C3%A7as%20Cardiovasculares!5e0!3m2!1spt-BR!2sbr!4v1710000000000!5m2!1spt-BR!2sbr",
       wazeUrl: "https://waze.com/ul/h6vjvvqemt",
     },
   },

@@ -47,7 +47,7 @@ export const faqItems: FAQItem[] = [
     id: "7",
     question: "Onde fica o consultório?",
     answer:
-      "O consultório fica no Life Centro Cardiológico, localizado na Q EQ 47-49 PROJEÇÃO 4, SALAS 701, 702 E 708, Gama - Brasília/DF, CEP 72405-498. Oferecemos estacionamento no local.",
+      "O consultório fica na IDC - Instituto de Doenças Cardiovasculares, no Térreo do SHLS 716, Conjunto B, Bloco C — Centro Médico de Brasília, Asa Sul / Plano Piloto, Brasília/DF, CEP 70390-700.",
     category: "geral",
   },
   {
