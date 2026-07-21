@@ -73,8 +73,8 @@ export const medicalClinicSchema = {
   },
   geo: {
     "@type": "GeoCoordinates",
-    latitude: "-16.0200", // Atualizar com coordenadas reais do consultório
-    longitude: "-48.0639",
+    latitude: String(siteConfig.doctor.address.latitude),
+    longitude: String(siteConfig.doctor.address.longitude),
   },
   openingHoursSpecification: [
     {
@@ -111,8 +111,8 @@ export const localBusinessSchema = {
   },
   geo: {
     "@type": "GeoCoordinates",
-    latitude: "-16.0200",
-    longitude: "-48.0639",
+    latitude: String(siteConfig.doctor.address.latitude),
+    longitude: String(siteConfig.doctor.address.longitude),
   },
   aggregateRating: {
     "@type": "AggregateRating",

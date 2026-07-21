@@ -1,20 +1,44 @@
 import type { Metadata } from "next";
-import { Phone, Mail, MapPin, Clock, MessageCircle } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, MessageCircle, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { siteConfig } from "@/lib/metadata";
+import { getContactInfo, getPrimaryAddress } from "@/lib/data";
 import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Contato - Agende sua Consulta",
   description:
-    "Entre em contato com o Dr. Pedro Felipe Prates Silva. Telefone, WhatsApp, e-mail e endereço do consultório em Brasília/DF.",
+    "Entre em contato com o Dr. Pedro Felipe Prates Silva. Telefone, WhatsApp, e-mail e endereço do consultório na IDC Brasília — Asa Sul/DF.",
 };
 
-export default function ContatoPage() {
+export const revalidate = 60;
+
+function telHref(phone: string) {
+  return `tel:${phone.replace(/\D/g, "")}`;
+}
+
+function mapsEmbedUrl(lat: number | null, lng: number | null, query: string) {
+  if (lat != null && lng != null) {
+    return `https://www.google.com/maps?q=${lat},${lng}&z=16&output=embed`;
+  }
+  return `https://www.google.com/maps?q=${encodeURIComponent(query)}&z=16&output=embed`;
+}
+
+export default async function ContatoPage() {
+  const [contact, address] = await Promise.all([
+    getContactInfo(),
+    getPrimaryAddress(),
+  ]);
+
+  const mapsQuery = `${address.clinic_name}, ${address.street}, ${address.neighborhood}, ${address.city}`;
+  const mapsLink =
+    siteConfig.doctor.address.mapsUrl ||
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`;
+  const wazeLink = siteConfig.doctor.address.wazeUrl;
+
   return (
     <div className="flex flex-col">
-      {/* Hero */}
       <section className="bg-gradient-to-br from-blue-50 to-white py-16">
         <div className="mx-auto max-w-4xl px-4 lg:px-8 text-center">
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl mb-6">
@@ -26,21 +50,18 @@ export default function ContatoPage() {
         </div>
       </section>
 
-      {/* Contact Options */}
       <section className="py-16 bg-white">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {/* WhatsApp */}
             <div className="p-6 rounded-xl border bg-green-50 border-green-200">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-600 text-white mb-4">
                 <MessageCircle className="h-6 w-6" />
               </div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">WhatsApp</h3>
               <p className="text-sm text-gray-600 mb-4">Atendimento rápido e prático</p>
-              <WhatsAppButton size="sm" className="w-full" />
+              <WhatsAppButton size="sm" className="w-full" whatsapp={contact.whatsapp} />
             </div>
 
-            {/* Phone */}
             <div className="p-6 rounded-xl border bg-blue-50 border-blue-200">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-600 text-white mb-4">
                 <Phone className="h-6 w-6" />
@@ -50,13 +71,10 @@ export default function ContatoPage() {
                 Ligue para agendar sua consulta
               </p>
               <Button asChild size="sm" className="w-full">
-                <a href={`tel:${siteConfig.doctor.phone}`}>
-                  {siteConfig.doctor.phone}
-                </a>
+                <a href={telHref(contact.phone)}>{contact.phone}</a>
               </Button>
             </div>
 
-            {/* Email */}
             <div className="p-6 rounded-xl border bg-purple-50 border-purple-200">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-purple-600 text-white mb-4">
                 <Mail className="h-6 w-6" />
@@ -64,11 +82,10 @@ export default function ContatoPage() {
               <h3 className="text-lg font-bold text-gray-900 mb-2">E-mail</h3>
               <p className="text-sm text-gray-600 mb-4">Envie sua mensagem</p>
               <Button asChild variant="outline" size="sm" className="w-full">
-                <a href={`mailto:${siteConfig.doctor.email}`}>Enviar e-mail</a>
+                <a href={`mailto:${contact.email}`}>Enviar e-mail</a>
               </Button>
             </div>
 
-            {/* Schedule */}
             <div className="p-6 rounded-xl border bg-orange-50 border-orange-200">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-orange-600 text-white mb-4">
                 <Clock className="h-6 w-6" />
@@ -83,16 +100,14 @@ export default function ContatoPage() {
         </div>
       </section>
 
-      {/* Location Info */}
       <section className="py-16 bg-gray-50">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
-            {/* Info */}
             <div>
               <h2 className="text-3xl font-bold text-gray-900 mb-8">
                 Informações do Consultório
               </h2>
-              
+
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 text-blue-600 flex-shrink-0">
@@ -100,19 +115,34 @@ export default function ContatoPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">Endereço</h3>
+                    <p className="text-gray-600">{address.clinic_name}</p>
+                    <p className="text-gray-600">{address.street}</p>
                     <p className="text-gray-600">
-                      {siteConfig.doctor.address.clinic}
+                      {address.neighborhood} — {address.city}, {address.state}
                     </p>
-                    <p className="text-gray-600">
-                      {siteConfig.doctor.address.street}
-                    </p>
-                    <p className="text-gray-600">
-                      {siteConfig.doctor.address.neighborhood} -{" "}
-                      {siteConfig.doctor.address.city}, {siteConfig.doctor.address.state}
-                    </p>
-                    <p className="text-gray-600">
-                      CEP {siteConfig.doctor.address.zip}
-                    </p>
+                    <p className="text-gray-600">CEP {address.zip}</p>
+                    <div className="mt-3 flex flex-wrap gap-3">
+                      <a
+                        href={mapsLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:underline"
+                      >
+                        Abrir no Google Maps
+                        <ExternalLink className="h-3.5 w-3.5" />
+                      </a>
+                      {wazeLink && (
+                        <a
+                          href={wazeLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:underline"
+                        >
+                          Abrir no Waze
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -140,19 +170,19 @@ export default function ContatoPage() {
                     <p className="text-gray-600">
                       Telefone:{" "}
                       <a
-                        href={`tel:${siteConfig.doctor.phone}`}
+                        href={telHref(contact.phone)}
                         className="text-blue-600 hover:underline"
                       >
-                        {siteConfig.doctor.phone}
+                        {contact.phone}
                       </a>
                     </p>
                     <p className="text-gray-600">
                       E-mail:{" "}
                       <a
-                        href={`mailto:${siteConfig.doctor.email}`}
+                        href={`mailto:${contact.email}`}
                         className="text-blue-600 hover:underline"
                       >
-                        {siteConfig.doctor.email}
+                        {contact.email}
                       </a>
                     </p>
                   </div>
@@ -160,28 +190,31 @@ export default function ContatoPage() {
               </div>
             </div>
 
-            {/* Map placeholder */}
-            <div className="relative aspect-square lg:aspect-auto rounded-xl bg-gray-200 overflow-hidden">
-              <div className="absolute inset-0 flex items-center justify-center text-gray-500">
-                <div className="text-center">
-                  <MapPin className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-                  <p className="font-medium">Mapa do Google</p>
-                  <p className="text-sm">(Integrar Google Maps API)</p>
-                </div>
-              </div>
+            <div className="relative min-h-[320px] lg:min-h-full rounded-xl bg-gray-200 overflow-hidden shadow-sm">
+              <iframe
+                title={`Mapa — ${address.clinic_name}`}
+                src={mapsEmbedUrl(address.latitude, address.longitude, mapsQuery)}
+                className="absolute inset-0 h-full w-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
       <section className="py-16 bg-blue-600 text-white">
         <div className="mx-auto max-w-4xl px-4 lg:px-8 text-center">
           <h2 className="text-3xl font-bold mb-4">Pronto para agendar?</h2>
           <p className="text-xl text-blue-100 mb-8">
             Entre em contato agora e garanta seu horário
           </p>
-          <WhatsAppButton size="lg" className="bg-green-600 hover:bg-green-700" />
+          <WhatsAppButton
+            size="lg"
+            className="bg-green-600 hover:bg-green-700"
+            whatsapp={contact.whatsapp}
+          />
         </div>
       </section>
     </div>

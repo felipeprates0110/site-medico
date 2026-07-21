@@ -6,13 +6,14 @@ import { WhatsAppButton } from "@/components/whatsapp-button";
 export const metadata: Metadata = {
   title: "Convênios Médicos Aceitos",
   description:
-    "Atendemos 47 convênios médicos em Brasília, incluindo Camed, Postal Saúde, Unimed, Amil, Bradesco Saúde, Geap e muito mais. Também atendemos particulares.",
+    "Atendemos 52 convênios médicos em Brasília, incluindo Amil, Camed, Postal Saúde, Geap, Saúde Caixa, SulAmerica e muito mais. Também atendemos particulares.",
 };
 
 export default function ConveniosPage() {
   const privateInsurance = insurancePlans.filter((p) => p.category === "private");
   const publicInsurance = insurancePlans.filter((p) => p.category === "public");
   const corporateInsurance = insurancePlans.filter((p) => p.category === "corporate");
+  const totalPlans = insurancePlans.length;
 
   const categoryInfo = {
     private: {
@@ -44,7 +45,7 @@ export default function ConveniosPage() {
             Convênios Aceitos
           </h1>
           <p className="text-xl text-gray-600 mb-4">
-            Atendemos <strong>47 planos de saúde</strong> diferentes
+            Atendemos <strong>{totalPlans} planos de saúde</strong> diferentes
           </p>
           <p className="text-gray-600">
             Também atendemos pacientes particulares

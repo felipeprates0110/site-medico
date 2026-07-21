@@ -12,7 +12,7 @@ export const faqItems: FAQItem[] = [
     id: "2",
     question: "Quais convênios são aceitos?",
     answer:
-      "Atendemos 47 planos de saúde, incluindo Camed, Postal Saúde, GAMA Saúde, NotreDame Intermédica, Omint, BRB Saúde, Bradesco Saúde, Geap Saúde, Unimed, Amil, SulAmérica, entre outros. Também atendemos pacientes particulares. Consulte a lista completa na página de convênios ou entre em contato para confirmar se seu plano é aceito.",
+      "Atendemos 52 planos de saúde, incluindo Amil, Camed, Postal Saúde, GAMA Saúde, Notre Dame, Omint, BRB Saúde, Geap, Saúde Caixa, SulAmerica, entre outros. Também atendemos pacientes particulares. Consulte a lista completa na página de convênios ou entre em contato para confirmar se seu plano é aceito.",
     category: "convenios",
   },
   {

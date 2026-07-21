@@ -10,6 +10,13 @@ interface WhatsAppButtonProps {
   size?: "default" | "sm" | "lg" | "xl";
   className?: string;
   children?: React.ReactNode;
+  /** Número no formato internacional sem + (ex: 5561996270787). Se omitido, usa o do metadata. */
+  whatsapp?: string;
+}
+
+function buildWhatsAppUrl(whatsapp: string, message: string) {
+  const digits = whatsapp.replace(/\D/g, "");
+  return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }
 
 export function WhatsAppButton({
@@ -18,10 +25,9 @@ export function WhatsAppButton({
   size = "default",
   className,
   children,
+  whatsapp = siteConfig.doctor.whatsapp,
 }: WhatsAppButtonProps) {
-  const whatsappUrl = `https://wa.me/${siteConfig.doctor.whatsapp}?text=${encodeURIComponent(
-    message
-  )}`;
+  const whatsappUrl = buildWhatsAppUrl(whatsapp, message);
 
   return (
     <Button
@@ -43,12 +49,17 @@ export function WhatsAppButton({
   );
 }
 
-export function FloatingWhatsAppButton() {
+export function FloatingWhatsAppButton({
+  whatsapp = siteConfig.doctor.whatsapp,
+}: {
+  whatsapp?: string;
+}) {
   return (
     <a
-      href={`https://wa.me/${siteConfig.doctor.whatsapp}?text=${encodeURIComponent(
+      href={buildWhatsAppUrl(
+        whatsapp,
         "Olá! Gostaria de agendar uma consulta."
-      )}`}
+      )}
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-white shadow-lg transition-all hover:bg-green-600 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"

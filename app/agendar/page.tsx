@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { Phone, Calendar, User, Mail, FileText, CheckCircle } from "lucide-react";
+import { insurancePlans } from "@/data/insurance";
 
 export default function AgendarPage() {
   const [formData, setFormData] = useState({
@@ -210,13 +211,16 @@ export default function AgendarPage() {
                     className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   >
                     <option value="">Selecione...</option>
-                    <option value="particular">Particular</option>
-                    <option value="camed">Camed</option>
-                    <option value="unimed">Unimed</option>
-                    <option value="amil">Amil</option>
-                    <option value="bradesco">Bradesco Saúde</option>
-                    <option value="sulamerica">SulAmérica</option>
-                    <option value="outro">Outro</option>
+                    <option value="Particular">Particular</option>
+                    {insurancePlans
+                      .slice()
+                      .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"))
+                      .map((plan) => (
+                        <option key={plan.id} value={plan.name}>
+                          {plan.name}
+                        </option>
+                      ))}
+                    <option value="Outro">Outro</option>
                   </select>
                 </div>
 

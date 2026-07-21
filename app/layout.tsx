@@ -6,6 +6,7 @@ import { Footer } from "@/components/footer";
 import { FloatingWhatsAppButton } from "@/components/whatsapp-button";
 import { defaultMetadata } from "@/lib/metadata";
 import { combinedSchema } from "@/lib/schema";
+import { getContactInfo } from "@/lib/data";
 import { Providers } from "./providers";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -17,11 +18,13 @@ const plusJakarta = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = defaultMetadata;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const contact = await getContactInfo();
+
   return (
     <html lang="pt-BR" className={`${plusJakarta.variable} h-full antialiased`}>
       <head>
@@ -37,7 +40,7 @@ export default function RootLayout({
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
-          <FloatingWhatsAppButton />
+          <FloatingWhatsAppButton whatsapp={contact.whatsapp} />
         </Providers>
       </body>
     </html>

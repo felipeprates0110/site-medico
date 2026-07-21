@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Heart, Phone, Mail, MapPin, Clock } from "lucide-react";
+import { getContactInfo, getPrimaryAddress } from "@/lib/data";
 import { siteConfig } from "@/lib/metadata";
 
 const footerNavigation = {
@@ -21,8 +22,16 @@ const footerNavigation = {
   ],
 };
 
-export function Footer() {
+function telHref(phone: string) {
+  return `tel:${phone.replace(/\D/g, "")}`;
+}
+
+export async function Footer() {
   const currentYear = new Date().getFullYear();
+  const [contact, address] = await Promise.all([
+    getContactInfo(),
+    getPrimaryAddress(),
+  ]);
 
   return (
     <footer className="border-t border-gray-200 bg-gray-900 text-gray-300">
@@ -87,28 +96,29 @@ export function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary-400" />
                 <span className="text-sm text-gray-400">
-                  {siteConfig.doctor.address.street}
+                  {address.clinic_name}
                   <br />
-                  {siteConfig.doctor.address.neighborhood} — {siteConfig.doctor.address.city},{" "}
-                  {siteConfig.doctor.address.state}
+                  {address.street}
+                  <br />
+                  {address.neighborhood} — {address.city}, {address.state}
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-primary-400" />
                 <a
-                  href={`tel:${siteConfig.doctor.phone}`}
+                  href={telHref(contact.phone)}
                   className="text-sm text-gray-400 hover:text-primary-300"
                 >
-                  {siteConfig.doctor.phone}
+                  {contact.phone}
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-primary-400" />
                 <a
-                  href={`mailto:${siteConfig.doctor.email}`}
+                  href={`mailto:${contact.email}`}
                   className="text-sm text-gray-400 hover:text-primary-300"
                 >
-                  {siteConfig.doctor.email}
+                  {contact.email}
                 </a>
               </li>
               <li className="flex items-start gap-3">

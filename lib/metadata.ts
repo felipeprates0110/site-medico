@@ -23,16 +23,23 @@ export const siteConfig = {
     rqe: ["RQE 16475", "RQE 16476"],
     specialty: "Cardiologia e Arritmologia",
     subspecialty: "Eletrofisiologia Clínica e Invasiva",
-    phone: "61999999999", // Atualizar com telefone real
-    whatsapp: "5561999999999", // Atualizar
-    email: "contato@drpedrofelipe.com.br", // Atualizar
+    // Telefone da IDC Brasília (idcbrasilia.com.br)
+    phone: "(61) 3346-0202",
+    // Formato internacional sem + (usado no link wa.me)
+    whatsapp: "5561996270787",
+    email: "pedrofelipe@ritmocardio.com.br",
     address: {
-      street: "Q EQ 47-49 PROJEÇÃO 4, SALAS 701, 702 E 708",
-      neighborhood: "Gama",
+      street: "SHLS 716, Conjunto B, Bloco C — Centro Médico de Brasília",
+      neighborhood: "Asa Sul",
       city: "Brasília",
       state: "DF",
-      zip: "72405-498",
-      clinic: "Life Centro Cardiológico",
+      zip: "70390-700",
+      clinic: "IDC - Instituto de Doenças Cardiovasculares",
+      // Coordenadas do SHLS 716 / Centro Médico de Brasília
+      latitude: -15.8278852,
+      longitude: -47.9284578,
+      mapsUrl: "https://maps.app.goo.gl/UP3nskobzLyg1uAh9",
+      wazeUrl: "https://waze.com/ul/h6vjvvqemt",
     },
   },
 };

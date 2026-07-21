@@ -5,6 +5,7 @@ import { specialties as staticSpecialties } from "@/data/specialties";
 import { DEFAULT_DOCTOR_PHOTO } from "@/lib/doctor-photo";
 import { siteConfig as metadataConfig } from "@/lib/metadata";
 import type {
+  Address,
   ContactInfo,
   FAQItem,
   InsurancePlan,
@@ -32,6 +33,21 @@ export const fallbackContactInfo: ContactInfo = {
   phone: metadataConfig.doctor.phone,
   whatsapp: metadataConfig.doctor.whatsapp,
   email: metadataConfig.doctor.email,
+  updated_at: timestamp,
+};
+
+export const fallbackPrimaryAddress: Address = {
+  id: "local",
+  clinic_name: metadataConfig.doctor.address.clinic,
+  street: metadataConfig.doctor.address.street,
+  neighborhood: metadataConfig.doctor.address.neighborhood,
+  city: metadataConfig.doctor.address.city,
+  state: metadataConfig.doctor.address.state,
+  zip: metadataConfig.doctor.address.zip,
+  latitude: metadataConfig.doctor.address.latitude,
+  longitude: metadataConfig.doctor.address.longitude,
+  is_primary: true,
+  created_at: timestamp,
   updated_at: timestamp,
 };
 

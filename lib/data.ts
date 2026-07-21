@@ -2,6 +2,7 @@ import {
   fallbackContactInfo,
   fallbackFAQItems,
   fallbackInsurancePlans,
+  fallbackPrimaryAddress,
   fallbackReviews,
   fallbackSiteConfig,
   fallbackSpecialties,
@@ -149,6 +150,35 @@ export async function getContactInfo() {
       return data;
     },
     fallbackContactInfo
+  );
+}
+
+/** Endereço principal do consultório (o “cartão de visita” da clínica no site). */
+export async function getPrimaryAddress() {
+  return withFallback(
+    "getPrimaryAddress",
+    async () => {
+      const { data, error } = await supabase
+        .from("addresses")
+        .select("*")
+        .eq("is_primary", true)
+        .maybeSingle();
+
+      if (error) throw error;
+      if (data) return data;
+
+      const { data: first, error: firstError } = await supabase
+        .from("addresses")
+        .select("*")
+        .order("created_at", { ascending: true })
+        .limit(1)
+        .maybeSingle();
+
+      if (firstError) throw firstError;
+      if (!first) throw new Error("Nenhum endereço cadastrado");
+      return first;
+    },
+    fallbackPrimaryAddress
   );
 }
 

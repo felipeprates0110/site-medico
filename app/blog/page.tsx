@@ -8,6 +8,17 @@ export const metadata: Metadata = {
   title: "RitmoBlog - Excelência em Cardiologia e Arritmologia",
   description:
     "Informação médica de alto padrão sobre prevenção, arritmias e longevidade, produzida por especialistas de referência.",
+  alternates: {
+    canonical: "https://drpedrofelipe.com.br/blog",
+  },
+  openGraph: {
+    title: "RitmoBlog - Excelência em Cardiologia e Arritmologia",
+    description:
+      "Informação médica de alto padrão sobre prevenção, arritmias e longevidade, produzida por especialistas de referência.",
+    url: "https://drpedrofelipe.com.br/blog",
+    type: "website",
+    locale: "pt_BR",
+  },
 };
 
 export const revalidate = 60;

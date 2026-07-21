@@ -6,6 +6,7 @@ import { AuthorBox } from "@/components/blog/AuthorBox";
 import { AdSenseUnit } from "@/components/blog/AdSenseUnit";
 import { AffiliateBox } from "@/components/blog/AffiliateBox";
 import { DEFAULT_DOCTOR_PHOTO } from "@/lib/doctor-photo";
+import { siteConfig as metadataSiteConfig } from "@/lib/metadata";
 
 export const revalidate = 60;
 
@@ -21,13 +22,57 @@ export async function generateMetadata({
     return { title: "Artigo não encontrado" };
   }
 
+  const title =
+    article.seo_title || `${article.title} | RitmoBlog`;
+  const description =
+    article.seo_description ||
+    article.excerpt ||
+    "Leia este artigo no RitmoBlog.";
+  const url = `${metadataSiteConfig.url}/blog/${article.slug}`;
+  const ogImage = article.cover_image_url || metadataSiteConfig.ogImage;
+
   return {
-    title: article.seo_title || `${article.title} - RitmoBlog`,
-    description: article.seo_description || "Leia este artigo no RitmoBlog.",
+    title,
+    description,
+    keywords: [
+      article.title,
+      "cardiologia",
+      "arritmologia",
+      "RitmoBlog",
+      "saúde do coração",
+    ],
+    authors: [{ name: metadataSiteConfig.doctor.name }],
+    alternates: {
+      canonical: url,
+    },
     openGraph: {
-      title: article.seo_title || article.title,
-      description: article.seo_description,
-      images: article.cover_image_url ? [{ url: article.cover_image_url }] : [],
+      type: "article",
+      locale: "pt_BR",
+      url,
+      title,
+      description,
+      siteName: "RitmoBlog",
+      publishedTime: article.published_at || undefined,
+      modifiedTime: article.updated_at || undefined,
+      authors: [metadataSiteConfig.doctor.name],
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: article.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
+    },
+    robots: {
+      index: true,
+      follow: true,
     },
   };
 }

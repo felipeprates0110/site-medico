@@ -43,24 +43,27 @@ WHERE NOT EXISTS (SELECT 1 FROM site_config LIMIT 1);
 -- ============================================
 INSERT INTO contact_info (phone, whatsapp, email)
 SELECT
-  '61999999999',
-  '5561999999999',
-  'contato@drpedrofelipe.com.br'
+  '(61) 3346-0202',
+  '5561996270787',
+  'pedrofelipe@ritmocardio.com.br'
 WHERE NOT EXISTS (SELECT 1 FROM contact_info LIMIT 1);
 
 -- ============================================
--- ENDEREÇO DO CONSULTÓRIO
+-- ENDEREÇO DO CONSULTÓRIO (IDC Brasília)
 -- ============================================
 INSERT INTO addresses (
-  clinic_name, street, neighborhood, city, state, zip, is_primary
+  clinic_name, street, neighborhood, city, state, zip,
+  latitude, longitude, is_primary
 )
 SELECT
-  'Life Centro Cardiológico',
-  'Q EQ 47-49 PROJEÇÃO 4, SALAS 701, 702 E 708',
-  'Gama',
+  'IDC - Instituto de Doenças Cardiovasculares',
+  'SHLS 716, Conjunto B, Bloco C — Centro Médico de Brasília',
+  'Asa Sul',
   'Brasília',
   'DF',
-  '72405-498',
+  '70390-700',
+  -15.8278852,
+  -47.9284578,
   true
 WHERE NOT EXISTS (SELECT 1 FROM addresses LIMIT 1);
 
