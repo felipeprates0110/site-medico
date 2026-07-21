@@ -16,6 +16,7 @@ import { SpecialtyCard } from "@/components/specialty-card";
 import { ReviewCard } from "@/components/review-card";
 import { BlogCard } from "@/components/blog/BlogCard";
 import { GoogleReviewsBadge } from "@/components/google-reviews-badge";
+import { ReviewsPlatformBadges } from "@/components/google-reviews-badge";
 import { FAQAccordion } from "@/components/faq-accordion";
 import {
   getSpecialties,
@@ -137,7 +138,7 @@ export default async function Home() {
               </div>
             ))}
             <div className="col-span-2 flex justify-center lg:col-span-1 lg:justify-start">
-              <GoogleReviewsBadge />
+              <ReviewsPlatformBadges />
             </div>
           </div>
         </div>
