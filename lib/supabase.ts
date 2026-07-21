@@ -195,3 +195,17 @@ export interface FAQItem {
   created_at: string;
   updated_at: string;
 }
+
+/** Comentário/dúvida de leitor em um artigo do blog */
+export interface BlogComment {
+  id: string;
+  article_id: string;
+  author_name: string;
+  author_email: string | null;
+  content: string;
+  status: "pending" | "approved" | "rejected";
+  doctor_reply: string | null;
+  replied_at: string | null;
+  created_at: string;
+  updated_at: string;
+}

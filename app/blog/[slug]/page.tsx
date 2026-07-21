@@ -2,10 +2,15 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { getPublishedArticleBySlug, getSiteConfig } from "@/lib/data";
+import {
+  getApprovedCommentsByArticleId,
+  getPublishedArticleBySlug,
+  getSiteConfig,
+} from "@/lib/data";
 import { AuthorBox } from "@/components/blog/AuthorBox";
 import { AdSenseUnit } from "@/components/blog/AdSenseUnit";
 import { AffiliateBox } from "@/components/blog/AffiliateBox";
+import { BlogComments } from "@/components/blog/BlogComments";
 import { DEFAULT_DOCTOR_PHOTO } from "@/lib/doctor-photo";
 import { siteConfig as metadataSiteConfig } from "@/lib/metadata";
 
@@ -98,6 +103,8 @@ export default async function BlogPostPage({
   if (!article) {
     notFound();
   }
+
+  const comments = await getApprovedCommentsByArticleId(article.id);
 
   const doctorName = siteConfig?.doctor_name || "Dr. Pedro Felipe";
   const specialty = siteConfig?.specialty || "Cardiologista";
@@ -209,6 +216,12 @@ export default async function BlogPostPage({
             description="Para pacientes que precisam monitorar a pressão arterial em casa, recomendamos exclusivamente aparelhos digitais de braço validados clinicamente. Eles garantem a precisão necessária para a avaliação do seu cardiologista."
             buttonText="Ver Monitores Aprovados na Amazon"
             url="https://amazon.com.br"
+          />
+
+          <BlogComments
+            articleId={article.id}
+            doctorName={doctorName}
+            initialComments={comments}
           />
         </article>
       </main>

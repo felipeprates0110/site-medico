@@ -228,3 +228,24 @@ export async function getPublishedArticleBySlug(slug: string) {
     null
   );
 }
+
+/** Comentários aprovados de um artigo (só o que o público pode ver). */
+export async function getApprovedCommentsByArticleId(articleId: string) {
+  return withFallback(
+    "getApprovedCommentsByArticleId",
+    async () => {
+      const { data, error } = await supabase
+        .from("blog_comments")
+        .select(
+          "id, article_id, author_name, content, doctor_reply, replied_at, created_at"
+        )
+        .eq("article_id", articleId)
+        .eq("status", "approved")
+        .order("created_at", { ascending: true });
+
+      if (error) throw error;
+      return data ?? [];
+    },
+    []
+  );
+}
