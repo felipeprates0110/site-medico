@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { getPublishedArticleBySlug, getSiteConfig } from "@/lib/data";
 import { AuthorBox } from "@/components/blog/AuthorBox";
@@ -9,6 +10,12 @@ import { DEFAULT_DOCTOR_PHOTO } from "@/lib/doctor-photo";
 import { siteConfig as metadataSiteConfig } from "@/lib/metadata";
 
 export const revalidate = 60;
+
+function toAbsoluteImageUrl(imageUrl?: string | null) {
+  if (!imageUrl) return metadataSiteConfig.ogImage;
+  if (/^https?:\/\//i.test(imageUrl)) return imageUrl;
+  return `${metadataSiteConfig.url}${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}`;
+}
 
 export async function generateMetadata({
   params,
@@ -29,7 +36,7 @@ export async function generateMetadata({
     article.excerpt ||
     "Leia este artigo no RitmoBlog.";
   const url = `${metadataSiteConfig.url}/blog/${article.slug}`;
-  const ogImage = article.cover_image_url || metadataSiteConfig.ogImage;
+  const ogImage = toAbsoluteImageUrl(article.cover_image_url);
 
   return {
     title,
@@ -106,6 +113,7 @@ export default async function BlogPostPage({
     "@type": "MedicalWebPage",
     name: article.title,
     description: article.seo_description || article.excerpt,
+    image: toAbsoluteImageUrl(article.cover_image_url),
     datePublished: article.published_at,
     dateModified: article.updated_at,
     author: {
@@ -164,6 +172,19 @@ export default async function BlogPostPage({
               </span>
             </div>
           </div>
+
+          {article.cover_image_url && (
+            <div className="relative mb-10 aspect-[16/9] w-full overflow-hidden rounded-2xl bg-gray-100">
+              <Image
+                src={article.cover_image_url}
+                alt={article.title}
+                fill
+                priority
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 768px"
+              />
+            </div>
+          )}
 
           <AuthorBox
             name={doctorName}

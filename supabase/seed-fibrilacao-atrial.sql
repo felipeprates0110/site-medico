@@ -108,7 +108,7 @@ VALUES (
 <p><i>Este artigo tem finalidade exclusivamente educativa e não substitui consulta, diagnóstico ou tratamento médico. Procure sempre um cardiologista para avaliação individualizada.</i></p>
 $html$,
   'Entenda o que é a fibrilação atrial, seus principais sintomas, riscos e quando procurar um médico. Guia completo escrito por cardiologista.',
-  NULL,
+  '/images/blog/fibrilacao-atrial-capa.png',
   (SELECT id FROM blog_categories WHERE slug = 'arritmias' LIMIT 1),
   'published',
   NOW(),
@@ -120,6 +120,7 @@ SET
   title = EXCLUDED.title,
   content = EXCLUDED.content,
   excerpt = EXCLUDED.excerpt,
+  cover_image_url = EXCLUDED.cover_image_url,
   category_id = EXCLUDED.category_id,
   status = 'published',
   published_at = COALESCE(blog_articles.published_at, NOW()),
