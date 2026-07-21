@@ -76,8 +76,8 @@ export default async function Home() {
               </p>
 
               <h1 className="mb-6 text-4xl font-bold leading-[1.1] tracking-tight text-gray-900 sm:text-5xl lg:text-[3.25rem]">
-                Cuidado cardiológico de precisão, com foco em ritmo, prevenção e
-                performance.
+                Cuidado cardiológico especializado, com foco no ritmo do seu
+                coração, prevenção e mais qualidade de vida.
               </h1>
 
               <p className="mb-9 text-lg leading-relaxed text-gray-600">
