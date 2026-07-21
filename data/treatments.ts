@@ -44,9 +44,9 @@ export const treatments: Treatment[] = [
     slug: "ablacao-por-cateter",
     title: "Ablação por Cateter de Arritmias",
     shortDescription:
-      "Procedimento minimamente invasivo para cura definitiva de arritmias.",
+      "Procedimento minimamente invasivo para tratamento definitivo de arritmias.",
     description:
-      "A ablação por cateter é um procedimento considerado minimamente invasivo, no qual o médico passa um tubo fino (cateter) pelos vasos sanguíneos até o coração. Esse procedimento tem por objetivo diagnosticar e tratar as vias elétricas anormais do coração. É feito por anestesia local, sem cortes ou pontos de sutura. Também é um procedimento moderno, seguro e eficaz com altas taxas de cura.",
+      "A ablação por cateter é um procedimento considerado minimamente invasivo, no qual o médico passa um tubo fino (cateter) pelos vasos sanguíneos até o coração. Esse procedimento tem por objetivo diagnosticar e tratar as vias elétricas anormais do coração. É feito por anestesia local, sem cortes ou pontos de sutura. Também é um procedimento moderno, seguro e eficaz.",
     symptoms: [],
     diagnosis: [
       "Estudo eletrofisiológico",
@@ -71,9 +71,9 @@ export const treatments: Treatment[] = [
     slug: "flutter-atrial",
     title: "Flutter Atrial",
     shortDescription:
-      "Arritmia cardíaca com alta taxa de cura através de ablação.",
+      "Arritmia cardíaca que pode ser tratada de forma definitiva com ablação.",
     description:
-      "O Flutter Atrial é uma arritmia caracterizada por batimentos cardíacos rápidos e regulares. Similar à fibrilação atrial, também aumenta o risco de AVC e pode causar sintomas como palpitações e cansaço. A boa notícia é que possui alta taxa de cura através de ablação por cateter.",
+      "O Flutter Atrial é uma arritmia caracterizada por batimentos cardíacos rápidos e regulares. Similar à fibrilação atrial, também aumenta o risco de AVC e pode causar sintomas como palpitações e cansaço. Em muitos casos, pode ser tratado de forma definitiva através de ablação por cateter.",
     symptoms: [
       "Palpitações regulares e rápidas",
       "Falta de ar",
@@ -89,7 +89,7 @@ export const treatments: Treatment[] = [
     treatment: [
       "Controle medicamentoso",
       "Cardioversão elétrica",
-      "Ablação por cateter (cura > 95%)",
+      "Ablação por cateter (tratamento definitivo)",
       "Anticoagulação",
     ],
   },
@@ -116,18 +116,18 @@ export const treatments: Treatment[] = [
       "Estudo eletrofisiológico",
     ],
     treatment: [
-      "Implante de marca-passo definitivo",
-      "Marca-passo temporário em emergências",
-      "Acompanhamento regular do dispositivo",
+      "Avaliação e indicação de marca-passo quando necessário",
+      "Encaminhamento para implante do dispositivo",
+      "Acompanhamento regular após o implante",
     ],
   },
   {
     id: "5",
     slug: "sindrome-wolff-parkinson-white",
     title: "Síndrome de Wolff-Parkinson-White (WPW)",
-    shortDescription: "Arritmia congênita com cura definitiva através de ablação.",
+    shortDescription: "Arritmia congênita que pode ser tratada de forma definitiva com ablação.",
     description:
-      "A Síndrome de Wolff-Parkinson-White (WPW) é uma arritmia bem comum na prática médica. Trata-se de uma alteração congênita (a pessoa já nasce com ela). Os sintomas cursam com crises de palpitações, que podem ser curtas ou mais prolongadas, queda da pressão arterial e mal estar geral. A cura dessa arritmia é feita através de ablação por cateter com taxa de sucesso superior a 95%.",
+      "A Síndrome de Wolff-Parkinson-White (WPW) é uma arritmia bem comum na prática médica. Trata-se de uma alteração congênita (a pessoa já nasce com ela). Os sintomas cursam com crises de palpitações, que podem ser curtas ou mais prolongadas, queda da pressão arterial e mal estar geral. O tratamento definitivo dessa arritmia é feito através de ablação por cateter.",
     symptoms: [
       "Crises súbitas de palpitações",
       "Taquicardia (coração acelerado)",
@@ -143,8 +143,8 @@ export const treatments: Treatment[] = [
     ],
     treatment: [
       "Ablação por cateter (tratamento de escolha)",
-      "Taxa de cura > 95%",
       "Procedimento minimamente invasivo",
+      "Seguimento após o procedimento",
       "Alternativa: medicamentos antiarrítmicos",
     ],
   },

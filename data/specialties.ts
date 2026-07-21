@@ -65,10 +65,10 @@ export const specialties: Specialty[] = [
     benefits: [
       "Estudo eletrofisiológico diagnóstico",
       "Ablação por cateter (tratamento definitivo)",
-      "Implante de marca-passo",
-      "Implante de cardioversor-desfibrilador",
+      "Avaliação e acompanhamento de portadores de marca-passo",
+      "Indicação de marca-passo ou CDI quando necessário",
       "Procedimentos minimamente invasivos",
-      "Alta taxa de cura para arritmias",
+      "Acompanhamento especializado de arritmias",
     ],
     commonConditions: [
       "Fibrilação Atrial refratária",

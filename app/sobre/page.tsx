@@ -139,7 +139,7 @@ export default function SobrePage() {
               "Diagnóstico e tratamento de arritmias",
               "Ablação por cateter",
               "Estudo eletrofisiológico",
-              "Implante de marca-passo",
+              "Avaliação e indicação de marca-passo",
               "Cardiologia geral",
               "Check-up cardiológico",
               "Risco pré-operatório",

@@ -131,10 +131,10 @@ INSERT INTO specialties (
   ARRAY[
     'Estudo eletrofisiológico diagnóstico',
     'Ablação por cateter (tratamento definitivo)',
-    'Implante de marca-passo',
-    'Implante de cardioversor-desfibrilador',
+    'Avaliação e acompanhamento de portadores de marca-passo',
+    'Indicação de marca-passo ou CDI quando necessário',
     'Procedimentos minimamente invasivos',
-    'Alta taxa de cura para arritmias'
+    'Acompanhamento especializado de arritmias'
   ]::TEXT[],
   ARRAY[
     'Fibrilação Atrial refratária',
@@ -170,8 +170,8 @@ INSERT INTO treatments (
 (
   'Ablação por Cateter de Arritmias',
   'ablacao-por-cateter',
-  'Procedimento minimamente invasivo para cura definitiva de arritmias.',
-  'A ablação por cateter é um procedimento considerado minimamente invasivo, no qual o médico passa um cateter fino pelos vasos sanguíneos até o coração para diagnosticar e tratar vias elétricas anormais. Realizado com anestesia local, sem cortes, com altas taxas de cura.',
+  'Procedimento minimamente invasivo para tratamento definitivo de arritmias.',
+  'A ablação por cateter é um procedimento considerado minimamente invasivo, no qual o médico passa um cateter fino pelos vasos sanguíneos até o coração para diagnosticar e tratar vias elétricas anormais. Realizado com anestesia local, sem cortes.',
   ARRAY[]::TEXT[],
   ARRAY['Estudo eletrofisiológico', 'Mapeamento eletroanatômico 3D', 'Localização precisa do foco da arritmia']::TEXT[],
   ARRAY['Ablação por radiofrequência', 'Crioablação', 'Procedimento guiado por raio-X e ultrassom', 'Internação de 1 dia', 'Recuperação rápida']::TEXT[],
@@ -181,11 +181,11 @@ INSERT INTO treatments (
 (
   'Flutter Atrial',
   'flutter-atrial',
-  'Arritmia cardíaca com alta taxa de cura através de ablação.',
-  'O Flutter Atrial é uma arritmia caracterizada por batimentos cardíacos rápidos e regulares. Similar à fibrilação atrial, também aumenta o risco de AVC. Possui alta taxa de cura através de ablação por cateter.',
+  'Arritmia cardíaca que pode ser tratada de forma definitiva com ablação.',
+  'O Flutter Atrial é uma arritmia caracterizada por batimentos cardíacos rápidos e regulares. Similar à fibrilação atrial, também aumenta o risco de AVC. Em muitos casos, pode ser tratado de forma definitiva através de ablação por cateter.',
   ARRAY['Palpitações regulares e rápidas', 'Falta de ar', 'Cansaço', 'Tontura', 'Dor no peito']::TEXT[],
   ARRAY['Eletrocardiograma', 'Holter 24 horas', 'Ecocardiograma']::TEXT[],
-  ARRAY['Controle medicamentoso', 'Cardioversão elétrica', 'Ablação por cateter (cura > 95%)', 'Anticoagulação']::TEXT[],
+  ARRAY['Controle medicamentoso', 'Cardioversão elétrica', 'Ablação por cateter (tratamento definitivo)', 'Anticoagulação']::TEXT[],
   ARRAY[]::TEXT[],
   3, true
 ),
@@ -196,18 +196,18 @@ INSERT INTO treatments (
   'Se existir um bloqueio na condução elétrica do coração, as contrações serão ineficazes e o corpo não receberá o suprimento de sangue necessário. Pode causar tontura, desmaios e em casos graves morte súbita.',
   ARRAY['Tontura', 'Cansaço excessivo', 'Escurecimento da visão', 'Desmaios', 'Pode levar à morte súbita']::TEXT[],
   ARRAY['Eletrocardiograma', 'Holter 24 horas', 'Teste de inclinação', 'Estudo eletrofisiológico']::TEXT[],
-  ARRAY['Implante de marca-passo definitivo', 'Marca-passo temporário em emergências', 'Acompanhamento regular do dispositivo']::TEXT[],
+  ARRAY['Avaliação e indicação de marca-passo quando necessário', 'Encaminhamento para implante do dispositivo', 'Acompanhamento regular após o implante']::TEXT[],
   ARRAY[]::TEXT[],
   4, true
 ),
 (
   'Síndrome de Wolff-Parkinson-White (WPW)',
   'sindrome-wolff-parkinson-white',
-  'Arritmia congênita com cura definitiva através de ablação.',
-  'A Síndrome de Wolff-Parkinson-White (WPW) é uma alteração congênita. Os sintomas cursam com crises de palpitações. A cura é feita através de ablação por cateter com taxa de sucesso superior a 95%.',
+  'Arritmia congênita que pode ser tratada de forma definitiva com ablação.',
+  'A Síndrome de Wolff-Parkinson-White (WPW) é uma alteração congênita. Os sintomas cursam com crises de palpitações. O tratamento definitivo é feito através de ablação por cateter.',
   ARRAY['Crises súbitas de palpitações', 'Taquicardia', 'Tontura durante as crises', 'Falta de ar', 'Pode ser assintomática']::TEXT[],
   ARRAY['Eletrocardiograma (padrão de pré-excitação)', 'Estudo eletrofisiológico', 'Teste ergométrico']::TEXT[],
-  ARRAY['Ablação por cateter (tratamento de escolha)', 'Taxa de cura > 95%', 'Procedimento minimamente invasivo']::TEXT[],
+  ARRAY['Ablação por cateter (tratamento de escolha)', 'Procedimento minimamente invasivo', 'Seguimento após o procedimento']::TEXT[],
   ARRAY[]::TEXT[],
   5, true
 ),
@@ -313,7 +313,7 @@ FROM (VALUES
   ),
   (
     'Fibrilação atrial tem cura?',
-    'Sim, a fibrilação atrial pode ser curada através de ablação por cateter, com taxas de sucesso de 60% a 90% dependendo do tipo. O controle de fatores de risco como obesidade, apneia do sono e hipertensão é fundamental.',
+    'A fibrilação atrial pode ser tratada de forma definitiva através de ablação por cateter, dependendo do tipo e das características de cada paciente. Em alguns casos, mais de um procedimento pode ser necessário. Além disso, o controle de fatores de risco como obesidade, apneia do sono e hipertensão é fundamental.',
     'tratamentos', 6
   ),
   (
@@ -323,7 +323,7 @@ FROM (VALUES
   ),
   (
     'Qual a diferença entre cardiologista e arritmologista?',
-    'O cardiologista é especialista em doenças do coração de forma geral. O arritmologista é cardiologista com subespecialização em arritmias cardíacas, com expertise em ablação por cateter e implante de marca-passo.',
+    'O cardiologista é especialista em doenças do coração de forma geral. O arritmologista é cardiologista com subespecialização em arritmias cardíacas, com expertise em ablação por cateter, avaliação de portadores de marca-passo e indicação do dispositivo quando necessário.',
     'geral', 8
   ),
   (

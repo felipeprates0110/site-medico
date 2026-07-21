@@ -33,14 +33,14 @@ export const faqItems: FAQItem[] = [
     id: "5",
     question: "O que é ablação por cateter?",
     answer:
-      "A ablação por cateter é um procedimento minimamente invasivo para tratamento definitivo de arritmias cardíacas. Um cateter fino é inserido através de vaso sanguíneo até o coração, onde identifica e elimina o foco da arritmia. É realizado com anestesia local, sem cortes, e possui alta taxa de sucesso.",
+      "A ablação por cateter é um procedimento minimamente invasivo para tratamento definitivo de arritmias cardíacas. Um cateter fino é inserido através de vaso sanguíneo até o coração, onde identifica e elimina o foco da arritmia. É realizado com anestesia local, sem cortes.",
     category: "tratamentos",
   },
   {
     id: "6",
     question: "Fibrilação atrial tem cura?",
     answer:
-      "Sim, a fibrilação atrial pode ser curada através de ablação por cateter. O procedimento tem taxas de sucesso que variam de 60% a 90% dependendo do tipo de fibrilação atrial. Em alguns casos, mais de um procedimento pode ser necessário. Além disso, o controle de fatores de risco como obesidade, apneia do sono e hipertensão é fundamental.",
+      "A fibrilação atrial pode ser tratada de forma definitiva através de ablação por cateter, dependendo do tipo e das características de cada paciente. Em alguns casos, mais de um procedimento pode ser necessário. Além disso, o controle de fatores de risco como obesidade, apneia do sono e hipertensão é fundamental.",
     category: "tratamentos",
   },
   {
@@ -54,7 +54,7 @@ export const faqItems: FAQItem[] = [
     id: "8",
     question: "Qual a diferença entre cardiologista e arritmologista?",
     answer:
-      "O cardiologista é o médico especialista em doenças do coração de forma geral. O arritmologista é um cardiologista que fez subespecialização focada especificamente em arritmias cardíacas (alterações do ritmo do coração), tendo expertise avançada em diagnóstico e tratamento dessas condições, incluindo procedimentos como ablação por cateter e implante de marca-passo.",
+      "O cardiologista é o médico especialista em doenças do coração de forma geral. O arritmologista é um cardiologista que fez subespecialização focada especificamente em arritmias cardíacas (alterações do ritmo do coração), tendo expertise avançada em diagnóstico e tratamento dessas condições, incluindo ablação por cateter, avaliação de portadores de marca-passo e indicação do dispositivo quando necessário.",
     category: "geral",
   },
   {
