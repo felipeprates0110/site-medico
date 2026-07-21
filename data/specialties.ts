@@ -75,7 +75,7 @@ export const specialties: Specialty[] = [
       "Flutter Atrial",
       "Taquicardias supraventriculares",
       "Taquicardias ventriculares",
-      "Síndrome de WPW",
+      "Síndrome de Wolff-Parkinson-White (WPW)",
       "Bradicardias sintomáticas",
     ],
   },

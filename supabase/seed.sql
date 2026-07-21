@@ -141,7 +141,7 @@ INSERT INTO specialties (
     'Flutter Atrial',
     'Taquicardias supraventriculares',
     'Taquicardias ventriculares',
-    'Síndrome de WPW',
+    'Síndrome de Wolff-Parkinson-White (WPW)',
     'Bradicardias sintomáticas'
   ]::TEXT[],
   3, true
