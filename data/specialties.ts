@@ -6,7 +6,7 @@ export const specialties: Specialty[] = [
     slug: "cardiologia",
     title: "Cardiologia Geral",
     shortDescription:
-      "Avaliação completa da saúde cardiovascular, prevenção e tratamento de doenças do coração.",
+      "Avaliação cardiovascular completa, check-up de rotina, controle da pressão arterial e prevenção de doenças do coração.",
     description:
       "A cardiologia é a especialidade médica que cuida da saúde do coração e do sistema circulatório. Realizamos consultas cardiológicas completas, incluindo avaliação clínica detalhada, exames complementares e orientação sobre prevenção de doenças cardiovasculares.",
     icon: "heart",
@@ -32,7 +32,7 @@ export const specialties: Specialty[] = [
     slug: "arritmologia",
     title: "Arritmologia",
     shortDescription:
-      "Especialidade focada no diagnóstico e tratamento de alterações do ritmo cardíaco (arritmias).",
+      "Investigação e diagnóstico de palpitações, tonturas, síncope (desmaio) e acompanhamento de arritmias cardíacas e Fibrilação Atrial.",
     description:
       "A arritmologia é uma subespecialidade da cardiologia dedicada ao estudo, diagnóstico e tratamento das arritmias cardíacas. O arritmologista é o médico especialista nos distúrbios do ritmo do coração, oferecendo tratamentos desde medicamentosos até procedimentos intervencionistas.",
     icon: "activity",
@@ -58,13 +58,13 @@ export const specialties: Specialty[] = [
     slug: "eletrofisiologia",
     title: "Eletrofisiologia Clínica e Invasiva",
     shortDescription:
-      "Procedimentos avançados para diagnóstico e tratamento definitivo de arritmias cardíacas.",
+      "Realização de Estudo Eletrofisiológico, ablação por cateter e indicação e acompanhamento de marcapasso e CDI.",
     description:
-      "A eletrofisiologia invasiva utiliza técnicas minimamente invasivas para mapear o sistema elétrico do coração e realizar tratamentos definitivos de arritmias através de ablação por cateter. Formação pela UNIFESP/EPM, centro de referência nacional.",
+      "A eletrofisiologia invasiva utiliza técnicas minimamente invasivas para mapear o sistema elétrico do coração e tratar arritmias por meio de ablação por cateter, quando indicado. Formação pela UNIFESP/EPM, centro de referência nacional.",
     icon: "zap",
     benefits: [
       "Estudo eletrofisiológico diagnóstico",
-      "Ablação por cateter (tratamento definitivo)",
+      "Ablação por cateter, quando indicada",
       "Avaliação e acompanhamento de portadores de marca-passo",
       "Indicação de marca-passo ou CDI quando necessário",
       "Procedimentos minimamente invasivos",

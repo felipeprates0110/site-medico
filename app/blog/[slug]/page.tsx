@@ -213,7 +213,7 @@ export default async function BlogPostPage({
 
           <AffiliateBox
             title="Monitoramento Residencial Recomendado"
-            description="Para pacientes que precisam monitorar a pressão arterial em casa, recomendamos exclusivamente aparelhos digitais de braço validados clinicamente. Eles garantem a precisão necessária para a avaliação do seu cardiologista."
+            description="Para pacientes que precisam monitorar a pressão arterial em casa, podem ser indicados aparelhos digitais de braço validados clinicamente, que ajudam a obter medições mais confiáveis para a avaliação do cardiologista."
             buttonText="Ver Monitores Aprovados na Amazon"
             url="https://amazon.com.br"
           />

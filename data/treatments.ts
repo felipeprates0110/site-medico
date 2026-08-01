@@ -28,7 +28,7 @@ export const treatments: Treatment[] = [
       "Controle medicamentoso da frequência cardíaca",
       "Anticoagulação para prevenção de AVC",
       "Cardioversão elétrica",
-      "Ablação por cateter (tratamento definitivo)",
+      "Ablação por cateter, quando indicada",
       "Controle de fatores de risco",
     ],
     preventiveCare: [
@@ -44,9 +44,9 @@ export const treatments: Treatment[] = [
     slug: "ablacao-por-cateter",
     title: "Ablação por Cateter de Arritmias",
     shortDescription:
-      "Procedimento minimamente invasivo para tratamento definitivo de arritmias.",
+      "Procedimento minimamente invasivo indicado para o tratamento de determinadas arritmias.",
     description:
-      "A ablação por cateter é um procedimento considerado minimamente invasivo, no qual o médico passa um tubo fino (cateter) pelos vasos sanguíneos até o coração. Esse procedimento tem por objetivo diagnosticar e tratar as vias elétricas anormais do coração. É feito por anestesia local, sem cortes ou pontos de sutura. Também é um procedimento moderno, seguro e eficaz.",
+      "A ablação por cateter é um procedimento considerado minimamente invasivo, no qual o médico passa um tubo fino (cateter) pelos vasos sanguíneos até o coração. Esse procedimento tem por objetivo diagnosticar e tratar vias elétricas anormais do coração, quando indicado após avaliação especializada. Em geral, é realizado com anestesia local, sem cortes ou pontos de sutura.",
     symptoms: [],
     diagnosis: [
       "Estudo eletrofisiológico",
@@ -57,8 +57,8 @@ export const treatments: Treatment[] = [
       "Ablação por radiofrequência",
       "Crioablação (ablação por frio)",
       "Procedimento guiado por raio-X e ultrassom",
-      "Internação de 1 dia",
-      "Recuperação rápida",
+      "Internação geralmente de curta duração",
+      "Acompanhamento no pós-procedimento",
     ],
     preventiveCare: [
       "Seguimento ambulatorial regular",
@@ -71,9 +71,9 @@ export const treatments: Treatment[] = [
     slug: "flutter-atrial",
     title: "Flutter Atrial",
     shortDescription:
-      "Arritmia cardíaca que pode ser tratada de forma definitiva com ablação.",
+      "Arritmia cardíaca que, em casos selecionados, pode ser tratada com ablação por cateter.",
     description:
-      "O Flutter Atrial é uma arritmia caracterizada por batimentos cardíacos rápidos e regulares. Similar à fibrilação atrial, também aumenta o risco de AVC e pode causar sintomas como palpitações e cansaço. Em muitos casos, pode ser tratado de forma definitiva através de ablação por cateter.",
+      "O Flutter Atrial é uma arritmia caracterizada por batimentos cardíacos rápidos e regulares. Similar à fibrilação atrial, também aumenta o risco de AVC e pode causar sintomas como palpitações e cansaço. Em casos selecionados, a ablação por cateter pode ser uma opção terapêutica, conforme avaliação médica individualizada.",
     symptoms: [
       "Palpitações regulares e rápidas",
       "Falta de ar",
@@ -89,7 +89,7 @@ export const treatments: Treatment[] = [
     treatment: [
       "Controle medicamentoso",
       "Cardioversão elétrica",
-      "Ablação por cateter (tratamento definitivo)",
+      "Ablação por cateter, quando indicada",
       "Anticoagulação",
     ],
   },
@@ -125,9 +125,10 @@ export const treatments: Treatment[] = [
     id: "5",
     slug: "sindrome-wolff-parkinson-white",
     title: "Síndrome de Wolff-Parkinson-White (WPW)",
-    shortDescription: "Arritmia congênita que pode ser tratada de forma definitiva com ablação.",
+    shortDescription:
+      "Arritmia congênita que, em casos selecionados, pode ser tratada com ablação por cateter.",
     description:
-      "A Síndrome de Wolff-Parkinson-White (WPW) é uma arritmia bem comum na prática médica. Trata-se de uma alteração congênita (a pessoa já nasce com ela). Os sintomas cursam com crises de palpitações, que podem ser curtas ou mais prolongadas, queda da pressão arterial e mal estar geral. O tratamento definitivo dessa arritmia é feito através de ablação por cateter.",
+      "A Síndrome de Wolff-Parkinson-White (WPW) é uma arritmia bem comum na prática médica. Trata-se de uma alteração congênita (a pessoa já nasce com ela). Os sintomas cursam com crises de palpitações, que podem ser curtas ou mais prolongadas, queda da pressão arterial e mal-estar geral. Em casos selecionados, a ablação por cateter pode ser uma opção terapêutica, conforme avaliação especializada.",
     symptoms: [
       "Crises súbitas de palpitações",
       "Taquicardia (coração acelerado)",

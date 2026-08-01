@@ -77,7 +77,7 @@ INSERT INTO specialties (
 (
   'Cardiologia Geral',
   'cardiologia',
-  'Avaliação completa da saúde cardiovascular, prevenção e tratamento de doenças do coração.',
+  'Avaliação cardiovascular completa, check-up de rotina, controle da pressão arterial e prevenção de doenças do coração.',
   'A cardiologia é a especialidade médica que cuida da saúde do coração e do sistema circulatório. Realizamos consultas cardiológicas completas, incluindo avaliação clínica detalhada, exames complementares e orientação sobre prevenção de doenças cardiovasculares.',
   'heart',
   ARRAY[
@@ -101,7 +101,7 @@ INSERT INTO specialties (
 (
   'Arritmologia',
   'arritmologia',
-  'Especialidade focada no diagnóstico e tratamento de alterações do ritmo cardíaco (arritmias).',
+  'Investigação e diagnóstico de palpitações, tonturas, síncope (desmaio) e acompanhamento de arritmias cardíacas e Fibrilação Atrial.',
   'A arritmologia é uma subespecialidade da cardiologia dedicada ao estudo, diagnóstico e tratamento das arritmias cardíacas. O arritmologista é o médico especialista nos distúrbios do ritmo do coração, oferecendo tratamentos desde medicamentosos até procedimentos intervencionistas.',
   'activity',
   ARRAY[
@@ -125,12 +125,12 @@ INSERT INTO specialties (
 (
   'Eletrofisiologia Clínica e Invasiva',
   'eletrofisiologia',
-  'Procedimentos avançados para diagnóstico e tratamento definitivo de arritmias cardíacas.',
-  'A eletrofisiologia invasiva utiliza técnicas minimamente invasivas para mapear o sistema elétrico do coração e realizar tratamentos definitivos de arritmias através de ablação por cateter. Formação pela UNIFESP/EPM, centro de referência nacional.',
+  'Realização de Estudo Eletrofisiológico, ablação por cateter e indicação e acompanhamento de marcapasso e CDI.',
+  'A eletrofisiologia invasiva utiliza técnicas minimamente invasivas para mapear o sistema elétrico do coração e tratar arritmias por meio de ablação por cateter, quando indicado. Formação pela UNIFESP/EPM, centro de referência nacional.',
   'zap',
   ARRAY[
     'Estudo eletrofisiológico diagnóstico',
-    'Ablação por cateter (tratamento definitivo)',
+    'Ablação por cateter, quando indicada',
     'Avaliação e acompanhamento de portadores de marca-passo',
     'Indicação de marca-passo ou CDI quando necessário',
     'Procedimentos minimamente invasivos',
@@ -170,22 +170,22 @@ INSERT INTO treatments (
 (
   'Ablação por Cateter de Arritmias',
   'ablacao-por-cateter',
-  'Procedimento minimamente invasivo para tratamento definitivo de arritmias.',
-  'A ablação por cateter é um procedimento considerado minimamente invasivo, no qual o médico passa um cateter fino pelos vasos sanguíneos até o coração para diagnosticar e tratar vias elétricas anormais. Realizado com anestesia local, sem cortes.',
+  'Procedimento minimamente invasivo indicado para o tratamento de determinadas arritmias.',
+  'A ablação por cateter é um procedimento considerado minimamente invasivo, no qual o médico passa um cateter fino pelos vasos sanguíneos até o coração para diagnosticar e tratar vias elétricas anormais, quando indicado após avaliação especializada. Em geral, realizado com anestesia local, sem cortes.',
   ARRAY[]::TEXT[],
-  ARRAY['Estudo eletrofisiológico', 'Mapeamento eletroanatômico 3D', 'Localização precisa do foco da arritmia']::TEXT[],
-  ARRAY['Ablação por radiofrequência', 'Crioablação', 'Procedimento guiado por raio-X e ultrassom', 'Internação de 1 dia', 'Recuperação rápida']::TEXT[],
+  ARRAY['Estudo eletrofisiológico', 'Mapeamento eletroanatômico 3D', 'Localização do foco da arritmia']::TEXT[],
+  ARRAY['Ablação por radiofrequência', 'Crioablação', 'Procedimento guiado por raio-X e ultrassom', 'Internação geralmente de curta duração', 'Acompanhamento no pós-procedimento']::TEXT[],
   ARRAY['Seguimento ambulatorial regular', 'Monitoramento com Holter', 'Adequação de medicações']::TEXT[],
   2, true
 ),
 (
   'Flutter Atrial',
   'flutter-atrial',
-  'Arritmia cardíaca que pode ser tratada de forma definitiva com ablação.',
-  'O Flutter Atrial é uma arritmia caracterizada por batimentos cardíacos rápidos e regulares. Similar à fibrilação atrial, também aumenta o risco de AVC. Em muitos casos, pode ser tratado de forma definitiva através de ablação por cateter.',
+  'Arritmia cardíaca que, em casos selecionados, pode ser tratada com ablação por cateter.',
+  'O Flutter Atrial é uma arritmia caracterizada por batimentos cardíacos rápidos e regulares. Similar à fibrilação atrial, também aumenta o risco de AVC. Em casos selecionados, a ablação por cateter pode ser uma opção terapêutica, conforme avaliação médica individualizada.',
   ARRAY['Palpitações regulares e rápidas', 'Falta de ar', 'Cansaço', 'Tontura', 'Dor no peito']::TEXT[],
   ARRAY['Eletrocardiograma', 'Holter 24 horas', 'Ecocardiograma']::TEXT[],
-  ARRAY['Controle medicamentoso', 'Cardioversão elétrica', 'Ablação por cateter (tratamento definitivo)', 'Anticoagulação']::TEXT[],
+  ARRAY['Controle medicamentoso', 'Cardioversão elétrica', 'Ablação por cateter, quando indicada', 'Anticoagulação']::TEXT[],
   ARRAY[]::TEXT[],
   3, true
 ),
@@ -203,8 +203,8 @@ INSERT INTO treatments (
 (
   'Síndrome de Wolff-Parkinson-White (WPW)',
   'sindrome-wolff-parkinson-white',
-  'Arritmia congênita que pode ser tratada de forma definitiva com ablação.',
-  'A Síndrome de Wolff-Parkinson-White (WPW) é uma alteração congênita. Os sintomas cursam com crises de palpitações. O tratamento definitivo é feito através de ablação por cateter.',
+  'Arritmia congênita que, em casos selecionados, pode ser tratada com ablação por cateter.',
+  'A Síndrome de Wolff-Parkinson-White (WPW) é uma alteração congênita. Os sintomas cursam com crises de palpitações. Em casos selecionados, a ablação por cateter pode ser uma opção terapêutica, conforme avaliação especializada.',
   ARRAY['Crises súbitas de palpitações', 'Taquicardia', 'Tontura durante as crises', 'Falta de ar', 'Pode ser assintomática']::TEXT[],
   ARRAY['Eletrocardiograma (padrão de pré-excitação)', 'Estudo eletrofisiológico', 'Teste ergométrico']::TEXT[],
   ARRAY['Ablação por cateter (tratamento de escolha)', 'Procedimento minimamente invasivo', 'Seguimento após o procedimento']::TEXT[],
@@ -293,7 +293,7 @@ FROM (VALUES
   ),
   (
     'O que é a Ablação por Cateter e como ela trata as arritmias?',
-    'A ablação por cateter é um procedimento minimamente invasivo, realizado através de um cateterismo específico. O arritmologista mapeia o sistema elétrico do coração para localizar o foco exato da alteração e aplica energia (radiofrequência ou crioablação) para cauterizar esse ponto. Para diversos tipos de taquicardias, a ablação oferece uma taxa de cura elevada, permitindo que muitos pacientes fiquem livres do uso diário de medicamentos.',
+    'A ablação por cateter é um procedimento minimamente invasivo, realizado através de um cateterismo específico. O arritmologista mapeia o sistema elétrico do coração para localizar o foco da alteração e aplica energia (radiofrequência ou crioablação) nesse ponto. Em determinados tipos de taquicardias, a ablação pode ser uma opção terapêutica para controlar a arritmia e, em alguns casos, reduzir a necessidade de medicamentos — sempre conforme avaliação individualizada.',
     'tratamentos', 2
   ),
   (
@@ -308,7 +308,7 @@ FROM (VALUES
   ),
   (
     'Qual é a diferença entre um marca-passo e um Cardiodesfibrilador Implantável (CDI)?',
-    'Embora ambos sejam dispositivos implantáveis para monitorar o ritmo cardíaco, eles têm funções distintas. Marca-passo: indicado para quando o coração bate muito devagar (bradicardias). Ele envia impulsos elétricos para manter a frequência cardíaca adequada. CDI: além de atuar como marca-passo se necessário, o CDI monitora e identifica arritmias graves e rápidas (como a taquicardia ventricular), sendo capaz de emitir um choque interno para reverter uma parada cardíaca e prevenir a morte súbita.',
+    'Embora ambos sejam dispositivos implantáveis para monitorar o ritmo cardíaco, eles têm funções distintas. Marca-passo: indicado para quando o coração bate muito devagar (bradicardias). Ele envia impulsos elétricos para manter a frequência cardíaca adequada. CDI: além de atuar como marca-passo se necessário, o CDI monitora e identifica arritmias graves e rápidas (como a taquicardia ventricular), podendo emitir um choque interno com o objetivo de reverter arritmias potencialmente fatais, quando indicado.',
     'tratamentos', 5
   ),
   (

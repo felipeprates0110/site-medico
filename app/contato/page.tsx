@@ -225,7 +225,7 @@ export default async function ContatoPage() {
         <div className="mx-auto max-w-4xl px-4 lg:px-8 text-center">
           <h2 className="text-3xl font-bold mb-4">Pronto para agendar?</h2>
           <p className="text-xl text-blue-100 mb-8">
-            Entre em contato agora e garanta seu horário
+            Entre em contato agora e agende sua avaliação
           </p>
           <WhatsAppButton
             size="lg"

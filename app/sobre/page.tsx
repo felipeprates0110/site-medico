@@ -81,7 +81,7 @@ export default function SobrePage() {
           <div className="space-y-5 text-lg leading-relaxed text-gray-700">
             <p>
               Sempre acreditei que cuidar do coração vai muito além de interpretar exames
-              ou escolher o melhor tratamento. É sobre ouvir, acolher e caminhar junto com
+              ou escolher o tratamento mais adequado. É sobre ouvir, acolher e caminhar junto com
               cada paciente, entendendo suas histórias, seus medos e seus objetivos de
               vida.
             </p>

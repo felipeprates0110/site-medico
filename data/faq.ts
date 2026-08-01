@@ -13,7 +13,7 @@ export const faqItems: FAQItem[] = [
     id: "2",
     question: "O que é a Ablação por Cateter e como ela trata as arritmias?",
     answer:
-      "A ablação por cateter é um procedimento minimamente invasivo, realizado através de um cateterismo específico. O arritmologista mapeia o sistema elétrico do coração para localizar o foco exato da alteração e aplica energia (radiofrequência ou crioablação) para cauterizar esse ponto. Para diversos tipos de taquicardias, a ablação oferece uma taxa de cura elevada, permitindo que muitos pacientes fiquem livres do uso diário de medicamentos.",
+      "A ablação por cateter é um procedimento minimamente invasivo, realizado através de um cateterismo específico. O arritmologista mapeia o sistema elétrico do coração para localizar o foco da alteração e aplica energia (radiofrequência ou crioablação) nesse ponto. Em determinados tipos de taquicardias, a ablação pode ser uma opção terapêutica para controlar a arritmia e, em alguns casos, reduzir a necessidade de medicamentos — sempre conforme avaliação individualizada.",
     category: "tratamentos",
   },
   {
@@ -37,7 +37,7 @@ export const faqItems: FAQItem[] = [
     question:
       "Qual é a diferença entre um marca-passo e um Cardiodesfibrilador Implantável (CDI)?",
     answer:
-      "Embora ambos sejam dispositivos implantáveis para monitorar o ritmo cardíaco, eles têm funções distintas. Marca-passo: indicado para quando o coração bate muito devagar (bradicardias). Ele envia impulsos elétricos para manter a frequência cardíaca adequada. CDI: além de atuar como marca-passo se necessário, o CDI monitora e identifica arritmias graves e rápidas (como a taquicardia ventricular), sendo capaz de emitir um choque interno para reverter uma parada cardíaca e prevenir a morte súbita.",
+      "Embora ambos sejam dispositivos implantáveis para monitorar o ritmo cardíaco, eles têm funções distintas. Marca-passo: indicado para quando o coração bate muito devagar (bradicardias). Ele envia impulsos elétricos para manter a frequência cardíaca adequada. CDI: além de atuar como marca-passo se necessário, o CDI monitora e identifica arritmias graves e rápidas (como a taquicardia ventricular), podendo emitir um choque interno com o objetivo de reverter arritmias potencialmente fatais, quando indicado.",
     category: "tratamentos",
   },
   {

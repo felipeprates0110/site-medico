@@ -147,13 +147,13 @@ export default async function Home() {
       <section className="bg-white py-20 lg:py-24">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto mb-14 max-w-2xl text-center">
-            <p className="section-eyebrow mb-3">Áreas de atuação</p>
+            <p className="section-eyebrow mb-3">Áreas de Atuação</p>
             <h2 className="mb-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              Especialidades com foco em excelência
+              Áreas de Atuação Especializada
             </h2>
             <p className="text-lg text-gray-600">
-              Diagnóstico preciso e tratamentos avançados, com abordagem humana e
-              individualizada.
+              Da avaliação de palpitações e tonturas ao acompanhamento especializado
+              de arritmias cardíacas.
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

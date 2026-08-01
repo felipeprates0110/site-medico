@@ -4,9 +4,9 @@ import { specialties } from "@/data/specialties";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 
 export const metadata: Metadata = {
-  title: "Especialidades Médicas",
+  title: "Áreas de Atuação Especializada",
   description:
-    "Cardiologia geral, arritmologia e eletrofisiologia clínica e invasiva. Conheça as áreas de especialização do Dr. Pedro Felipe Prates Silva em Brasília.",
+    "Da avaliação de palpitações e tonturas ao acompanhamento especializado de arritmias cardíacas. Cardiologia geral, arritmologia e eletrofisiologia em Brasília.",
 };
 
 export default function EspecialidadesPage() {
@@ -15,12 +15,13 @@ export default function EspecialidadesPage() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-blue-50 to-white py-16">
         <div className="mx-auto max-w-4xl px-4 lg:px-8 text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl mb-6">
-            Áreas de Especialização
+          <p className="section-eyebrow mb-3">Áreas de Atuação</p>
+          <h1 className="mb-6 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+            Áreas de Atuação Especializada
           </h1>
           <p className="text-xl text-gray-600">
-            Atendimento especializado em cardiologia com foco em arritmias cardíacas e
-            procedimentos de eletrofisiologia
+            Da avaliação de palpitações e tonturas ao acompanhamento especializado
+            de arritmias cardíacas.
           </p>
         </div>
       </section>
@@ -41,7 +42,7 @@ export default function EspecialidadesPage() {
         <div className="mx-auto max-w-4xl px-4 lg:px-8 text-center">
           <h2 className="text-3xl font-bold mb-4">Precisa de atendimento especializado?</h2>
           <p className="text-xl text-blue-100 mb-8">
-            Agende sua consulta e receba o melhor tratamento para sua saúde cardíaca
+            Agende sua consulta e receba atendimento especializado para sua saúde cardíaca
           </p>
           <WhatsAppButton size="lg" className="bg-green-600 hover:bg-green-700" />
         </div>
