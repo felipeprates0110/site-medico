@@ -2,31 +2,6 @@ import { Star } from "lucide-react";
 import type { ReactNode } from "react";
 import { reviewStats } from "@/data/reviews";
 
-/** Wordmark tipográfico nas cores da marca Google — só visual. */
-function GoogleWordmark() {
-  const letters = [
-    { char: "G", color: "#4285F4" },
-    { char: "o", color: "#EA4335" },
-    { char: "o", color: "#FBBC05" },
-    { char: "g", color: "#4285F4" },
-    { char: "l", color: "#34A853" },
-    { char: "e", color: "#EA4335" },
-  ];
-
-  return (
-    <span
-      className="select-none text-[15px] font-medium leading-none tracking-tight"
-      aria-hidden="true"
-    >
-      {letters.map((letter, i) => (
-        <span key={`${letter.char}-${i}`} style={{ color: letter.color }}>
-          {letter.char}
-        </span>
-      ))}
-    </span>
-  );
-}
-
 /** Ícone + nome Doctoralia na cor teal da marca — só visual. */
 function DoctoraliaWordmark() {
   return (
@@ -90,21 +65,15 @@ function PlatformBadge({ brand, rating, total, label }: PlatformBadgeProps) {
 }
 
 /**
- * Selos visuais Google + Doctoralia — decorativos, sem link.
- * Números oficiais vêm de reviewStats (fonte Doctoralia do site).
+ * Selo visual Doctoralia — decorativo, sem link.
+ * Números oficiais vêm de reviewStats.
  */
 export function ReviewsPlatformBadges() {
   const rating = reviewStats.average.toFixed(1);
   const total = reviewStats.total;
 
   return (
-    <div className="flex flex-col items-center gap-2.5 lg:items-start">
-      <PlatformBadge
-        brand={<GoogleWordmark />}
-        rating={rating}
-        total={total}
-        label="Google"
-      />
+    <div className="flex justify-center lg:justify-start">
       <PlatformBadge
         brand={<DoctoraliaWordmark />}
         rating={rating}
