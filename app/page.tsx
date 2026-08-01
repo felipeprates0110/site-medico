@@ -75,8 +75,8 @@ export default async function Home() {
               </h1>
 
               <p className="mb-9 text-lg leading-relaxed text-gray-600">
-                {siteConfig.bio ||
-                  "Cardiologista e Arritmologista especialista em Eletrofisiologia Clínica e Invasiva pela UNIFESP/EPM."}
+                Diagnóstico preciso e acompanhamento cardiológico completo no
+                Distrito Federal.
               </p>
 
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
