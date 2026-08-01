@@ -8,6 +8,7 @@ import { defaultMetadata } from "@/lib/metadata";
 import { combinedSchema } from "@/lib/schema";
 import { getContactInfo } from "@/lib/data";
 import { Providers } from "./providers";
+import { Analytics } from "@vercel/analytics/next";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -42,6 +43,7 @@ export default async function RootLayout({
           <Footer />
           <FloatingWhatsAppButton whatsapp={contact.whatsapp} />
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
