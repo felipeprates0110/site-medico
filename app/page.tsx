@@ -31,10 +31,11 @@ import { reviewStats } from "@/data/reviews";
 export const revalidate = 60;
 
 const careerHighlights = [
-  "Especialista em Eletrofisiologia Clínica e Invasiva pela UNIFESP/EPM",
-  "Atuação em cardiologia, arritmologia e prevenção cardiovascular",
-  "Abordagem integrada entre saúde do coração e performance",
-  "Atendimento humanizado com diagnóstico preciso e plano individualizado",
+  "Especialista em Eletrofisiologia Clínica e Invasiva pela UNIFESP/EPM e Cardiologista com Título de Especialista pela Sociedade Brasileira de Cardiologia — SBC.",
+  "Médico do Setor de Eletrofisiologia e Arritmias Cardíacas do Instituto Hospital de Base do DF.",
+  "Tratamento e acompanhamento especializado em fibrilação atrial e outras arritmias complexas.",
+  "Especialista em ablação por cateter.",
+  "Investigação detalhada de sintomas como palpitações, tonturas e desmaios.",
 ];
 
 export default async function Home() {
@@ -177,12 +178,11 @@ export default async function Home() {
             <div className="order-1 lg:order-2">
               <p className="section-eyebrow mb-3">Sobre</p>
               <h2 className="mb-5 text-3xl font-bold leading-tight tracking-tight text-gray-900 sm:text-4xl">
-                Trajetória, formação e visão integrada de saúde
+                Trajetória, formação e visão
               </h2>
-              <p className="mb-8 text-lg leading-relaxed text-gray-600">
-                Uma prática médica orientada por evidência científica, escuta ativa e
-                compromisso com a qualidade de vida — do diagnóstico ao acompanhamento
-                contínuo.
+              <p className="mb-8 text-lg font-medium italic leading-relaxed text-gray-700">
+                &ldquo;A ciência orienta a conduta; a escuta atenta guia o
+                cuidado.&rdquo;
               </p>
               <ul className="space-y-4">
                 {careerHighlights.map((item) => (
@@ -194,9 +194,9 @@ export default async function Home() {
               </ul>
               <div className="mt-8 flex flex-wrap gap-3">
                 {[
-                  { icon: Award, label: "Formação de excelência" },
-                  { icon: Activity, label: "Tecnologia e precisão" },
-                  { icon: Users, label: "Foco no paciente" },
+                  { icon: Award, label: "Ciência e formação" },
+                  { icon: Activity, label: "Precisão clínica" },
+                  { icon: Users, label: "Cuidado humanizado" },
                 ].map((item) => (
                   <div
                     key={item.label}

@@ -24,6 +24,16 @@ export default function SobrePage() {
                 alt="Dr. Pedro Felipe Prates Silva"
                 className="h-full w-full object-cover object-top"
               />
+              {/* Selo SBC — canto inferior direito, ~18% da foto */}
+              <div className="pointer-events-none absolute bottom-3 right-3 w-[18%] min-w-[64px] max-w-[110px] sm:bottom-4 sm:right-4">
+                <div className="rounded-full bg-white/95 p-1.5 shadow-md ring-1 ring-black/5">
+                  <img
+                    src="/images/sbc-logo.png"
+                    alt="Sociedade Brasileira de Cardiologia"
+                    className="h-auto w-full"
+                  />
+                </div>
+              </div>
             </div>
 
             <div>
@@ -44,9 +54,12 @@ export default function SobrePage() {
                 </span>
               </div>
               <p className="mb-8 text-xl leading-relaxed text-gray-700">
-                Cardiologista e Arritmologista com formação em Eletrofisiologia Clínica e
-                Invasiva pela UNIFESP/EPM, dedicado ao diagnóstico e tratamento de
-                arritmias cardíacas com excelência e humanização.
+                Cardiologista e Arritmologista em Brasília com especialização em
+                Eletrofisiologia Clínica e Invasiva pela UNIFESP/EPM. Atuação dedicada ao
+                diagnóstico de palpitações, tonturas e desmaios, e ao tratamento de
+                arritmias cardíacas complexas, como a Fibrilação Atrial, através de
+                ablação por cateter e indicação de marcapasso e cardiodesfibriladores
+                (CDI).
               </p>
               <div className="flex flex-col gap-4 sm:flex-row">
                 <WhatsAppButton />
@@ -60,70 +73,104 @@ export default function SobrePage() {
       </section>
 
       {/* Sobre */}
-      <section className="py-16 bg-white">
+      <section className="bg-white py-16">
         <div className="mx-auto max-w-4xl px-4 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Sobre mim</h2>
-          <div className="prose prose-lg max-w-none text-gray-700 space-y-4">
+          <h2 className="mb-6 text-3xl font-bold tracking-tight text-gray-900">
+            Sobre mim
+          </h2>
+          <div className="space-y-5 text-lg leading-relaxed text-gray-700">
             <p>
-              A arritmologia é uma subespecialidade da cardiologia em que o médico
-              arritmologista é aquele que se dedica ao diagnóstico e tratamento dos
-              distúrbios do ritmo do coração (arritmias cardíacas).
+              Sempre acreditei que cuidar do coração vai muito além de interpretar exames
+              ou escolher o melhor tratamento. É sobre ouvir, acolher e caminhar junto com
+              cada paciente, entendendo suas histórias, seus medos e seus objetivos de
+              vida.
             </p>
             <p>
-              Graduado em medicina pela Universidade de Cuiabá-MT, possuo formação em
-              Cardiologia, com título de especialista emitido pela Sociedade Brasileira
-              de Cardiologia, atuando em Brasília com ênfase na área de Eletrofisiologia
-              Clínica e Invasiva (Unifesp/EPM).
+              Sou médico formado pela Universidade de Cuiabá-MT e me especializei em
+              Cardiologia. Mais tarde, encontrei na arritmologia minha verdadeira vocação —
+              a área que se dedica aos distúrbios do ritmo cardíaco. Desde então,
+              aprofundei minha formação em Eletrofisiologia Invasiva, trazendo para
+              Brasília um cuidado técnico, atualizado e, acima de tudo, humano.
             </p>
             <p>
-              Também atendo consultas cardiológicas em geral, realizando check-ups e risco
-              pré-operatório, sempre com foco no cuidado integral e personalizado de cada
-              paciente.
+              Além do tratamento de arritmias complexas, também realizo consultas
+              cardiológicas gerais, check-ups e avaliações pré-operatórias. Em cada
+              consulta, meu foco é o mesmo: oferecer atenção genuína, explicar com clareza
+              e construir, junto com o paciente, o melhor caminho para sua saúde e
+              bem-estar.
+            </p>
+            <p>
+              Acredito que confiança se constrói no detalhe — no olhar atento, na escuta
+              cuidadosa e na sensação de que você não está enfrentando nada sozinho.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Formação */}
-      <section className="py-16 bg-gray-50">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
-            Formação Acadêmica
-          </h2>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-xl p-6 shadow-sm border">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 text-blue-600 mb-4">
-                <GraduationCap className="h-6 w-6" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                Graduação em Medicina
-              </h3>
-              <p className="text-gray-600">Universidade de Cuiabá-MT</p>
-            </div>
-            
-            <div className="bg-white rounded-xl p-6 shadow-sm border">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 text-blue-600 mb-4">
-                <Heart className="h-6 w-6" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                Especialização em Cardiologia
-              </h3>
-              <p className="text-gray-600">
-                Título de especialista pela Sociedade Brasileira de Cardiologia (SBC)
-              </p>
-            </div>
-            
-            <div className="bg-white rounded-xl p-6 shadow-sm border">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 text-blue-600 mb-4">
-                <Briefcase className="h-6 w-6" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                Eletrofisiologia Clínica e Invasiva
-              </h3>
-              <p className="text-gray-600">UNIFESP/EPM - Centro de Referência Nacional</p>
-            </div>
+      {/* Currículo resumido */}
+      <section className="bg-gray-50 py-16">
+        <div className="mx-auto max-w-4xl px-4 lg:px-8">
+          <div className="mb-10 text-center">
+            <p className="section-eyebrow mb-3">Trajetória</p>
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900">
+              Currículo resumido
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-gray-600">
+              Formação e atuação profissional em cardiologia e eletrofisiologia.
+            </p>
           </div>
+
+          <ol className="space-y-4">
+            {[
+              {
+                icon: GraduationCap,
+                title: "Graduação em Medicina",
+                detail: "Universidade de Cuiabá — MT",
+              },
+              {
+                icon: Heart,
+                title: "Residência em Clínica Médica",
+                detail: "Hospital Regional de Taguatinga",
+              },
+              {
+                icon: Heart,
+                title: "Residência em Cardiologia",
+                detail: "Instituto Hospital de Base do Distrito Federal",
+              },
+              {
+                icon: Award,
+                title: "Especialista em Eletrofisiologia Clínica e Invasiva",
+                detail: "Universidade Federal de São Paulo — Unifesp/EPM",
+              },
+              {
+                icon: Award,
+                title: "Título de Especialista",
+                detail: "Sociedade Brasileira de Cardiologia (SBC)",
+              },
+              {
+                icon: Briefcase,
+                title: "Médico do Corpo Clínico",
+                detail:
+                  "Setor de Eletrofisiologia e Arritmias Cardíacas — Instituto Hospital de Base do Distrito Federal",
+              },
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <li
+                  key={item.title}
+                  className="flex gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
+                >
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-700">
+                    <Icon className="h-5 w-5" aria-hidden />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">{item.title}</h3>
+                    <p className="mt-1 text-gray-600">{item.detail}</p>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
         </div>
       </section>
 
