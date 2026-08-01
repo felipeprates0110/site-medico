@@ -1,6 +1,10 @@
+"use client";
+
+import { useState } from "react";
 import { Star, Quote } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Review } from "@/types";
+import { cn } from "@/lib/utils";
 
 export type ReviewCardData = Review & {
   source?: string;
@@ -8,38 +12,106 @@ export type ReviewCardData = Review & {
 
 interface ReviewCardProps {
   review: ReviewCardData;
+  /** Destaque maior na home (1 depoimento em evidência). */
+  featured?: boolean;
 }
 
-export function ReviewCard({ review }: ReviewCardProps) {
+const COLLAPSE_LENGTH = 160;
+
+function formatReviewDate(date: string) {
+  const parsed = new Date(date);
+  if (Number.isNaN(parsed.getTime())) return date;
+
+  return parsed.toLocaleDateString("pt-BR", {
+    month: "short",
+    year: "numeric",
+  });
+}
+
+export function ReviewCard({ review, featured = false }: ReviewCardProps) {
+  const [expanded, setExpanded] = useState(false);
+  const canCollapse = review.comment.length > COLLAPSE_LENGTH;
+  const sourceLabel = review.source ?? "Doctoralia";
+
   return (
-    <Card className="h-full rounded-3xl border-gray-200 bg-white shadow-md ring-1 ring-gray-100 transition-all hover:border-primary-200 hover:shadow-lg">
-      <CardContent className="p-8">
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex gap-0.5 text-amber-500">
+    <Card
+      className={cn(
+        "h-full rounded-2xl border-gray-100 bg-white shadow-sm ring-1 ring-gray-100 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md",
+        featured &&
+          "border-primary-100 bg-gradient-to-br from-white via-white to-primary-50/40 shadow-md ring-primary-100/80 md:col-span-2 lg:col-span-1"
+      )}
+    >
+      <CardContent className={cn("flex h-full flex-col p-6", featured && "p-8 md:p-10")}>
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div className="flex gap-0.5 text-amber-500" aria-label={`${review.rating} de 5 estrelas`}>
             {[...Array(5)].map((_, i) => (
               <Star
                 key={i}
-                className={`h-4 w-4 ${i < review.rating ? "fill-current" : "text-gray-300"}`}
+                className={cn(
+                  featured ? "h-5 w-5" : "h-4 w-4",
+                  i < review.rating ? "fill-current" : "text-gray-300"
+                )}
               />
             ))}
           </div>
-          <Quote className="h-8 w-8 text-primary-200" />
+          <Quote
+            className={cn(
+              "shrink-0 text-primary-200",
+              featured ? "h-9 w-9" : "h-7 w-7"
+            )}
+            aria-hidden
+          />
         </div>
 
-        <p className="mb-8 line-clamp-4 text-base italic leading-relaxed text-gray-800">
+        {/* Texto completo no HTML (SEO); line-clamp só esconde visualmente */}
+        <blockquote
+          className={cn(
+            "mb-3 flex-1 leading-relaxed text-gray-800",
+            featured
+              ? "text-base not-italic sm:text-lg lg:text-xl"
+              : "text-base italic",
+            canCollapse && !expanded && (featured ? "line-clamp-5 sm:line-clamp-6" : "line-clamp-4")
+          )}
+        >
           &ldquo;{review.comment}&rdquo;
-        </p>
+        </blockquote>
 
-        <div className="flex items-center gap-4 border-t border-gray-200 pt-6">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary-500 to-primary-700 text-sm font-bold text-white">
+        {canCollapse && (
+          <button
+            type="button"
+            onClick={() => setExpanded((value) => !value)}
+            className="mb-5 self-start text-sm font-semibold text-primary-700 transition-colors hover:text-primary-800"
+          >
+            {expanded ? "Mostrar menos" : "Ler depoimento completo"}
+          </button>
+        )}
+
+        <div className="mt-auto flex items-center gap-3 border-t border-gray-100 pt-5">
+          <div
+            className={cn(
+              "flex shrink-0 items-center justify-center rounded-full bg-primary-600 font-bold text-white",
+              featured ? "h-12 w-12 text-base" : "h-10 w-10 text-sm"
+            )}
+            aria-hidden
+          >
             {review.author.charAt(0).toUpperCase()}
           </div>
-          <div>
-            <h4 className="text-sm font-bold text-gray-950">{review.author}</h4>
-            <div className="mt-0.5 flex items-center gap-2">
-              <span className="text-xs font-medium text-gray-600">{review.date}</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-primary-700">
-                {review.source ?? "Verificado"}
+          <div className="min-w-0">
+            <p className={cn("font-bold text-gray-900", featured ? "text-base" : "text-sm")}>
+              {review.author}
+            </p>
+            <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+              <time
+                className="text-xs text-gray-500"
+                dateTime={review.date}
+              >
+                {formatReviewDate(review.date)}
+              </time>
+              <span className="text-gray-300" aria-hidden>
+                ·
+              </span>
+              <span className="text-[11px] font-semibold uppercase tracking-wide text-[#00A88E]">
+                {sourceLabel}
               </span>
             </div>
           </div>

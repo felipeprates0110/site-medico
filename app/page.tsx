@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { SpecialtyCard } from "@/components/specialty-card";
-import { ReviewCard } from "@/components/review-card";
+import { ReviewsShowcase } from "@/components/reviews-showcase";
 import { BlogCard } from "@/components/blog/BlogCard";
 import { ReviewsPlatformBadges } from "@/components/google-reviews-badge";
 import { FAQAccordion } from "@/components/faq-accordion";
@@ -49,7 +49,6 @@ export default async function Home() {
       getPublishedArticles(),
     ]);
 
-  const featuredReviews = reviews.slice(0, 3);
   const featuredArticles = articles.slice(0, 3);
 
   // Totais do Doctoralia (reviewStats). O 4º slot é o selo visual (não texto).
@@ -296,14 +295,13 @@ export default async function Home() {
               O que dizem os pacientes
             </h2>
             <p className="mt-3 text-base text-gray-600">
-              Mais de {reviewStats.total} avaliações reais e verificadas.
+              Mais de {reviewStats.total} avaliações reais e verificadas na
+              Doctoralia.
             </p>
           </div>
-          <div className="mb-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {featuredReviews.map((review) => (
-              <ReviewCard key={review.id} review={review} />
-            ))}
-          </div>
+
+          <ReviewsShowcase reviews={reviews} />
+
           <div className="text-center">
             <Button asChild variant="outline" size="lg" className="rounded-xl">
               <Link href="/avaliacoes">

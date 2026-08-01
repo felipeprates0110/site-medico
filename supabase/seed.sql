@@ -325,13 +325,14 @@ WHERE NOT EXISTS (SELECT 1 FROM faq_items LIMIT 1);
 INSERT INTO reviews (author, date, rating, comment, service, verified, approved, source)
 SELECT author, date::DATE, rating, comment, service, verified, approved, source
 FROM (VALUES
+  ('Joaquim Leão', '2024-01-16', 5, 'Busquei um cardiologista para atendimento de check-up anual, e gostei muito da minha experiência com o Dr. Pedro Felipe. Foi atencioso e preciso nos exames solicitados. Recomendo consultas com ele.', 'Consulta cardiologista', true, true, 'doctoralia'),
+  ('Elida Dias', '2023-05-23', 5, 'Gosto muito do Dr Pedro. Ele é um médico atencioso, carismático, muito competente. Excelente profissional. Já o indiquei para várias pessoas que também gostaram muito do seu atendimento. Médico nota mil.', 'Consulta cardiologista', true, true, 'doctoralia'),
   ('Cesar Caetano de Resende', '2024-06-12', 5, 'Gostei da consulta, informações, empatia e conhecimento clínico demonstrados com presteza.', 'Consulta cardiologista', true, true, 'doctoralia'),
   ('Maria Cecília Castro', '2024-05-29', 5, 'Doutor explica tudo muito bem e é atencioso. Demonstra interesse pelo paciente.', 'Consulta cardiologista', true, true, 'doctoralia'),
   ('Valdete', '2024-05-29', 5, 'Muito detalhista, ótima explicação gentil e focado, prestativo', 'Consulta cardiologista', true, true, 'doctoralia'),
   ('Valéria Helena Lopes', '2024-05-15', 5, 'Eu e meu esposo gostamos muito do atendimento. Foi claro na explicação do tratamento e solicitou exames complementares.', 'Consulta cardiologista', true, true, 'doctoralia'),
   ('Luiz Abadia de Pina Neto', '2024-05-15', 5, 'Me senti seguro em fazer o procedimento crioablação pois todos os riscos me foram esclarecidos de forma clara.', 'Consulta arritmologista', true, true, 'doctoralia'),
   ('Adroaldo Veloso', '2024-05-15', 5, 'Excelente profissional. O atendimento foi super satisfatório', 'Consulta cardiologista', true, true, 'doctoralia'),
-  ('Jacqueline Siqueira', '2024-05-22', 4, 'Bom profissional, sério e demonstrou bastante conhecimento, porém pouco comunicativo.', 'Consulta cardiologista', true, true, 'doctoralia'),
   ('Roberto Silva', '2024-04-20', 5, 'Profissional extremamente competente e atencioso. Explicou todo o procedimento de ablação de forma clara.', 'Consulta arritmologista', true, true, 'doctoralia'),
   ('Ana Paula Martins', '2024-04-15', 5, 'Primeira consulta e já me senti acolhida. Dr. Pedro é muito cuidadoso e detalhista na avaliação.', 'Consulta cardiologista', true, true, 'doctoralia'),
   ('Carlos Eduardo', '2024-03-28', 5, 'Excelente cardiologista! Me ajudou muito no controle da minha fibrilação atrial. Recomendo!', 'Consulta arritmologista', true, true, 'doctoralia')

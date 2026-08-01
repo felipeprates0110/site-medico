@@ -3,6 +3,26 @@ import type { Review } from "@/types";
 // Avaliações importadas do Doctoralia (amostra das 230 reviews)
 export const reviews: Review[] = [
   {
+    id: "11",
+    author: "Joaquim Leão",
+    date: "2024-01-16",
+    rating: 5,
+    comment:
+      "Busquei um cardiologista para atendimento de check-up anual, e gostei muito da minha experiência com o Dr. Pedro Felipe. Foi atencioso e preciso nos exames solicitados. Recomendo consultas com ele.",
+    verified: true,
+    service: "Consulta cardiologista",
+  },
+  {
+    id: "12",
+    author: "Elida Dias",
+    date: "2023-05-23",
+    rating: 5,
+    comment:
+      "Gosto muito do Dr Pedro. Ele é um médico atencioso, carismático, muito competente. Excelente profissional. Já o indiquei para várias pessoas que também gostaram muito do seu atendimento. Médico nota mil.",
+    verified: true,
+    service: "Consulta cardiologista",
+  },
+  {
     id: "1",
     author: "Cesar Caetano de Resende",
     date: "2024-06-12",
@@ -57,16 +77,6 @@ export const reviews: Review[] = [
     date: "2024-05-15",
     rating: 5,
     comment: "Excelente profissional. O atendimento foi super satisfatório",
-    verified: true,
-    service: "Consulta cardiologista",
-  },
-  {
-    id: "7",
-    author: "Jacqueline Siqueira",
-    date: "2024-05-22",
-    rating: 4,
-    comment:
-      "Bom profissional, sério e demonstrou bastante conhecimento, porém pouco comunicativo.",
     verified: true,
     service: "Consulta cardiologista",
   },
