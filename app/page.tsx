@@ -170,9 +170,9 @@ export default async function Home() {
           <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
             <div className="relative order-2 overflow-hidden rounded-2xl shadow-xl ring-1 ring-gray-200/80 lg:order-1">
               <img
-                src={siteConfig.profile_photo_url || "/images/dr-pedro-felipe.png"}
-                alt={siteConfig.doctor_name || "Dr. Pedro Felipe"}
-                className="aspect-[4/5] w-full object-cover object-top sm:aspect-[4/3]"
+                src="/images/dr-pedro-eletrofisiologia.png"
+                alt={`${siteConfig.doctor_name || "Dr. Pedro Felipe"} em procedimento de eletrofisiologia`}
+                className="aspect-[3/2] w-full object-cover object-[center_40%]"
               />
             </div>
             <div className="order-1 lg:order-2">
