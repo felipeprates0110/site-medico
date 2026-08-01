@@ -18,16 +18,6 @@ interface ReviewCardProps {
 
 const COLLAPSE_LENGTH = 160;
 
-function formatReviewDate(date: string) {
-  const parsed = new Date(date);
-  if (Number.isNaN(parsed.getTime())) return date;
-
-  return parsed.toLocaleDateString("pt-BR", {
-    month: "short",
-    year: "numeric",
-  });
-}
-
 export function ReviewCard({ review, featured = false }: ReviewCardProps) {
   const [expanded, setExpanded] = useState(false);
   const canCollapse = review.comment.length > COLLAPSE_LENGTH;
@@ -100,20 +90,9 @@ export function ReviewCard({ review, featured = false }: ReviewCardProps) {
             <p className={cn("font-bold text-gray-900", featured ? "text-base" : "text-sm")}>
               {review.author}
             </p>
-            <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
-              <time
-                className="text-xs text-gray-500"
-                dateTime={review.date}
-              >
-                {formatReviewDate(review.date)}
-              </time>
-              <span className="text-gray-300" aria-hidden>
-                ·
-              </span>
-              <span className="text-[11px] font-semibold uppercase tracking-wide text-[#00A88E]">
-                {sourceLabel}
-              </span>
-            </div>
+            <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-[#00A88E]">
+              {sourceLabel}
+            </p>
           </div>
         </div>
       </CardContent>

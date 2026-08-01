@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { FloatingWhatsAppButton } from "@/components/whatsapp-button";
+import { SiteAnalyticsProvider } from "@/components/analytics/site-analytics-provider";
 import { defaultMetadata } from "@/lib/metadata";
 import { combinedSchema } from "@/lib/schema";
 import { getContactInfo } from "@/lib/data";
@@ -41,6 +42,7 @@ export default async function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
           <FloatingWhatsAppButton whatsapp={contact.whatsapp} />
+          <SiteAnalyticsProvider />
         </Providers>
       </body>
     </html>

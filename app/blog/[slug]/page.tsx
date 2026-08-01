@@ -1,9 +1,9 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import {
   getApprovedCommentsByArticleId,
+  getContactInfo,
   getPublishedArticleBySlug,
   getSiteConfig,
 } from "@/lib/data";
@@ -11,6 +11,8 @@ import { AuthorBox } from "@/components/blog/AuthorBox";
 import { AdSenseUnit } from "@/components/blog/AdSenseUnit";
 import { AffiliateBox } from "@/components/blog/AffiliateBox";
 import { BlogComments } from "@/components/blog/BlogComments";
+import { TrackedLink } from "@/components/analytics/tracked-link";
+import { WhatsAppButton } from "@/components/whatsapp-button";
 import { DEFAULT_DOCTOR_PHOTO } from "@/lib/doctor-photo";
 import { siteConfig as metadataSiteConfig } from "@/lib/metadata";
 
@@ -95,9 +97,10 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const resolvedParams = await params;
-  const [article, siteConfig] = await Promise.all([
+  const [article, siteConfig, contact] = await Promise.all([
     getPublishedArticleBySlug(resolvedParams.slug),
     getSiteConfig(),
+    getContactInfo(),
   ]);
 
   if (!article) {
@@ -238,7 +241,8 @@ export default async function BlogPostPage({
             completa presencialmente ou via Telemedicina para todo o Brasil.
           </p>
           <div className="relative z-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link
+            <TrackedLink
+              event="agendar_click"
               href="/agendar"
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-lg font-bold text-gray-900 shadow-lg transition-all duration-300 hover:bg-primary-50 sm:w-auto"
             >
@@ -256,28 +260,14 @@ export default async function BlogPostPage({
                 ></path>
               </svg>
               Agendar Consulta
-            </Link>
-            <a
-              href="https://wa.me/5561999999999"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-8 py-4 text-lg font-bold text-white transition-all duration-300 hover:bg-white/10 sm:w-auto"
+            </TrackedLink>
+            <WhatsAppButton
+              whatsapp={contact.whatsapp}
+              size="lg"
+              className="w-full rounded-xl border border-white/20 bg-white/5 text-white shadow-none hover:bg-white/10 sm:w-auto"
             >
-              <svg
-                className="h-5 w-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"
-                ></path>
-              </svg>
               Falar no WhatsApp
-            </a>
+            </WhatsAppButton>
           </div>
         </div>
       </section>

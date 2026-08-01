@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Phone, Mail, MapPin, Clock, MessageCircle, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WhatsAppButton } from "@/components/whatsapp-button";
+import { TrackedAnchor, TrackedLink } from "@/components/analytics/tracked-link";
 import { siteConfig } from "@/lib/metadata";
 import { getContactInfo, getPrimaryAddress } from "@/lib/data";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Contato - Agende sua Consulta",
@@ -88,7 +88,9 @@ export default async function ContatoPage() {
                 Ligue para agendar sua consulta
               </p>
               <Button asChild size="sm" className="w-full">
-                <a href={telHref(contact.phone)}>{contact.phone}</a>
+                <TrackedAnchor event="phone_click" href={telHref(contact.phone)}>
+                  {contact.phone}
+                </TrackedAnchor>
               </Button>
             </div>
 
@@ -99,7 +101,9 @@ export default async function ContatoPage() {
               <h3 className="text-lg font-bold text-gray-900 mb-2">E-mail</h3>
               <p className="text-sm text-gray-600 mb-4">Envie sua mensagem</p>
               <Button asChild variant="outline" size="sm" className="w-full">
-                <a href={`mailto:${contact.email}`}>Enviar e-mail</a>
+                <TrackedAnchor event="email_click" href={`mailto:${contact.email}`}>
+                  Enviar e-mail
+                </TrackedAnchor>
               </Button>
             </div>
 
@@ -110,7 +114,9 @@ export default async function ContatoPage() {
               <h3 className="text-lg font-bold text-gray-900 mb-2">Formulário</h3>
               <p className="text-sm text-gray-600 mb-4">Agende online</p>
               <Button asChild variant="outline" size="sm" className="w-full">
-                <Link href="/agendar">Agendar consulta</Link>
+                <TrackedLink event="agendar_click" href="/agendar">
+                  Agendar consulta
+                </TrackedLink>
               </Button>
             </div>
           </div>
@@ -186,21 +192,23 @@ export default async function ContatoPage() {
                     <h3 className="font-semibold text-gray-900 mb-1">Contato</h3>
                     <p className="text-gray-600">
                       Telefone:{" "}
-                      <a
+                      <TrackedAnchor
+                        event="phone_click"
                         href={telHref(contact.phone)}
                         className="text-blue-600 hover:underline"
                       >
                         {contact.phone}
-                      </a>
+                      </TrackedAnchor>
                     </p>
                     <p className="text-gray-600">
                       E-mail:{" "}
-                      <a
+                      <TrackedAnchor
+                        event="email_click"
                         href={`mailto:${contact.email}`}
                         className="text-blue-600 hover:underline"
                       >
                         {contact.email}
-                      </a>
+                      </TrackedAnchor>
                     </p>
                   </div>
                 </div>

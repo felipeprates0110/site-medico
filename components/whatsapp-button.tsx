@@ -4,6 +4,7 @@ import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/lib/metadata";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/analytics";
 
 interface WhatsAppButtonProps {
   message?: string;
@@ -41,7 +42,12 @@ export function WhatsAppButton({
         className
       )}
     >
-      <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+      <a
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => trackEvent("whatsapp_click")}
+      >
         <MessageCircle className="h-5 w-5" />
         {children || "Agendar via WhatsApp"}
       </a>
@@ -62,6 +68,7 @@ export function FloatingWhatsAppButton({
       )}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={() => trackEvent("whatsapp_click", { meta: { source: "floating" } })}
       className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-white shadow-lg transition-all hover:bg-green-600 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
       aria-label="Enviar mensagem no WhatsApp"
     >

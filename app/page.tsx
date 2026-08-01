@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WhatsAppButton } from "@/components/whatsapp-button";
+import { TrackedLink } from "@/components/analytics/tracked-link";
 import { SpecialtyCard } from "@/components/specialty-card";
 import { ReviewsShowcase } from "@/components/reviews-showcase";
 import { BlogCard } from "@/components/blog/BlogCard";
@@ -351,7 +352,9 @@ export default async function Home() {
                 size="xl"
                 className="rounded-xl border-white/20 bg-white/5 text-white transition-all duration-300 hover:bg-white/10"
               >
-                <Link href="/agendar">Formulário de agendamento</Link>
+                <TrackedLink event="agendar_click" href="/agendar">
+                  Formulário de agendamento
+                </TrackedLink>
               </Button>
             </div>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">

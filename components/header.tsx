@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X, Heart, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/analytics";
 
 const navigation = [
   { name: "Início", href: "/" },
@@ -89,7 +90,7 @@ export function Header() {
             className="rounded-lg bg-gray-900 px-5 font-semibold shadow-none transition-all duration-300 hover:bg-primary-600"
             asChild
           >
-            <Link href="/agendar">
+            <Link href="/agendar" onClick={() => trackEvent("agendar_click")}>
               <Calendar className="mr-2 h-4 w-4" />
               Agendar Consulta
             </Link>
@@ -147,7 +148,13 @@ export function Header() {
           </div>
           <div className="mt-8">
             <Button className="w-full rounded-xl bg-gray-900 hover:bg-primary-600" asChild>
-              <Link href="/agendar" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                href="/agendar"
+                onClick={() => {
+                  trackEvent("agendar_click");
+                  setMobileMenuOpen(false);
+                }}
+              >
                 Agendar Consulta
               </Link>
             </Button>

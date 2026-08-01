@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Heart, Phone, Mail, MapPin, Clock } from "lucide-react";
 import { getContactInfo, getPrimaryAddress } from "@/lib/data";
 import { siteConfig } from "@/lib/metadata";
+import { TrackedAnchor, TrackedLink } from "@/components/analytics/tracked-link";
 
 const footerNavigation = {
   atendimento: [
@@ -59,12 +60,22 @@ export async function Footer() {
             <ul className="mt-4 space-y-2.5">
               {footerNavigation.atendimento.map((item) => (
                 <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className="text-sm text-gray-400 transition-colors hover:text-primary-300"
-                  >
-                    {item.name}
-                  </Link>
+                  {item.href === "/agendar" ? (
+                    <TrackedLink
+                      event="agendar_click"
+                      href={item.href}
+                      className="text-sm text-gray-400 transition-colors hover:text-primary-300"
+                    >
+                      {item.name}
+                    </TrackedLink>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      className="text-sm text-gray-400 transition-colors hover:text-primary-300"
+                    >
+                      {item.name}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -105,21 +116,23 @@ export async function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-primary-400" />
-                <a
+                <TrackedAnchor
+                  event="phone_click"
                   href={telHref(contact.phone)}
                   className="text-sm text-gray-400 hover:text-primary-300"
                 >
                   {contact.phone}
-                </a>
+                </TrackedAnchor>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-primary-400" />
-                <a
+                <TrackedAnchor
+                  event="email_click"
                   href={`mailto:${contact.email}`}
                   className="text-sm text-gray-400 hover:text-primary-300"
                 >
                   {contact.email}
-                </a>
+                </TrackedAnchor>
               </li>
               <li className="flex items-start gap-3">
                 <Clock className="mt-0.5 h-5 w-5 shrink-0 text-primary-400" />
