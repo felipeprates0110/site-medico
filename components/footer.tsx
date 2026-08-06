@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Heart, Phone, Mail, MapPin, Clock } from "lucide-react";
+import { Heart, Phone, Mail, MapPin, Clock, MessageCircle } from "lucide-react";
 import { getContactInfo, getPrimaryAddress } from "@/lib/data";
 import { siteConfig } from "@/lib/metadata";
 import { TrackedAnchor, TrackedLink } from "@/components/analytics/tracked-link";
@@ -30,6 +30,24 @@ const footerNavigation = {
 
 function telHref(phone: string) {
   return `tel:${phone.replace(/\D/g, "")}`;
+}
+
+/** Exibe WhatsApp no formato BR: 5561996270787 → (61) 9 9627-0787 */
+function formatWhatsAppDisplay(whatsapp: string) {
+  const digits = whatsapp.replace(/\D/g, "");
+  if (digits.length === 13 && digits.startsWith("55")) {
+    const ddd = digits.slice(2, 4);
+    const nine = digits.slice(4, 5);
+    const part1 = digits.slice(5, 9);
+    const part2 = digits.slice(9);
+    return `(${ddd}) ${nine} ${part1}-${part2}`;
+  }
+  return whatsapp;
+}
+
+function whatsappHref(whatsapp: string) {
+  const digits = whatsapp.replace(/\D/g, "");
+  return `https://wa.me/${digits}`;
 }
 
 export async function Footer() {
@@ -127,6 +145,18 @@ export async function Footer() {
                   className="text-sm text-gray-400 hover:text-primary-300"
                 >
                   {contact.phone}
+                </TrackedAnchor>
+              </li>
+              <li className="flex items-center gap-3">
+                <MessageCircle className="h-5 w-5 shrink-0 text-primary-400" />
+                <TrackedAnchor
+                  event="whatsapp_click"
+                  href={whatsappHref(contact.whatsapp)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-gray-400 hover:text-primary-300"
+                >
+                  {formatWhatsAppDisplay(contact.whatsapp)}
                 </TrackedAnchor>
               </li>
               <li className="flex items-center gap-3">
