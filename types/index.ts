@@ -8,6 +8,11 @@ export interface Review {
   service?: string;
 }
 
+export interface SpecialtyConditionDetail {
+  title: string;
+  summary: string;
+}
+
 export interface Specialty {
   id: string;
   slug: string;
@@ -17,6 +22,16 @@ export interface Specialty {
   icon: string;
   benefits: string[];
   commonConditions: string[];
+  /** Como funciona a consulta / o que o especialista avalia */
+  approach?: string;
+  /** Patologias com breve explicação (prevalece sobre commonConditions na página) */
+  conditionDetails?: SpecialtyConditionDetail[];
+  /** Sinais e sintomas que indicam procurar o especialista */
+  whenToSeek?: string[];
+  /** Exames frequentemente solicitados */
+  exams?: string[];
+  /** Nota curta sobre prevenção e acompanhamento */
+  preventionNote?: string;
 }
 
 export interface Treatment {
