@@ -4,7 +4,13 @@ import { ArrowLeft, AlertCircle, Stethoscope, Pill, Shield } from "lucide-react"
 import { treatments } from "@/data/treatments";
 import { Button } from "@/components/ui/button";
 import { WhatsAppButton } from "@/components/whatsapp-button";
+import { TrackedLink } from "@/components/analytics/tracked-link";
 import Link from "next/link";
+
+const SEGUNDA_OPINIAO_TREATMENT_SLUGS = new Set([
+  "fibrilacao-atrial",
+  "ablacao-por-cateter",
+]);
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -161,11 +167,25 @@ export default async function TratamentoPage({ params }: PageProps) {
           <p className="text-xl text-blue-100 mb-8">
             Agende uma consulta para avaliação e tratamento adequado
           </p>
-          <WhatsAppButton
-            size="lg"
-            className="bg-green-600 hover:bg-green-700"
-            message={`Olá! Gostaria de agendar uma consulta sobre ${treatment.title}.`}
-          />
+          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <WhatsAppButton
+              size="lg"
+              className="bg-green-600 hover:bg-green-700"
+              message={`Olá! Gostaria de agendar uma consulta sobre ${treatment.title}.`}
+            />
+            {SEGUNDA_OPINIAO_TREATMENT_SLUGS.has(treatment.slug) && (
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="border-white bg-white/10 text-white hover:bg-white/20"
+              >
+                <TrackedLink event="segunda_opiniao_click" href="/segunda-opiniao">
+                  Segunda opinião
+                </TrackedLink>
+              </Button>
+            )}
+          </div>
         </div>
       </section>
     </div>

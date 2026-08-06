@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Phone, MapPin, Clock, MessageCircle, ExternalLink } from "lucide-react";
+import {
+  Phone,
+  MapPin,
+  Clock,
+  MessageCircle,
+  ExternalLink,
+  Stethoscope,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { TrackedAnchor, TrackedLink } from "@/components/analytics/tracked-link";
@@ -125,6 +132,28 @@ export default async function ContatoPage() {
                 </TrackedLink>
               </Button>
             </div>
+          </div>
+
+          <div className="rounded-xl border border-primary-100 bg-primary-50/60 p-6 md:flex md:items-center md:justify-between md:gap-6">
+            <div className="mb-4 flex items-start gap-4 md:mb-0">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary-600 text-white">
+                <Stethoscope className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">
+                  Busca segunda opinião?
+                </h3>
+                <p className="mt-1 text-sm text-gray-600">
+                  Se você já tem diagnóstico ou indicação de procedimento e
+                  quer outra avaliação em arritmologia, use o fluxo dedicado.
+                </p>
+              </div>
+            </div>
+            <Button asChild className="w-full shrink-0 md:w-auto">
+              <TrackedLink event="segunda_opiniao_click" href="/segunda-opiniao">
+                Segunda opinião
+              </TrackedLink>
+            </Button>
           </div>
         </div>
       </section>

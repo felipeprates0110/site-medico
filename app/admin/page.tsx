@@ -28,6 +28,7 @@ type AnalyticsSummary = {
   uniqueVisitors: number;
   whatsappClicks: number;
   agendarClicks: number;
+  segundaOpiniaoClicks: number;
   phoneClicks: number;
   emailClicks: number;
   topPages: { path: string; views: number }[];
@@ -41,6 +42,7 @@ const emptyAnalytics: AnalyticsSummary = {
   uniqueVisitors: 0,
   whatsappClicks: 0,
   agendarClicks: 0,
+  segundaOpiniaoClicks: 0,
   phoneClicks: 0,
   emailClicks: 0,
   topPages: [],
@@ -186,6 +188,14 @@ export default function AdminDashboard() {
       color: "text-indigo-700",
       bg: "bg-indigo-50",
     },
+    {
+      title: "2ª opinião",
+      value: analytics.segundaOpiniaoClicks,
+      icon: MousePointerClick,
+      description: "Cliques / solicitações de segunda opinião",
+      color: "text-amber-700",
+      bg: "bg-amber-50",
+    },
   ];
 
   const maxDailyViews = Math.max(1, ...analytics.daily.map((d) => d.views));
@@ -248,7 +258,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
           {accessCards.map((card) => (
             <Card key={card.title}>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -337,8 +347,11 @@ export default function AdminDashboard() {
               )}
 
               <div className="pt-2 text-xs text-gray-500">
-                Também: {analyticsLoading ? "…" : analytics.phoneClicks} cliques em telefone ·{" "}
-                {analyticsLoading ? "…" : analytics.emailClicks} em e-mail
+                Também: {analyticsLoading ? "…" : analytics.phoneClicks} cliques em
+                telefone · {analyticsLoading ? "…" : analytics.emailClicks} em
+                e-mail ·{" "}
+                {analyticsLoading ? "…" : analytics.segundaOpiniaoClicks} em 2ª
+                opinião
               </div>
 
               <a

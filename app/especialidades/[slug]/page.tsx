@@ -14,7 +14,13 @@ import {
 import { specialties } from "@/data/specialties";
 import { Button } from "@/components/ui/button";
 import { WhatsAppButton } from "@/components/whatsapp-button";
+import { TrackedLink } from "@/components/analytics/tracked-link";
 import Link from "next/link";
+
+const SEGUNDA_OPINIAO_SPECIALTY_SLUGS = new Set([
+  "arritmologia",
+  "eletrofisiologia",
+]);
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -436,14 +442,27 @@ export default async function EspecialidadePage({ params }: PageProps) {
               className="bg-green-600 hover:bg-green-700"
               message={`Olá! Gostaria de agendar uma consulta de ${specialty.title}.`}
             />
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="border-white bg-white/10 text-white hover:bg-white/20"
-            >
-              <Link href="/contato">Outras formas de contato</Link>
-            </Button>
+            {SEGUNDA_OPINIAO_SPECIALTY_SLUGS.has(specialty.slug) ? (
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="border-white bg-white/10 text-white hover:bg-white/20"
+              >
+                <TrackedLink event="segunda_opiniao_click" href="/segunda-opiniao">
+                  Segunda opinião
+                </TrackedLink>
+              </Button>
+            ) : (
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="border-white bg-white/10 text-white hover:bg-white/20"
+              >
+                <Link href="/contato">Outras formas de contato</Link>
+              </Button>
+            )}
           </div>
         </div>
       </section>

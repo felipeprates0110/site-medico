@@ -6,7 +6,12 @@ import { TrackedAnchor, TrackedLink } from "@/components/analytics/tracked-link"
 
 const footerNavigation = {
   atendimento: [
-    { name: "Agendar Consulta", href: "/agendar" },
+    { name: "Agendar Consulta", href: "/agendar", event: "agendar_click" as const },
+    {
+      name: "Segunda opinião",
+      href: "/segunda-opiniao",
+      event: "segunda_opiniao_click" as const,
+    },
     { name: "Convênios Aceitos", href: "/convenios" },
     { name: "Perguntas Frequentes", href: "/faq" },
     { name: "Contato", href: "/contato" },
@@ -60,9 +65,9 @@ export async function Footer() {
             <ul className="mt-4 space-y-2.5">
               {footerNavigation.atendimento.map((item) => (
                 <li key={item.name}>
-                  {item.href === "/agendar" ? (
+                  {"event" in item && item.event ? (
                     <TrackedLink
-                      event="agendar_click"
+                      event={item.event}
                       href={item.href}
                       className="text-sm text-gray-400 transition-colors hover:text-primary-300"
                     >

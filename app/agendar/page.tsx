@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AgendarForm } from "@/components/agendar-form";
+import { TrackedLink } from "@/components/analytics/tracked-link";
 import { getContactInfo, getInsurancePlans } from "@/lib/data";
 
 export const metadata: Metadata = {
@@ -26,6 +27,16 @@ export default async function AgendarPage() {
           <p className="text-xl text-gray-600">
             Preencha o formulário abaixo ou utilize o WhatsApp para agendamento
             rápido
+          </p>
+          <p className="mt-6 text-sm text-gray-500">
+            Já tem diagnóstico ou indicação e quer outra avaliação?{" "}
+            <TrackedLink
+              event="segunda_opiniao_click"
+              href="/segunda-opiniao"
+              className="font-semibold text-primary-700 underline-offset-2 hover:underline"
+            >
+              Busco segunda opinião
+            </TrackedLink>
           </p>
         </div>
       </section>

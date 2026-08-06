@@ -105,6 +105,7 @@ export async function GET(request: Request) {
     uniqueVisitors,
     whatsappClicks: countByName("whatsapp_click"),
     agendarClicks: countByName("agendar_click"),
+    segundaOpiniaoClicks: countByName("segunda_opiniao_click"),
     phoneClicks: countByName("phone_click"),
     emailClicks: countByName("email_click"),
     topPages,

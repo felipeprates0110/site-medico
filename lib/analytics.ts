@@ -8,6 +8,7 @@ export const ANALYTICS_EVENTS = [
   "page_view",
   "whatsapp_click",
   "agendar_click",
+  "segunda_opiniao_click",
   "phone_click",
   "email_click",
 ] as const;

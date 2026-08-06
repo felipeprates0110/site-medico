@@ -4,7 +4,7 @@ import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/lib/metadata";
 import { cn } from "@/lib/utils";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent, type AnalyticsEventName } from "@/lib/analytics";
 
 interface WhatsAppButtonProps {
   message?: string;
@@ -14,9 +14,12 @@ interface WhatsAppButtonProps {
   children?: React.ReactNode;
   /** Número no formato internacional sem + (ex: 5561996270787). Se omitido, usa o do metadata. */
   whatsapp?: string;
+  /** Evento de analytics (padrão: whatsapp_click). */
+  analyticsEvent?: AnalyticsEventName;
+  analyticsMeta?: Record<string, string>;
 }
 
-function buildWhatsAppUrl(whatsapp: string, message: string) {
+export function buildWhatsAppUrl(whatsapp: string, message: string) {
   const digits = whatsapp.replace(/\D/g, "");
   return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }
@@ -28,6 +31,8 @@ export function WhatsAppButton({
   className,
   children,
   whatsapp = siteConfig.doctor.whatsapp,
+  analyticsEvent = "whatsapp_click",
+  analyticsMeta,
 }: WhatsAppButtonProps) {
   const whatsappUrl = buildWhatsAppUrl(whatsapp, message);
 
@@ -46,7 +51,7 @@ export function WhatsAppButton({
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        onClick={() => trackEvent("whatsapp_click")}
+        onClick={() => trackEvent(analyticsEvent, { meta: analyticsMeta })}
       >
         <MessageCircle className="h-5 w-5" />
         {children || "Agendar via WhatsApp"}
