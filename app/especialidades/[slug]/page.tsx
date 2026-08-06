@@ -219,7 +219,7 @@ export default async function EspecialidadePage({ params }: PageProps) {
               <figure className="mb-10 overflow-hidden rounded-2xl ring-1 ring-gray-200/80">
                 <img
                   src="/images/quando-procurar-cardiologista.png"
-                  alt="Infográfico: quando procurar um cardiologista — dor ou desconforto no peito, falta de ar, fadiga excessiva e tontura ou desmaio"
+                  alt="Infográfico: quando procurar um cardiologista — dor ou desconforto no peito, falta de ar, fadiga excessiva, palpitações e tontura ou desmaio"
                   className="h-auto w-full object-cover"
                 />
               </figure>
