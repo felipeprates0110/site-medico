@@ -1,11 +1,8 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  Award,
-  Users,
   Clock,
   Star,
-  Activity,
   ShieldCheck,
   ChevronRight,
   BookOpen,
@@ -192,21 +189,6 @@ export default async function Home() {
                   </li>
                 ))}
               </ul>
-              <div className="mt-8 flex flex-wrap gap-3">
-                {[
-                  { icon: Award, label: "Ciência e formação" },
-                  { icon: Activity, label: "Precisão clínica" },
-                  { icon: Users, label: "Cuidado humanizado" },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3.5 py-2 text-sm font-medium text-gray-700"
-                  >
-                    <item.icon className="h-4 w-4 text-primary-600" />
-                    {item.label}
-                  </div>
-                ))}
-              </div>
               <Button asChild size="lg" className="mt-8 rounded-xl px-8">
                 <Link href="/sobre">
                   Conheça a trajetória completa
