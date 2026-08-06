@@ -70,6 +70,20 @@ export default async function EspecialidadePage({ params }: PageProps) {
         ? "Em que o eletrofisiologista pode ajudar"
         : "Em que o cardiologista pode ajudar";
 
+  const whenToSeekHeading =
+    specialty.slug === "arritmologia"
+      ? "Quando procurar um arritmologista"
+      : specialty.slug === "eletrofisiologia"
+        ? "Quando a eletrofisiologia entra na conversa"
+        : "Quando procurar um cardiologista";
+
+  const whenToSeekIntro =
+    specialty.slug === "arritmologia"
+      ? "Palpitações, tonturas e alterações do ritmo merecem investigação especializada — sobretudo quando limitam o dia a dia ou já há um diagnóstico de arritmia."
+      : specialty.slug === "eletrofisiologia"
+        ? "Nem todo sintoma leva direto ao procedimento. A eletrofisiologia entra quando há arritmia documentada, indicação de ablação ou de dispositivo, ou necessidade de mapeamento invasivo."
+        : "Doenças do coração podem ser silenciosas. Vale investigar se você notar estes sinais — sobretudo quando aparecem juntos — ou se há fatores de risco importantes.";
+
   return (
     <div className="flex flex-col">
       {/* Breadcrumb */}
@@ -97,6 +111,19 @@ export default async function EspecialidadePage({ params }: PageProps) {
           <p className="mb-8 text-xl leading-relaxed text-gray-700">
             {specialty.description}
           </p>
+          {specialty.slug === "eletrofisiologia" && (
+            <p className="mb-6 text-base text-gray-600">
+              A avaliação clínica do ritmo costuma começar na{" "}
+              <Link
+                href="/especialidades/arritmologia"
+                className="font-semibold text-primary-700 hover:text-primary-800"
+              >
+                Arritmologia
+              </Link>
+              ; a eletrofisiologia aprofunda o diagnóstico invasivo e o tratamento
+              por cateter ou dispositivos, quando indicados.
+            </p>
+          )}
           <WhatsAppButton
             message={`Olá! Gostaria de agendar uma consulta de ${specialty.title}.`}
           />
@@ -156,9 +183,20 @@ export default async function EspecialidadePage({ params }: PageProps) {
           {hasConditionDetails ? (
             <div className="grid gap-5 md:grid-cols-2">
               {specialty.conditionDetails!.map((condition) => {
-                const isArrhythmia =
+                const titleLower = condition.title.toLowerCase();
+                const linkToArritmologia =
                   specialty.slug === "cardiologia" &&
-                  condition.title.toLowerCase().includes("arritmia");
+                  titleLower.includes("arritmia");
+                const linkToEletrofisiologia =
+                  specialty.slug === "arritmologia" &&
+                  (titleLower.includes("fibrilação") ||
+                    titleLower.includes("flutter") ||
+                    titleLower.includes("wpw") ||
+                    titleLower.includes("taquicardia ventricular") ||
+                    titleLower.includes("bradicardia"));
+                const linkBackToArritmologia =
+                  specialty.slug === "eletrofisiologia" &&
+                  titleLower.includes("bradicardia");
 
                 return (
                   <div
@@ -171,12 +209,28 @@ export default async function EspecialidadePage({ params }: PageProps) {
                     <p className="leading-relaxed text-gray-600">
                       {condition.summary}
                     </p>
-                    {isArrhythmia && (
+                    {linkToArritmologia && (
                       <Link
                         href="/especialidades/arritmologia"
                         className="mt-3 inline-flex text-sm font-semibold text-primary-700 hover:text-primary-800"
                       >
                         Conheça a Arritmologia
+                      </Link>
+                    )}
+                    {linkToEletrofisiologia && (
+                      <Link
+                        href="/especialidades/eletrofisiologia"
+                        className="mt-3 inline-flex text-sm font-semibold text-primary-700 hover:text-primary-800"
+                      >
+                        Ver opções em Eletrofisiologia
+                      </Link>
+                    )}
+                    {linkBackToArritmologia && (
+                      <Link
+                        href="/especialidades/arritmologia"
+                        className="mt-3 inline-flex text-sm font-semibold text-primary-700 hover:text-primary-800"
+                      >
+                        Voltar à Arritmologia clínica
                       </Link>
                     )}
                   </div>
@@ -207,14 +261,10 @@ export default async function EspecialidadePage({ params }: PageProps) {
                 <AlertCircle className="h-5 w-5" />
               </div>
               <h2 className="text-3xl font-bold text-gray-900">
-                Quando procurar um cardiologista
+                {whenToSeekHeading}
               </h2>
             </div>
-            <p className="mb-8 max-w-2xl text-gray-600">
-              Doenças do coração podem ser silenciosas. Vale investigar se você
-              notar estes sinais — sobretudo quando aparecem juntos — ou se há
-              fatores de risco importantes.
-            </p>
+            <p className="mb-8 max-w-2xl text-gray-600">{whenToSeekIntro}</p>
             {specialty.slug === "cardiologia" && (
               <figure className="mb-10 overflow-hidden rounded-2xl ring-1 ring-gray-200/80">
                 <img

@@ -88,15 +88,15 @@ export const specialties: Specialty[] = [
     shortDescription:
       "Investigação e diagnóstico de palpitações, tonturas, síncope (desmaio) e acompanhamento de arritmias cardíacas e Fibrilação Atrial.",
     description:
-      "A arritmologia é uma subespecialidade da cardiologia dedicada ao estudo, diagnóstico e tratamento das arritmias cardíacas. O arritmologista é o médico especialista nos distúrbios do ritmo do coração, oferecendo tratamentos desde medicamentosos até procedimentos intervencionistas.",
+      "A arritmologia cuida dos distúrbios do ritmo do coração — quando os batimentos ficam rápidos demais (taquicardia), lentos demais (bradicardia) ou irregulares. O arritmologista investiga os sintomas, confirma o diagnóstico e define o melhor caminho: observação, medicação ou indicação de procedimento, sempre com foco em reduzir risco e melhorar qualidade de vida.",
     icon: "activity",
     benefits: [
-      "Diagnóstico preciso de arritmias",
-      "Tratamento personalizado",
-      "Monitoramento com Holter 24h",
-      "Indicação de procedimentos quando necessário",
-      "Acompanhamento de portadores de marca-passo",
-      "Prevenção de AVC por fibrilação atrial",
+      "Investigação de palpitações, tonturas e desmaios",
+      "Diagnóstico preciso do tipo de arritmia",
+      "Monitoramento com Holter e exames orientados à queixa",
+      "Tratamento medicamentoso individualizado",
+      "Prevenção de AVC na fibrilação atrial",
+      "Indicação e acompanhamento de procedimentos quando necessário",
     ],
     commonConditions: [
       "Fibrilação Atrial",
@@ -106,6 +106,60 @@ export const specialties: Specialty[] = [
       "Bloqueios cardíacos",
       "Extrassístoles (batimentos extras)",
     ],
+    approach:
+      "Na consulta de arritmologia, o ponto de partida é a sua história: como são as palpitações, quando começam, se há tontura ou quase desmaio, e quais exames você já fez. Em seguida, correlacionamos sintomas com o eletrocardiograma e, quando preciso, com Holter ou outros registros do ritmo. Nem toda arritmia exige intervenção imediata — o plano pode incluir observação, ajuste de medicação ou indicação de estudo eletrofisiológico e ablação, discutidos com clareza.",
+    conditionDetails: [
+      {
+        title: "Fibrilação atrial",
+        summary:
+          "A arritmia mais comum nos adultos. O ritmo atrial fica desorganizado, o que pode causar palpitações, cansaço e aumentar o risco de formação de coágulos e AVC. O cuidado envolve controle do ritmo ou da frequência e, quando indicado, anticoagulação.",
+      },
+      {
+        title: "Flutter atrial",
+        summary:
+          "Ritmo atrial acelerado e organizado, muitas vezes sentido como batimentos rápidos e regulares. Pode coexistir com fibrilação atrial e, em casos selecionados, responde bem a tratamento intervencionista.",
+      },
+      {
+        title: "Extrassístoles (batimentos extras)",
+        summary:
+          "Batimentos que “saem fora” do ritmo habitual e geram a sensação de tropeço ou pancada no peito. Em muitos casos são benignas, mas merecem avaliação para afastar causas estruturais e definir se há necessidade de tratamento.",
+      },
+      {
+        title: "Taquicardias supraventriculares e WPW",
+        summary:
+          "Episódios de coração acelerado que começam e param de forma abrupta. Incluem taquicardias por reentrada e a síndrome de Wolff-Parkinson-White, em que existe uma via elétrica extra. A investigação define o risco e as opções de tratamento.",
+      },
+      {
+        title: "Taquicardia ventricular",
+        summary:
+          "Arritmia originada nos ventrículos. Pode ser grave e exige avaliação especializada para distinguir formas de menor risco de situações que necessitam proteção urgente e tratamento dirigido.",
+      },
+      {
+        title: "Bradicardia e bloqueios cardíacos",
+        summary:
+          "Quando o coração bate de forma lenta demais ou a condução elétrica falha. Podem causar fadiga, tontura ou desmaio. Em alguns casos, a solução passa por marca-passo após avaliação completa.",
+      },
+    ],
+    whenToSeek: [
+      "Palpitações ou batimentos fortes, rápidos ou irregulares",
+      "Coração acelerado em crises (mais de 100 batimentos por minuto)",
+      "Bradicardia sintomática (ritmo muito lento com mal-estar)",
+      "Tonturas, quase desmaio ou desmaio (síncope)",
+      "Fadiga ou falta de ar associadas a alterações do ritmo",
+      "Fibrilação atrial já diagnosticada — para acompanhamento ou segunda opinião",
+      "Histórico familiar de morte súbita ou arritmias hereditárias",
+      "Uso de marca-passo ou CDI com necessidade de revisão especializada",
+    ],
+    exams: [
+      "Eletrocardiograma (ECG)",
+      "Holter 24 horas (e monitorização mais prolongada, quando indicada)",
+      "Ecocardiograma",
+      "Teste ergométrico, conforme a clínica",
+      "Avaliação de dispositivos implantáveis (marca-passo/CDI)",
+      "Outros exames complementares, conforme a indicação",
+    ],
+    preventionNote:
+      "Sintomas de ritmo merecem investigação — nem sempre são graves, mas só a avaliação especializada separa o que é benigno do que exige cuidado. Na fibrilação atrial, o acompanhamento adequado ajuda a reduzir o risco de AVC. Quando há indicação de ablação, estudo eletrofisiológico ou dispositivo, o caminho segue em conjunto com a eletrofisiologia.",
   },
   {
     id: "3",
@@ -114,15 +168,15 @@ export const specialties: Specialty[] = [
     shortDescription:
       "Realização de Estudo Eletrofisiológico, ablação por cateter e indicação e acompanhamento de marcapasso e CDI.",
     description:
-      "A eletrofisiologia invasiva utiliza técnicas minimamente invasivas para mapear o sistema elétrico do coração e tratar arritmias por meio de ablação por cateter, quando indicado. Formação pela UNIFESP/EPM, centro de referência nacional.",
+      "A eletrofisiologia mapeia e trata o sistema elétrico do coração com técnicas minimamente invasivas. Quando a arritmia está documentada e há indicação, o estudo eletrofisiológico e a ablação por cateter permitem localizar e tratar o foco responsável — com indicação e acompanhamento de marca-passo ou CDI quando necessário. Formação pela UNIFESP/EPM, centro de referência nacional.",
     icon: "zap",
     benefits: [
       "Estudo eletrofisiológico diagnóstico",
       "Ablação por cateter, quando indicada",
-      "Avaliação e acompanhamento de portadores de marca-passo",
-      "Indicação de marca-passo ou CDI quando necessário",
-      "Procedimentos minimamente invasivos",
-      "Acompanhamento especializado de arritmias",
+      "Indicação de marca-passo ou CDI com critério clínico",
+      "Acompanhamento de portadores de dispositivos",
+      "Abordagem minimamente invasiva",
+      "Integração com o cuidado clínico da arritmologia",
     ],
     commonConditions: [
       "Fibrilação Atrial refratária",
@@ -132,5 +186,58 @@ export const specialties: Specialty[] = [
       "Síndrome de Wolff-Parkinson-White (WPW)",
       "Bradicardias sintomáticas",
     ],
+    approach:
+      "O caminho usual começa pela avaliação clínica e pelos exames não invasivos. Quando a arritmia está clara e o benefício do procedimento supera os riscos, discute-se o estudo eletrofisiológico — um exame invasivo que mapeia os circuitos elétricos do coração — e, se indicado, a ablação por cateter na mesma abordagem. Em bradicardias ou risco de arritmias graves, entra a conversa sobre marca-passo ou CDI. Cada indicação é individualizada.",
+    conditionDetails: [
+      {
+        title: "Fibrilação atrial com indicação de ablação",
+        summary:
+          "Quando sintomas persistem apesar da medicação, ou quando o controle do ritmo é a melhor estratégia, a ablação por cateter (como o isolamento das veias pulmonares, em casos selecionados) pode ser considerada após avaliação completa.",
+      },
+      {
+        title: "Flutter atrial",
+        summary:
+          "Frequentemente tem um circuito bem definido e, em muitos pacientes, a ablação apresenta excelente resultado clínico quando bem indicada.",
+      },
+      {
+        title: "Taquicardias supraventriculares",
+        summary:
+          "Crises de taquicardia por reentrada nodal ou vias acessórias. O estudo eletrofisiológico confirma o mecanismo e permite tratar o circuito com ablação, quando essa for a escolha terapêutica.",
+      },
+      {
+        title: "Síndrome de Wolff-Parkinson-White (WPW)",
+        summary:
+          "Presença de via elétrica extra. Em pacientes sintomáticos ou com risco documentado, a ablação da via acessória é uma opção consolidada para eliminar o substrato da arritmia.",
+      },
+      {
+        title: "Taquicardias ventriculares selecionadas",
+        summary:
+          "Em contextos específicos — com ou sem doença estrutural — a eletrofisiologia contribui no diagnóstico, na estratificação de risco e, quando indicado, na ablação ou na proteção com CDI.",
+      },
+      {
+        title: "Bradicardias sintomáticas",
+        summary:
+          "Quando o ritmo lento ou o bloqueio de condução causam sintomas e há indicação clara, o marca-passo restaura uma frequência adequada. O acompanhamento do dispositivo faz parte do cuidado contínuo.",
+      },
+    ],
+    whenToSeek: [
+      "Arritmia já documentada com sintomas que limitam o dia a dia",
+      "Falência ou intolerância ao tratamento medicamentoso",
+      "Discussão sobre indicação de ablação por cateter",
+      "Indicação ou dúvida sobre marca-passo ou CDI",
+      "Acompanhamento e otimização de dispositivo já implantado",
+      "Taquicardias recorrentes com necessidade de definição do mecanismo",
+      "Encaminhamento do cardiologista ou arritmologista para avaliação invasiva",
+    ],
+    exams: [
+      "Estudo eletrofisiológico (quando indicado)",
+      "Eletrocardiograma e Holter no preparo da decisão",
+      "Ecocardiograma e exames pré-procedimento",
+      "Interrogação e ajuste de marca-passo ou CDI",
+      "Monitorização do ritmo no seguimento pós-ablação",
+      "Demais exames conforme o tipo de arritmia e o procedimento",
+    ],
+    preventionNote:
+      "Procedimentos de eletrofisiologia não são a primeira opção para todos — são ferramentas poderosas quando a indicação é correta. A decisão considera o tipo de arritmia, os sintomas, os riscos e os objetivos do tratamento. O acompanhamento próximo, em continuidade com a arritmologia clínica, é parte essencial do resultado.",
   },
 ];
