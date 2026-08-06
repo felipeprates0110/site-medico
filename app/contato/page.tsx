@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Phone, Mail, MapPin, Clock, MessageCircle, ExternalLink } from "lucide-react";
+import { Phone, MapPin, Clock, MessageCircle, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { TrackedAnchor, TrackedLink } from "@/components/analytics/tracked-link";
@@ -10,7 +10,7 @@ import { getContactInfo, getPrimaryAddress } from "@/lib/data";
 export const metadata: Metadata = {
   title: "Contato - Agende sua Consulta",
   description:
-    "Entre em contato com o Dr. Pedro Felipe Prates Silva. Telefone, WhatsApp, e-mail e endereço do consultório na IDC Brasília — Asa Sul/DF.",
+    "Entre em contato com o Dr. Pedro Felipe Prates Silva. Telefone, WhatsApp e endereço do consultório na IDC Brasília — Asa Sul/DF.",
 };
 
 export const revalidate = 60;
@@ -70,7 +70,7 @@ export default async function ContatoPage() {
 
       <section className="py-16 bg-white">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
             <div className="p-6 rounded-xl border bg-green-50 border-green-200">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-600 text-white mb-4">
                 <MessageCircle className="h-6 w-6" />
@@ -95,19 +95,6 @@ export default async function ContatoPage() {
               </Button>
             </div>
 
-            <div className="p-6 rounded-xl border bg-purple-50 border-purple-200">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-purple-600 text-white mb-4">
-                <Mail className="h-6 w-6" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">E-mail</h3>
-              <p className="text-sm text-gray-600 mb-4">Envie sua mensagem</p>
-              <Button asChild variant="outline" size="sm" className="w-full">
-                <TrackedAnchor event="email_click" href={`mailto:${contact.email}`}>
-                  Enviar e-mail
-                </TrackedAnchor>
-              </Button>
-            </div>
-
             <div className="p-6 rounded-xl border bg-orange-50 border-orange-200">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-orange-600 text-white mb-4">
                 <Clock className="h-6 w-6" />
@@ -128,16 +115,24 @@ export default async function ContatoPage() {
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
             <div>
-              {/* Logo da clínica (IDC) — PNG com fundo transparente */}
+              {/* Logo da clínica (IDC) — abre o site oficial em nova aba */}
               <div className="mb-6">
-                <Image
-                  src="/images/logo-idc-brasilia.png"
-                  alt="Logo do iDC — Instituto de Doenças Cardiovasculares"
-                  width={232}
-                  height={74}
-                  className="h-14 w-auto max-w-full object-contain sm:h-16"
-                  priority
-                />
+                <a
+                  href="https://idcbrasilia.com.br/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Abrir o site da IDC Brasília"
+                  className="inline-block transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-sm"
+                >
+                  <Image
+                    src="/images/logo-idc-brasilia.png"
+                    alt="Logo do iDC — Instituto de Doenças Cardiovasculares"
+                    width={232}
+                    height={74}
+                    className="h-14 w-auto max-w-full object-contain sm:h-16"
+                    priority
+                  />
+                </a>
               </div>
 
               <h2 className="text-3xl font-bold text-gray-900 mb-8">
@@ -211,16 +206,6 @@ export default async function ContatoPage() {
                         className="text-blue-600 hover:underline"
                       >
                         {contact.phone}
-                      </TrackedAnchor>
-                    </p>
-                    <p className="text-gray-600">
-                      E-mail:{" "}
-                      <TrackedAnchor
-                        event="email_click"
-                        href={`mailto:${contact.email}`}
-                        className="text-blue-600 hover:underline"
-                      >
-                        {contact.email}
                       </TrackedAnchor>
                     </p>
                   </div>
