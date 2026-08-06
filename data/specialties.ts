@@ -185,7 +185,34 @@ export const specialties: Specialty[] = [
       "Bradicardias sintomáticas",
     ],
     approach:
-      "O caminho usual começa pela avaliação clínica e pelos exames não invasivos. Quando a arritmia está clara e o benefício do procedimento supera os riscos, discute-se o estudo eletrofisiológico — um exame invasivo que mapeia os circuitos elétricos do coração — e, se indicado, a ablação por cateter na mesma abordagem. Em bradicardias ou risco de arritmias graves, entra a conversa sobre marca-passo ou CDI. Cada indicação é individualizada.",
+      "O caminho usual começa pela avaliação clínica e pelos exames não invasivos (ECG, Holter e outros, conforme o caso). Quando o benefício do procedimento supera os riscos, discute-se o estudo eletrofisiológico e, se indicado, a ablação por cateter — às vezes na mesma abordagem. Em bradicardias ou risco de arritmias graves, entra a conversa sobre marca-passo ou CDI. Cada indicação é individualizada.",
+    procedureGuide: {
+      title: "Estudo eletrofisiológico",
+      summary:
+        "O estudo eletrofisiológico (EPS) é um exame invasivo que avalia o sistema elétrico do coração por meio de cateteres finos, geralmente introduzidos por uma veia na região da perna. Ele ajuda a diagnosticar alterações do ritmo e a orientar o melhor tratamento. É importante distinguir: o EPS é um exame diagnóstico; a ablação por cateter é o tratamento — e, em casos selecionados, pode ser realizada na sequência do estudo, quando houver indicação.",
+      howItWorks:
+        "O procedimento é feito em ambiente hospitalar adequado, com sedação e anestesia local conforme o protocolo da equipe. Após uma punção venosa (em geral na região inguinal), o cateter sobe até as cavidades do coração guiado por imagem. Dentro do coração, eletrodos registram a atividade elétrica e permitem mapear circuitos ou focos relacionados à arritmia. A duração varia de acordo com cada caso. Ao final, o local da punção recebe compressão e curativo — em geral sem necessidade de pontos.",
+      indications: [
+        "Sintomas como palpitações, tonturas ou desmaios não esclarecidos plenamente por ECG, Holter ou outros registros não invasivos",
+        "Definir o mecanismo e a origem de uma arritmia já suspeitada ou documentada",
+        "Avaliar a indicação de ablação por cateter e, quando apropriado, realizá-la na mesma abordagem",
+        "Contribuir na decisão sobre marca-passo ou CDI em situações selecionadas",
+      ],
+      preparation: [
+        "Seguir jejum e eventuais ajustes de medicação conforme orientação médica (protocolos variam)",
+        "Levar exames anteriores, eletrocardiogramas e a lista completa de remédios em uso",
+        "Informar uso de anticoagulantes, infecção em atividade ou possibilidade de gravidez",
+        "Comparecer com acompanhante que conheça o histórico clínico e as medicações",
+      ],
+      aftercare: [
+        "Repouso no local da punção pelo tempo indicado pela equipe, para boa cicatrização",
+        "Cuidados com o curativo e higiene da região conforme orientação da enfermagem",
+        "Retorno às atividades, direção e esforço físico conforme orientação individual — não há regra única para todos",
+        "Levar o relatório do procedimento no retorno ao médico responsável pelo acompanhamento",
+      ],
+      risksNote:
+        "O estudo eletrofisiológico é considerado seguro na maioria dos casos. Os riscos mais comuns estão ligados ao local da punção, como hematoma ou sangramento. Complicações graves são raras, mas existem e devem ser esclarecidas na consulta. Por utilizar imagem com raios X, a gravidez exige avaliação especial.",
+    },
     conditionDetails: [
       {
         title: "Fibrilação atrial com indicação de ablação",
@@ -228,9 +255,9 @@ export const specialties: Specialty[] = [
       "Encaminhamento do cardiologista ou arritmologista para avaliação invasiva",
     ],
     exams: [
-      "Estudo eletrofisiológico (quando indicado)",
       "Eletrocardiograma e Holter no preparo da decisão",
       "Ecocardiograma e exames pré-procedimento",
+      "Estudo eletrofisiológico (detalhado na seção acima)",
       "Interrogação e ajuste de marca-passo ou CDI",
       "Monitorização do ritmo no seguimento pós-ablação",
       "Demais exames conforme o tipo de arritmia e o procedimento",

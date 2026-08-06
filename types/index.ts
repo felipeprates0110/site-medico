@@ -13,6 +13,17 @@ export interface SpecialtyConditionDetail {
   summary: string;
 }
 
+/** Guia educativo de procedimento (ex.: estudo eletrofisiológico) */
+export interface SpecialtyProcedureGuide {
+  title: string;
+  summary: string;
+  howItWorks: string;
+  indications: string[];
+  preparation: string[];
+  aftercare: string[];
+  risksNote: string;
+}
+
 export interface Specialty {
   id: string;
   slug: string;
@@ -32,6 +43,8 @@ export interface Specialty {
   exams?: string[];
   /** Nota curta sobre prevenção e acompanhamento */
   preventionNote?: string;
+  /** Orientações sobre um procedimento-chave da especialidade */
+  procedureGuide?: SpecialtyProcedureGuide;
 }
 
 export interface Treatment {

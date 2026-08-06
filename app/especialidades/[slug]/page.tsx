@@ -9,6 +9,7 @@ import {
   Stethoscope,
   AlertCircle,
   ClipboardList,
+  ChevronRight,
 } from "lucide-react";
 import { specialties } from "@/data/specialties";
 import { Button } from "@/components/ui/button";
@@ -59,9 +60,11 @@ export default async function EspecialidadePage({ params }: PageProps) {
   const hasConditionDetails =
     specialty.conditionDetails && specialty.conditionDetails.length > 0;
   const hasApproach = Boolean(specialty.approach?.trim());
+  const hasProcedureGuide = Boolean(specialty.procedureGuide);
   const hasWhenToSeek = specialty.whenToSeek && specialty.whenToSeek.length > 0;
   const hasExams = specialty.exams && specialty.exams.length > 0;
   const hasPreventionNote = Boolean(specialty.preventionNote?.trim());
+  const guide = specialty.procedureGuide;
 
   const benefitsHeading =
     specialty.slug === "arritmologia"
@@ -111,19 +114,6 @@ export default async function EspecialidadePage({ params }: PageProps) {
           <p className="mb-8 text-xl leading-relaxed text-gray-700">
             {specialty.description}
           </p>
-          {specialty.slug === "eletrofisiologia" && (
-            <p className="mb-6 text-base text-gray-600">
-              A avaliação clínica do ritmo costuma começar na{" "}
-              <Link
-                href="/especialidades/arritmologia"
-                className="font-semibold text-primary-700 hover:text-primary-800"
-              >
-                Arritmologia
-              </Link>
-              ; a eletrofisiologia aprofunda o diagnóstico invasivo e o tratamento
-              por cateter ou dispositivos, quando indicados.
-            </p>
-          )}
           <WhatsAppButton
             message={`Olá! Gostaria de agendar uma consulta de ${specialty.title}.`}
           />
@@ -149,8 +139,93 @@ export default async function EspecialidadePage({ params }: PageProps) {
         </section>
       )}
 
+      {/* Guia do procedimento (ex.: estudo eletrofisiológico) */}
+      {hasProcedureGuide && guide && (
+        <section className="bg-gray-50 py-16">
+          <div className="mx-auto max-w-7xl px-4 lg:px-8">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50 text-primary-700">
+                <Zap className="h-5 w-5" />
+              </div>
+              <h2 className="text-3xl font-bold text-gray-900">{guide.title}</h2>
+            </div>
+            <div className="mx-auto max-w-3xl lg:mx-0 lg:max-w-4xl">
+              <p className="mb-5 text-lg leading-relaxed text-gray-700">
+                {guide.summary}
+              </p>
+              <h3 className="mb-3 text-xl font-bold text-gray-900">
+                Como é realizado
+              </h3>
+              <p className="mb-10 text-lg leading-relaxed text-gray-700">
+                {guide.howItWorks}
+              </p>
+            </div>
+
+            <div className="grid gap-8 lg:grid-cols-3">
+              <div>
+                <h3 className="mb-4 text-lg font-bold text-gray-900">
+                  Quando costuma ser indicado
+                </h3>
+                <ul className="space-y-3">
+                  {guide.indications.map((item) => (
+                    <li key={item} className="flex items-start gap-3">
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-600" />
+                      <span className="text-gray-700">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h3 className="mb-4 text-lg font-bold text-gray-900">Preparo</h3>
+                <ul className="space-y-3">
+                  {guide.preparation.map((item) => (
+                    <li key={item} className="flex items-start gap-3">
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-600" />
+                      <span className="text-gray-700">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h3 className="mb-4 text-lg font-bold text-gray-900">
+                  Cuidados após o procedimento
+                </h3>
+                <ul className="space-y-3">
+                  {guide.aftercare.map((item) => (
+                    <li key={item} className="flex items-start gap-3">
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-600" />
+                      <span className="text-gray-700">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <p className="mx-auto mt-10 max-w-3xl text-sm leading-relaxed text-gray-600 lg:mx-0 lg:max-w-4xl">
+              {guide.risksNote}
+            </p>
+
+            <Link
+              href="/tratamentos/ablacao-por-cateter"
+              className="mt-8 inline-flex items-center text-sm font-semibold text-primary-700 hover:text-primary-800"
+            >
+              Saiba mais sobre ablação por cateter
+              <ChevronRight className="ml-1 h-4 w-4" />
+            </Link>
+          </div>
+        </section>
+      )}
+
       {/* Benefits */}
-      <section className={hasApproach ? "bg-gray-50 py-16" : "bg-white py-16"}>
+      <section
+        className={
+          hasProcedureGuide
+            ? "bg-white py-16"
+            : hasApproach
+              ? "bg-gray-50 py-16"
+              : "bg-white py-16"
+        }
+      >
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <h2 className="mb-8 text-3xl font-bold text-gray-900">
             {benefitsHeading}
@@ -170,7 +245,15 @@ export default async function EspecialidadePage({ params }: PageProps) {
       </section>
 
       {/* Condições */}
-      <section className={hasApproach ? "bg-white py-16" : "bg-gray-50 py-16"}>
+      <section
+        className={
+          hasProcedureGuide
+            ? "bg-gray-50 py-16"
+            : hasApproach
+              ? "bg-white py-16"
+              : "bg-gray-50 py-16"
+        }
+      >
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <h2 className="mb-3 text-3xl font-bold text-gray-900">
             Principais condições tratadas
@@ -201,7 +284,9 @@ export default async function EspecialidadePage({ params }: PageProps) {
                 return (
                   <div
                     key={condition.title}
-                    className="rounded-2xl border border-gray-100 bg-gray-50/80 p-6"
+                    className={`rounded-2xl border border-gray-100 p-6 ${
+                      hasProcedureGuide ? "bg-white" : "bg-gray-50/80"
+                    }`}
                   >
                     <h3 className="mb-2 text-lg font-bold text-gray-900">
                       {condition.title}
@@ -254,7 +339,7 @@ export default async function EspecialidadePage({ params }: PageProps) {
 
       {/* Quando procurar */}
       {hasWhenToSeek && (
-        <section className="bg-gray-50 py-16">
+        <section className={hasProcedureGuide ? "bg-white py-16" : "bg-gray-50 py-16"}>
           <div className="mx-auto max-w-7xl px-4 lg:px-8">
             <div className="mb-4 flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50 text-primary-700">
@@ -291,7 +376,7 @@ export default async function EspecialidadePage({ params }: PageProps) {
 
       {/* Exames */}
       {hasExams && (
-        <section className="bg-white py-16">
+        <section className={hasProcedureGuide ? "bg-gray-50 py-16" : "bg-white py-16"}>
           <div className="mx-auto max-w-7xl px-4 lg:px-8">
             <div className="mb-4 flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50 text-primary-700">
