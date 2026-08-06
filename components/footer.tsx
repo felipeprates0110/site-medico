@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Heart, Phone, Mail, MapPin, Clock, MessageCircle } from "lucide-react";
+import { Heart, Phone, MapPin, Clock, MessageCircle } from "lucide-react";
 import { getContactInfo, getPrimaryAddress } from "@/lib/data";
 import { siteConfig } from "@/lib/metadata";
 import { TrackedAnchor, TrackedLink } from "@/components/analytics/tracked-link";
@@ -157,16 +157,6 @@ export async function Footer() {
                   className="text-sm text-gray-400 hover:text-primary-300"
                 >
                   {formatWhatsAppDisplay(contact.whatsapp)}
-                </TrackedAnchor>
-              </li>
-              <li className="flex items-center gap-3">
-                <Mail className="h-5 w-5 text-primary-400" />
-                <TrackedAnchor
-                  event="email_click"
-                  href={`mailto:${contact.email}`}
-                  className="text-sm text-gray-400 hover:text-primary-300"
-                >
-                  {contact.email}
                 </TrackedAnchor>
               </li>
               <li className="flex items-start gap-3">
