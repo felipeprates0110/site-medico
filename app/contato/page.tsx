@@ -128,8 +128,8 @@ export default async function ContatoPage() {
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
             <div>
-              {/* Logo da clínica (IDC) — fica acima do título para identificar o consultório */}
-              <div className="mb-6 inline-flex max-w-full items-center rounded-xl bg-black px-4 py-3 shadow-sm">
+              {/* Logo da clínica (IDC) — PNG com fundo transparente */}
+              <div className="mb-6">
                 <Image
                   src="/images/logo-idc-brasilia.png"
                   alt="Logo do iDC — Instituto de Doenças Cardiovasculares"
