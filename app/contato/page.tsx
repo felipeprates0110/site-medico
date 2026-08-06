@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Phone, Mail, MapPin, Clock, MessageCircle, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WhatsAppButton } from "@/components/whatsapp-button";
@@ -127,6 +128,18 @@ export default async function ContatoPage() {
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
             <div>
+              {/* Logo da clínica (IDC) — fica acima do título para identificar o consultório */}
+              <div className="mb-6 inline-flex max-w-full items-center rounded-xl bg-black px-4 py-3 shadow-sm">
+                <Image
+                  src="/images/logo-idc-brasilia.png"
+                  alt="Logo do iDC — Instituto de Doenças Cardiovasculares"
+                  width={320}
+                  height={80}
+                  className="h-14 w-auto max-w-full object-contain sm:h-16"
+                  priority
+                />
+              </div>
+
               <h2 className="text-3xl font-bold text-gray-900 mb-8">
                 Informações do Consultório
               </h2>
