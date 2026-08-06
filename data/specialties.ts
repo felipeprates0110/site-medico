@@ -166,7 +166,7 @@ export const specialties: Specialty[] = [
     shortDescription:
       "Realização de Estudo Eletrofisiológico, ablação por cateter e indicação e acompanhamento de marcapasso e CDI.",
     description:
-      "A eletrofisiologia mapeia e trata o sistema elétrico do coração com técnicas minimamente invasivas. Quando a arritmia está documentada e há indicação, o estudo eletrofisiológico e a ablação por cateter permitem localizar e tratar o foco responsável — com indicação e acompanhamento de marca-passo ou CDI quando necessário.",
+      "É uma subespecialidade da cardiologia voltada para o diagnóstico e tratamento das arritmias cardíacas. Quando a arritmia está documentada e há indicação, o estudo eletrofisiológico e a ablação por cateter permitem localizar e tratar o foco responsável — com indicação e acompanhamento de marca-passo ou CDI quando necessário.",
     icon: "zap",
     benefits: [
       "Estudo eletrofisiológico diagnóstico",
