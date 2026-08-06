@@ -158,8 +158,6 @@ export const specialties: Specialty[] = [
       "Avaliação de dispositivos implantáveis (marca-passo/CDI)",
       "Outros exames complementares, conforme a indicação",
     ],
-    preventionNote:
-      "Sintomas de ritmo merecem investigação — nem sempre são graves, mas só a avaliação especializada separa o que é benigno do que exige cuidado. Na fibrilação atrial, o acompanhamento adequado ajuda a reduzir o risco de AVC. Quando há indicação de ablação, estudo eletrofisiológico ou dispositivo, o caminho segue em conjunto com a eletrofisiologia.",
   },
   {
     id: "3",
