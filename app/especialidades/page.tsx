@@ -38,10 +38,10 @@ export default function EspecialidadesPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-blue-600 text-white">
+      <section className="py-16 bg-slate-800 text-white">
         <div className="mx-auto max-w-4xl px-4 lg:px-8 text-center">
           <h2 className="text-3xl font-bold mb-4">Precisa de atendimento especializado?</h2>
-          <p className="text-xl text-blue-100 mb-8">
+          <p className="text-xl text-slate-300 mb-8">
             Agende sua consulta e receba atendimento especializado para sua saúde cardíaca
           </p>
           <WhatsAppButton size="lg" className="bg-green-600 hover:bg-green-700" />

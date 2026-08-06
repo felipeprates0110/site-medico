@@ -162,10 +162,24 @@ export default async function EspecialidadePage({ params }: PageProps) {
               <h3 className="mb-3 text-xl font-bold text-gray-900">
                 Como é realizado
               </h3>
-              <p className="mb-10 text-lg leading-relaxed text-gray-700">
+              <p className="mb-8 text-lg leading-relaxed text-gray-700">
                 {guide.howItWorks}
               </p>
             </div>
+
+            {specialty.slug === "eletrofisiologia" && (
+              <figure className="mb-10 overflow-hidden rounded-2xl ring-1 ring-gray-200/80">
+                <img
+                  src="/images/laboratorio-eletrofisiologia.png"
+                  alt="Laboratório de eletrofisiologia com mesa de procedimentos, sistema de fluoroscopia e monitores de mapeamento"
+                  className="aspect-[16/9] h-auto w-full object-cover object-[center_58%]"
+                />
+                <figcaption className="bg-white px-4 py-3 text-sm text-gray-600">
+                  Sala de eletrofisiologia — ambiente hospitalar onde são
+                  realizados o estudo eletrofisiológico e a ablação por cateter.
+                </figcaption>
+              </figure>
+            )}
 
             <div className="grid gap-8 lg:grid-cols-3">
               <div>

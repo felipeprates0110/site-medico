@@ -286,10 +286,10 @@ export default async function ContatoPage() {
         </div>
       </section>
 
-      <section className="py-16 bg-blue-600 text-white">
+      <section className="py-16 bg-slate-800 text-white">
         <div className="mx-auto max-w-4xl px-4 lg:px-8 text-center">
           <h2 className="text-3xl font-bold mb-4">Pronto para agendar?</h2>
-          <p className="text-xl text-blue-100 mb-8">
+          <p className="text-xl text-slate-300 mb-8">
             Entre em contato agora e agende sua avaliação
           </p>
           <WhatsAppButton

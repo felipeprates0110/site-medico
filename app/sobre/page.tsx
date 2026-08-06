@@ -204,10 +204,10 @@ export default function SobrePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-blue-600 text-white">
+      <section className="py-16 bg-slate-800 text-white">
         <div className="mx-auto max-w-4xl px-4 lg:px-8 text-center">
           <h2 className="text-3xl font-bold mb-4">Agende sua consulta</h2>
-          <p className="text-xl text-blue-100 mb-8">
+          <p className="text-xl text-slate-300 mb-8">
             Receba atendimento especializado e humanizado. Entre em contato para agendar.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
