@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   WhatsAppButton,
@@ -8,11 +9,16 @@ import {
 } from "@/components/whatsapp-button";
 import { TrackedAnchor } from "@/components/analytics/tracked-link";
 import { trackEvent } from "@/lib/analytics";
-import { Phone, User, Mail, CheckCircle, Stethoscope } from "lucide-react";
+import { MapPin, Phone, User, Mail, CheckCircle, Stethoscope } from "lucide-react";
 
 interface SegundaOpiniaoFormProps {
   phone: string;
   whatsapp: string;
+  clinicName: string;
+  clinicStreet: string;
+  clinicNeighborhood: string;
+  clinicCity: string;
+  clinicState: string;
 }
 
 const DIAGNOSTICO_OPTIONS = [
@@ -24,7 +30,7 @@ const DIAGNOSTICO_OPTIONS = [
 ] as const;
 
 const WHATSAPP_QUICK_MESSAGE =
-  "Olá! Gostaria de solicitar uma segunda opinião em arritmologia. Já tenho diagnóstico/indicação e gostaria de agendar uma avaliação.";
+  "Olá! Gostaria de solicitar uma segunda opinião em arritmologia. Já tenho diagnóstico/indicação e gostaria de agendar uma avaliação presencial na IDC.";
 
 function telHref(phone: string) {
   return `tel:${phone.replace(/\D/g, "")}`;
@@ -37,14 +43,21 @@ function labelFromValue(
   return options.find((o) => o.value === value)?.label || value;
 }
 
-export function SegundaOpiniaoForm({ phone, whatsapp }: SegundaOpiniaoFormProps) {
+export function SegundaOpiniaoForm({
+  phone,
+  whatsapp,
+  clinicName,
+  clinicStreet,
+  clinicNeighborhood,
+  clinicCity,
+  clinicState,
+}: SegundaOpiniaoFormProps) {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     email: "",
     diagnostico: "",
     temProposta: "",
-    telemedicina: "",
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
@@ -69,14 +82,13 @@ export function SegundaOpiniaoForm({ phone, whatsapp }: SegundaOpiniaoFormProps)
     );
 
     const lines = [
-      "Olá! Solicito uma *segunda opinião* em arritmologia.",
+      "Olá! Solicito uma *segunda opinião* em arritmologia (presencial na IDC).",
       "",
       `*Nome:* ${formData.name}`,
       `*Telefone:* ${formData.phone}`,
       `*E-mail:* ${formData.email}`,
       `*Diagnóstico/motivo:* ${diagnosticoLabel || "Não informado"}`,
       `*Já tem proposta de procedimento?:* ${formData.temProposta || "Não informado"}`,
-      `*Aceita telemedicina?:* ${formData.telemedicina || "Não informado"}`,
     ];
 
     if (formData.message.trim()) {
@@ -124,7 +136,6 @@ export function SegundaOpiniaoForm({ phone, whatsapp }: SegundaOpiniaoFormProps)
                   email: "",
                   diagnostico: "",
                   temProposta: "",
-                  telemedicina: "",
                   message: "",
                 });
               }}
@@ -140,6 +151,38 @@ export function SegundaOpiniaoForm({ phone, whatsapp }: SegundaOpiniaoFormProps)
   return (
     <div className="grid gap-8 lg:grid-cols-5">
       <div className="space-y-4 lg:col-span-2">
+        {/* Clínica presencial — IDC */}
+        <div className="rounded-xl border border-gray-200 bg-white p-6">
+          <a
+            href="https://idcbrasilia.com.br/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Abrir o site da IDC Brasília"
+            className="mb-4 inline-block rounded-sm transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2"
+          >
+            <Image
+              src="/images/logo-idc-brasilia.png"
+              alt="Logo do iDC — Instituto de Doenças Cardiovasculares"
+              width={232}
+              height={74}
+              className="h-12 w-auto max-w-full object-contain sm:h-14"
+            />
+          </a>
+          <p className="mb-3 text-sm font-semibold text-gray-900">
+            Consulta presencial na IDC Brasília
+          </p>
+          <div className="flex items-start gap-2 text-sm leading-relaxed text-gray-600">
+            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary-600" />
+            <div>
+              <p>{clinicName}</p>
+              <p>{clinicStreet}</p>
+              <p>
+                {clinicNeighborhood} — {clinicCity}, {clinicState}
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="rounded-xl border border-green-200 bg-green-50 p-6">
           <h3 className="mb-2 text-lg font-bold text-gray-900">
             Contato rápido
@@ -274,49 +317,25 @@ export function SegundaOpiniaoForm({ phone, whatsapp }: SegundaOpiniaoFormProps)
             </div>
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-2">
-            <div>
-              <label
-                htmlFor="so-temProposta"
-                className="mb-2 block text-sm font-medium text-gray-700"
-              >
-                Já tem proposta de procedimento? *
-              </label>
-              <select
-                id="so-temProposta"
-                name="temProposta"
-                required
-                value={formData.temProposta}
-                onChange={handleChange}
-                className="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-primary-600"
-              >
-                <option value="">Selecione...</option>
-                <option value="Sim">Sim</option>
-                <option value="Não">Não</option>
-              </select>
-            </div>
-
-            <div>
-              <label
-                htmlFor="so-telemedicina"
-                className="mb-2 block text-sm font-medium text-gray-700"
-              >
-                Aceita telemedicina? *
-              </label>
-              <select
-                id="so-telemedicina"
-                name="telemedicina"
-                required
-                value={formData.telemedicina}
-                onChange={handleChange}
-                className="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-primary-600"
-              >
-                <option value="">Selecione...</option>
-                <option value="Sim">Sim</option>
-                <option value="Não">Não (presencial)</option>
-                <option value="Indiferente">Indiferente</option>
-              </select>
-            </div>
+          <div>
+            <label
+              htmlFor="so-temProposta"
+              className="mb-2 block text-sm font-medium text-gray-700"
+            >
+              Já tem proposta de procedimento? *
+            </label>
+            <select
+              id="so-temProposta"
+              name="temProposta"
+              required
+              value={formData.temProposta}
+              onChange={handleChange}
+              className="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-primary-600"
+            >
+              <option value="">Selecione...</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
           </div>
 
           <div>
@@ -343,7 +362,7 @@ export function SegundaOpiniaoForm({ phone, whatsapp }: SegundaOpiniaoFormProps)
             </Button>
             <p className="mt-3 text-center text-xs text-gray-500">
               Ao enviar, você concorda com o tratamento dos dados conforme a
-              LGPD.
+              LGPD. A consulta é presencial na IDC Brasília.
             </p>
           </div>
         </form>

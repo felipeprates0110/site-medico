@@ -3,21 +3,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { SegundaOpiniaoForm } from "@/components/segunda-opiniao-form";
 import { WhatsAppButton } from "@/components/whatsapp-button";
-import { getContactInfo } from "@/lib/data";
+import { getContactInfo, getPrimaryAddress } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Segunda Opinião em Arritmias | Brasília",
   description:
-    "Solicite segunda opinião em arritmologia e eletrofisiologia com o Dr. Pedro Felipe. Avaliação de fibrilação atrial, indicação de ablação, anticoagulação e dispositivos — presencial ou telemedicina.",
+    "Solicite segunda opinião presencial em arritmologia e eletrofisiologia com o Dr. Pedro Felipe na IDC Brasília. Avaliação de fibrilação atrial, indicação de ablação, anticoagulação e dispositivos.",
 };
 
 export const revalidate = 60;
 
 const WHATSAPP_QUICK_MESSAGE =
-  "Olá! Gostaria de solicitar uma segunda opinião em arritmologia. Já tenho diagnóstico/indicação e gostaria de agendar uma avaliação.";
+  "Olá! Gostaria de solicitar uma segunda opinião em arritmologia. Já tenho diagnóstico/indicação e gostaria de agendar uma avaliação presencial na IDC.";
 
 export default async function SegundaOpiniaoPage() {
-  const contact = await getContactInfo();
+  const [contact, address] = await Promise.all([
+    getContactInfo(),
+    getPrimaryAddress(),
+  ]);
 
   return (
     <div className="flex flex-col">
@@ -31,7 +34,6 @@ export default async function SegundaOpiniaoPage() {
           className="object-cover object-[center_45%]"
           sizes="100vw"
         />
-        {/* Gradiente para o texto/CTAs ficarem legíveis sem “sujar” a foto */}
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/55 to-slate-950/25" />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-slate-950/30" />
 
@@ -44,8 +46,8 @@ export default async function SegundaOpiniaoPage() {
               Segunda opinião em arritmias
             </h1>
             <p className="mb-8 text-lg leading-relaxed text-white/85">
-              Quer revisar um diagnóstico ou indicação de procedimento? Agende a
-              avaliação — presencial em Brasília ou telemedicina.
+              Quer revisar um diagnóstico ou indicação de procedimento? Agende
+              sua consulta presencial na IDC Brasília.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <WhatsAppButton
@@ -66,7 +68,7 @@ export default async function SegundaOpiniaoPage() {
             </div>
             <p className="mt-6 max-w-md text-sm leading-relaxed text-white/65">
               O WhatsApp é para agendamento. A segunda opinião é uma consulta
-              médica — em emergência, procure pronto-socorro.
+              médica presencial — em emergência, procure pronto-socorro.
             </p>
           </div>
         </div>
@@ -85,6 +87,11 @@ export default async function SegundaOpiniaoPage() {
           <SegundaOpiniaoForm
             phone={contact.phone}
             whatsapp={contact.whatsapp}
+            clinicName={address.clinic_name}
+            clinicStreet={address.street}
+            clinicNeighborhood={address.neighborhood}
+            clinicCity={address.city}
+            clinicState={address.state}
           />
         </div>
       </section>

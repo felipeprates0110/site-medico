@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { WhatsAppButton } from "@/components/whatsapp-button";
+import {
+  WhatsAppButton,
+  buildWhatsAppUrl,
+} from "@/components/whatsapp-button";
+import { trackEvent } from "@/lib/analytics";
 import {
   Phone,
   Calendar,
@@ -23,8 +27,48 @@ interface AgendarFormProps {
   insurancePlans: InsuranceOption[];
 }
 
+const EMPTY_FORM = {
+  name: "",
+  phone: "",
+  email: "",
+  convenio: "",
+  preferredDate: "",
+  message: "",
+};
+
+const WHATSAPP_QUICK_MESSAGE = "Olá! Gostaria de agendar uma consulta.";
+
 function telHref(phone: string) {
   return `tel:${phone.replace(/\D/g, "")}`;
+}
+
+/** Converte yyyy-mm-dd (input date) para dd/mm/yyyy — mais legível no WhatsApp. */
+function formatDateBr(isoDate: string) {
+  if (!isoDate) return "";
+  const [year, month, day] = isoDate.split("-");
+  if (!year || !month || !day) return isoDate;
+  return `${day}/${month}/${year}`;
+}
+
+function buildAgendarWhatsAppMessage(formData: typeof EMPTY_FORM) {
+  const lines = [
+    "Olá! Gostaria de *agendar uma consulta*.",
+    "",
+    `*Nome:* ${formData.name}`,
+    `*Telefone:* ${formData.phone}`,
+    `*E-mail:* ${formData.email}`,
+    `*Convênio:* ${formData.convenio || "Não informado"}`,
+  ];
+
+  if (formData.preferredDate) {
+    lines.push(`*Data preferencial:* ${formatDateBr(formData.preferredDate)}`);
+  }
+
+  if (formData.message.trim()) {
+    lines.push(`*Mensagem:* ${formData.message.trim()}`);
+  }
+
+  return lines.join("\n");
 }
 
 export function AgendarForm({
@@ -32,16 +76,11 @@ export function AgendarForm({
   whatsapp,
   insurancePlans,
 }: AgendarFormProps) {
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    convenio: "",
-    preferredDate: "",
-    message: "",
-  });
-
+  const [formData, setFormData] = useState(EMPTY_FORM);
   const [submitted, setSubmitted] = useState(false);
+  const [lastWhatsAppMessage, setLastWhatsAppMessage] = useState(
+    WHATSAPP_QUICK_MESSAGE
+  );
 
   const sortedPlans = insurancePlans
     .slice()
@@ -49,20 +88,15 @@ export function AgendarForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form data:", formData);
-    setSubmitted(true);
 
-    setTimeout(() => {
-      setSubmitted(false);
-      setFormData({
-        name: "",
-        phone: "",
-        email: "",
-        convenio: "",
-        preferredDate: "",
-        message: "",
-      });
-    }, 3000);
+    const message = buildAgendarWhatsAppMessage(formData);
+    setLastWhatsAppMessage(message);
+
+    trackEvent("agendar_click", { meta: { source: "form" } });
+
+    const url = buildWhatsAppUrl(whatsapp, message);
+    window.open(url, "_blank", "noopener,noreferrer");
+    setSubmitted(true);
   };
 
   const handleChange = (
@@ -78,18 +112,39 @@ export function AgendarForm({
 
   if (submitted) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] bg-gray-50 px-4 py-16">
+      <div className="flex min-h-[50vh] flex-col items-center justify-center rounded-xl border border-green-100 bg-green-50/50 px-4 py-16">
         <div className="text-center">
           <div className="mb-6 inline-flex h-20 w-20 items-center justify-center rounded-full bg-green-100 text-green-600">
             <CheckCircle className="h-10 w-10" />
           </div>
-          <h1 className="mb-4 text-3xl font-bold text-gray-900">
-            Solicitação Enviada!
-          </h1>
-          <p className="max-w-md text-lg text-gray-600">
-            Recebemos sua solicitação de agendamento. Entraremos em contato em
-            breve para confirmar o horário.
+          <h2 className="mb-4 text-3xl font-bold text-gray-900">
+            Solicitação encaminhada!
+          </h2>
+          <p className="mx-auto max-w-md text-lg text-gray-600">
+            Abrimos o WhatsApp com os seus dados. Se a conversa não abriu, use o
+            botão abaixo.
           </p>
+          <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <WhatsAppButton
+              whatsapp={whatsapp}
+              message={lastWhatsAppMessage}
+              analyticsEvent="agendar_click"
+              analyticsMeta={{ source: "cta_whatsapp_success" }}
+            >
+              Abrir WhatsApp novamente
+            </WhatsAppButton>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setSubmitted(false);
+                setFormData(EMPTY_FORM);
+                setLastWhatsAppMessage(WHATSAPP_QUICK_MESSAGE);
+              }}
+            >
+              Preencher de novo
+            </Button>
+          </div>
         </div>
       </div>
     );
@@ -280,11 +335,12 @@ export function AgendarForm({
 
           <div className="pt-4">
             <Button type="submit" size="lg" className="w-full">
-              Enviar Solicitação de Agendamento
+              Enviar via WhatsApp
             </Button>
             <p className="mt-4 text-center text-xs text-gray-500">
-              Ao enviar este formulário, você concorda com nossa Política de
-              Privacidade e com o tratamento de seus dados conforme a LGPD.
+              Ao enviar, abrimos o WhatsApp com seus dados. Você concorda com
+              nossa Política de Privacidade e com o tratamento dos dados
+              conforme a LGPD.
             </p>
           </div>
         </form>
