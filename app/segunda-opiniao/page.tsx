@@ -81,7 +81,7 @@ export default async function SegundaOpiniaoPage() {
               Solicitar segunda opinião
             </h2>
             <p className="text-gray-600">
-              Preencha e abra o WhatsApp com os dados organizados.
+              Preencha com os seus dados e agende uma consulta presencial.
             </p>
           </div>
           <SegundaOpiniaoForm
