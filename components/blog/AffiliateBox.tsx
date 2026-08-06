@@ -26,9 +26,6 @@ export function AffiliateBox({ title, description, buttonText, url }: AffiliateB
           >
             {buttonText}
           </a>
-          <p className="text-xs text-slate-400 mt-4">
-            *Link de afiliado: o portal pode receber uma comissão sem custo extra para você.
-          </p>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   WhatsAppButton,
@@ -154,6 +155,28 @@ export function AgendarForm({
     <div className="grid gap-8 lg:grid-cols-5">
       {/* Contato rápido — mesmos dados da página Contato */}
       <div className="space-y-4 lg:col-span-2">
+        {/* Logo da clínica (IDC) — abre o site oficial em nova aba */}
+        <div className="rounded-xl border border-gray-200 bg-white p-6">
+          <a
+            href="https://idcbrasilia.com.br/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Abrir o site da IDC Brasília"
+            className="mb-3 inline-block rounded-sm transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2"
+          >
+            <Image
+              src="/images/logo-idc-brasilia.png"
+              alt="Logo do iDC — Instituto de Doenças Cardiovasculares"
+              width={232}
+              height={74}
+              className="h-12 w-auto max-w-full object-contain sm:h-14"
+            />
+          </a>
+          <p className="text-sm font-semibold text-gray-900">
+            Consulta presencial na IDC Brasília
+          </p>
+        </div>
+
         <div className="rounded-xl border border-green-200 bg-green-50 p-6">
           <h3 className="mb-4 text-lg font-bold text-gray-900">
             Agendamento Rápido
