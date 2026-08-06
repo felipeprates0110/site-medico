@@ -19,6 +19,24 @@ function telHref(phone: string) {
   return `tel:${phone.replace(/\D/g, "")}`;
 }
 
+/** Exibe WhatsApp no formato BR: 5561996270787 → (61) 9 9627-0787 */
+function formatWhatsAppDisplay(whatsapp: string) {
+  const digits = whatsapp.replace(/\D/g, "");
+  if (digits.length === 13 && digits.startsWith("55")) {
+    const ddd = digits.slice(2, 4);
+    const nine = digits.slice(4, 5);
+    const part1 = digits.slice(5, 9);
+    const part2 = digits.slice(9);
+    return `(${ddd}) ${nine} ${part1}-${part2}`;
+  }
+  return whatsapp;
+}
+
+function whatsappHref(whatsapp: string) {
+  const digits = whatsapp.replace(/\D/g, "");
+  return `https://wa.me/${digits}`;
+}
+
 /**
  * Monta a URL do iframe do Google Maps.
  * Preferimos o embed do estabelecimento (place), porque mostra o pin certo
@@ -206,6 +224,18 @@ export default async function ContatoPage() {
                         className="text-blue-600 hover:underline"
                       >
                         {contact.phone}
+                      </TrackedAnchor>
+                    </p>
+                    <p className="text-gray-600">
+                      WhatsApp:{" "}
+                      <TrackedAnchor
+                        event="whatsapp_click"
+                        href={whatsappHref(contact.whatsapp)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline"
+                      >
+                        {formatWhatsAppDisplay(contact.whatsapp)}
                       </TrackedAnchor>
                     </p>
                   </div>
