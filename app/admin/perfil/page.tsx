@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
-import { User, Save, AlertCircle, CheckCircle } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { User, Save, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PhotoCropDialog } from "@/components/admin/photo-crop-dialog";
 
 interface ProfileData {
   id: string;
@@ -16,10 +16,13 @@ interface ProfileData {
   profile_photo_url: string | null;
 }
 
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+
 export default function PerfilPage() {
-  const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState<{
     type: "success" | "error";
     text: string;
@@ -36,10 +39,20 @@ export default function PerfilPage() {
     profile_photo_url: null,
   });
 
-  // Buscar dados do perfil
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+
   useEffect(() => {
     fetchProfile();
   }, []);
+
+  // Libera a URL temporária da memória quando o modal fecha
+  useEffect(() => {
+    return () => {
+      if (cropSrc) URL.revokeObjectURL(cropSrc);
+    };
+  }, [cropSrc]);
 
   const fetchProfile = async () => {
     try {
@@ -53,6 +66,82 @@ export default function PerfilPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const showMessage = (type: "success" | "error", text: string) => {
+    setMessage({ type, text });
+    setTimeout(() => setMessage(null), 4000);
+  };
+
+  const closeCropDialog = () => {
+    if (cropSrc) URL.revokeObjectURL(cropSrc);
+    setCropSrc(null);
+    setPendingFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const uploadPhoto = async (file: File) => {
+    setIsUploading(true);
+    setMessage(null);
+
+    try {
+      const body = new FormData();
+      body.append("file", file);
+      body.append("type", "profile");
+      body.append("alt_text", formData.doctor_name || "Foto de perfil");
+
+      const response = await fetch("/api/admin/media", {
+        method: "POST",
+        body,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Falha no upload");
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        profile_photo_url: data.url,
+      }));
+
+      showMessage("success", "Foto de perfil atualizada com sucesso!");
+    } catch (error) {
+      showMessage(
+        "error",
+        error instanceof Error
+          ? error.message
+          : "Erro ao enviar foto. Tente novamente."
+      );
+    } finally {
+      setIsUploading(false);
+      closeCropDialog();
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      showMessage(
+        "error",
+        "Tipo de arquivo não permitido. Use JPG, PNG, WEBP ou GIF."
+      );
+      e.target.value = "";
+      return;
+    }
+
+    if (file.size > MAX_SIZE) {
+      showMessage("error", "Arquivo muito grande. Máximo: 5MB.");
+      e.target.value = "";
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    setPendingFile(file);
+    setCropSrc(objectUrl);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,19 +159,12 @@ export default function PerfilPage() {
       });
 
       if (response.ok) {
-        setMessage({
-          type: "success",
-          text: "Perfil atualizado com sucesso!",
-        });
-        setTimeout(() => setMessage(null), 3000);
+        showMessage("success", "Perfil atualizado com sucesso!");
       } else {
         throw new Error("Erro ao salvar");
       }
-    } catch (error) {
-      setMessage({
-        type: "error",
-        text: "Erro ao atualizar perfil. Tente novamente.",
-      });
+    } catch {
+      showMessage("error", "Erro ao atualizar perfil. Tente novamente.");
     } finally {
       setIsSaving(false);
     }
@@ -150,15 +232,45 @@ export default function PerfilPage() {
             Foto de Perfil
           </h2>
           <div className="flex items-center gap-6">
-            <div className="h-24 w-24 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-3xl font-bold">
-              {formData.doctor_name?.charAt(0) || "D"}
+            <div className="h-24 w-24 rounded-full overflow-hidden bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-3xl font-bold shrink-0">
+              {formData.profile_photo_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={formData.profile_photo_url}
+                  alt={formData.doctor_name || "Foto de perfil"}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                formData.doctor_name?.charAt(0) || "D"
+              )}
             </div>
             <div>
-              <Button type="button" variant="outline">
-                Alterar Foto
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                className="hidden"
+                onChange={handleFileSelect}
+                disabled={isUploading}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                disabled={isUploading}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {isUploading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Enviando...
+                  </>
+                ) : (
+                  "Alterar Foto"
+                )}
               </Button>
               <p className="text-sm text-gray-600 mt-2">
-                JPG, PNG ou GIF. Máximo 5MB
+                JPG, PNG, WEBP ou GIF. Máximo 5MB. Você pode recortar antes de
+                enviar.
               </p>
             </div>
           </div>
@@ -276,6 +388,16 @@ export default function PerfilPage() {
           </Button>
         </div>
       </form>
+
+      {cropSrc && pendingFile && (
+        <PhotoCropDialog
+          open
+          imageSrc={cropSrc}
+          onCancel={closeCropDialog}
+          onSkipCrop={() => uploadPhoto(pendingFile)}
+          onConfirm={(croppedFile) => uploadPhoto(croppedFile)}
+        />
+      )}
     </div>
   );
 }
