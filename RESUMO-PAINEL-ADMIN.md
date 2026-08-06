@@ -1,5 +1,9 @@
 # 🎉 PAINEL ADMINISTRATIVO IMPLEMENTADO COM SUCESSO!
 
+> **Atualização:** o Admin foi enxugado para focar no **RitmoBlog**.
+> Conteúdo clínico (especialidades, tratamentos, convênios, FAQ) vive em `data/` e se altera no código.
+> Menu atual: Dashboard · Blog (Artigos / Categorias / Comentários) · Mídia · Perfil · Configurações.
+
 ## ✅ O QUE FOI DESENVOLVIDO
 
 ### 🔐 **Sistema de Autenticação Completo**
@@ -46,22 +50,18 @@
 
 #### **Componentes Criados:**
 
-1. **Sidebar** - Menu lateral com navegação completa
+1. **Sidebar** - Menu lateral (CMS do blog)
    - Dashboard
-   - Perfil
-   - Contato
-   - Endereço
-   - Especialidades
-   - Tratamentos
-   - Convênios
-   - Avaliações
+   - Blog (Artigos)
+   - Blog (Categorias)
+   - Blog (Comentários)
    - Mídia
-   - FAQ
+   - Perfil
    - Configurações
    - Logout
 
 2. **Header** - Cabeçalho com:
-   - Notificações
+   - Sino de comentários pendentes do blog
    - Informações do usuário logado
    - Role (admin/secretary)
 

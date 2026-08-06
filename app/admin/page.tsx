@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import {
-  Star,
-  Stethoscope,
-  Pill,
+  FileText,
+  CheckCircle2,
+  FileEdit,
   MessageSquare,
   Plus,
-  User,
+  FolderTree,
+  Image as ImageIcon,
   Eye,
   Users,
   MousePointerClick,
@@ -32,6 +33,14 @@ type AnalyticsSummary = {
   daily: { date: string; views: number; visitors: number }[];
 };
 
+type BlogArticleRow = {
+  status?: string;
+};
+
+type BlogCommentRow = {
+  status?: string;
+};
+
 const emptyAnalytics: AnalyticsSummary = {
   days: 7,
   pageViews: 0,
@@ -52,10 +61,10 @@ function formatDayLabel(isoDate: string) {
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
-    specialties: 0,
-    treatments: 0,
-    reviews: 0,
-    pendingReviews: 0,
+    articles: 0,
+    published: 0,
+    drafts: 0,
+    pendingComments: 0,
   });
   const [analytics, setAnalytics] = useState<AnalyticsSummary>(emptyAnalytics);
   const [analyticsDays, setAnalyticsDays] = useState<7 | 30>(7);
@@ -65,26 +74,26 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [specRes, treatRes, reviewRes] = await Promise.all([
-          fetch("/api/admin/specialties"),
-          fetch("/api/admin/treatments"),
-          fetch("/api/admin/reviews"),
+        const [articlesRes, commentsRes] = await Promise.all([
+          fetch("/api/admin/blog/articles"),
+          fetch("/api/admin/blog/comments"),
         ]);
 
-        const specs = await specRes.json();
-        const treats = await treatRes.json();
-        const reviews = await reviewRes.json();
+        const articles = (await articlesRes.json()) as BlogArticleRow[];
+        const comments = (await commentsRes.json()) as BlogCommentRow[];
+
+        const articleList = Array.isArray(articles) ? articles : [];
+        const commentList = Array.isArray(comments) ? comments : [];
 
         setStats({
-          specialties: Array.isArray(specs) ? specs.length : 0,
-          treatments: Array.isArray(treats) ? treats.length : 0,
-          reviews: Array.isArray(reviews) ? reviews.length : 0,
-          pendingReviews: Array.isArray(reviews)
-            ? reviews.filter((r: { approved?: boolean }) => !r.approved).length
-            : 0,
+          articles: articleList.length,
+          published: articleList.filter((a) => a.status === "published").length,
+          drafts: articleList.filter((a) => a.status === "draft").length,
+          pendingComments: commentList.filter((c) => c.status === "pending")
+            .length,
         });
       } catch (error) {
-        console.error("Erro ao carregar estatísticas", error);
+        console.error("Erro ao carregar estatísticas do blog", error);
       } finally {
         setLoading(false);
       }
@@ -114,40 +123,40 @@ export default function AdminDashboard() {
 
   const cards = [
     {
-      title: "Especialidades",
-      value: stats.specialties,
-      icon: Stethoscope,
-      description: "Especialidades ativas no site",
+      title: "Artigos",
+      value: stats.articles,
+      icon: FileText,
+      description: "Total de posts no RitmoBlog",
       color: "text-blue-600",
       bg: "bg-blue-50",
-      href: "/admin/especialidades",
+      href: "/admin/blog",
     },
     {
-      title: "Tratamentos",
-      value: stats.treatments,
-      icon: Pill,
-      description: "Doenças e procedimentos",
-      color: "text-purple-600",
-      bg: "bg-purple-50",
-      href: "/admin/tratamentos",
+      title: "Publicados",
+      value: stats.published,
+      icon: CheckCircle2,
+      description: "Visíveis no site público",
+      color: "text-green-600",
+      bg: "bg-green-50",
+      href: "/admin/blog",
     },
     {
-      title: "Avaliações",
-      value: stats.reviews,
-      icon: Star,
-      description: "Total de feedbacks recebidos",
-      color: "text-yellow-600",
-      bg: "bg-yellow-50",
-      href: "/admin/avaliacoes",
+      title: "Rascunhos",
+      value: stats.drafts,
+      icon: FileEdit,
+      description: "Ainda não publicados",
+      color: "text-amber-600",
+      bg: "bg-amber-50",
+      href: "/admin/blog",
     },
     {
-      title: "Pendentes",
-      value: stats.pendingReviews,
+      title: "Comentários",
+      value: stats.pendingComments,
       icon: MessageSquare,
-      description: "Avaliações aguardando aprovação",
-      color: stats.pendingReviews > 0 ? "text-red-600" : "text-green-600",
-      bg: stats.pendingReviews > 0 ? "bg-red-50" : "bg-green-50",
-      href: "/admin/avaliacoes",
+      description: "Aguardando moderação",
+      color: stats.pendingComments > 0 ? "text-red-600" : "text-green-600",
+      bg: stats.pendingComments > 0 ? "bg-red-50" : "bg-green-50",
+      href: "/admin/blog/comentarios",
     },
   ];
 
@@ -200,16 +209,21 @@ export default function AdminDashboard() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Bem-vindo, Dr. Pedro Felipe</h1>
-        <p className="text-gray-600">Aqui está o que está acontecendo no seu site hoje.</p>
+        <p className="text-gray-600">
+          Painel do RitmoBlog — publique artigos, modere comentários e acompanhe o
+          acesso ao site.
+        </p>
       </div>
 
-      {/* Conteúdo do site */}
+      {/* Métricas do blog */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {cards.map((card, i) => (
-          <Link key={i} href={card.href}>
+        {cards.map((card) => (
+          <Link key={card.title} href={card.href}>
             <Card className="cursor-pointer transition-all hover:scale-[1.02]">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">{card.title}</CardTitle>
+                <CardTitle className="text-sm font-medium text-gray-600">
+                  {card.title}
+                </CardTitle>
                 <div className={cn("rounded-lg p-2", card.bg)}>
                   <card.icon className={cn("h-5 w-5", card.color)} />
                 </div>
@@ -258,7 +272,9 @@ export default function AdminDashboard() {
           {accessCards.map((card) => (
             <Card key={card.title}>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">{card.title}</CardTitle>
+                <CardTitle className="text-sm font-medium text-gray-600">
+                  {card.title}
+                </CardTitle>
                 <div className={cn("rounded-lg p-2", card.bg)}>
                   <card.icon className={cn("h-5 w-5", card.color)} />
                 </div>
@@ -371,21 +387,30 @@ export default function AdminDashboard() {
         </CardHeader>
         <CardContent className="grid gap-4">
           <Button asChild variant="outline" className="justify-start">
-            <Link href="/admin/especialidades/novo">
+            <Link href="/admin/blog/novo">
               <Plus className="mr-2 h-4 w-4" />
-              Adicionar nova especialidade
+              Escrever novo artigo
             </Link>
           </Button>
           <Button asChild variant="outline" className="justify-start">
-            <Link href="/admin/tratamentos/novo">
-              <Plus className="mr-2 h-4 w-4" />
-              Adicionar novo tratamento
+            <Link href="/admin/blog/categorias">
+              <FolderTree className="mr-2 h-4 w-4" />
+              Gerenciar categorias
             </Link>
           </Button>
           <Button asChild variant="outline" className="justify-start">
-            <Link href="/admin/perfil">
-              <User className="mr-2 h-4 w-4" />
-              Atualizar meu perfil profissional
+            <Link href="/admin/blog/comentarios">
+              <MessageSquare className="mr-2 h-4 w-4" />
+              Moderar comentários
+              {stats.pendingComments > 0 && !loading
+                ? ` (${stats.pendingComments})`
+                : ""}
+            </Link>
+          </Button>
+          <Button asChild variant="outline" className="justify-start">
+            <Link href="/admin/midia">
+              <ImageIcon className="mr-2 h-4 w-4" />
+              Biblioteca de mídia
             </Link>
           </Button>
         </CardContent>

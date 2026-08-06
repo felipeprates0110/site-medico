@@ -2,6 +2,26 @@
 
 Este guia explica como configurar o painel administrativo do site.
 
+## Escopo do Admin (importante)
+
+O painel em `/admin` é o **CMS do RitmoBlog**, não um editor de todo o site.
+
+**Gerenciado pelo Admin (Supabase):**
+- Artigos, categorias e comentários do blog
+- Mídia (upload de imagens / capas)
+- Perfil do médico (`site_config`: foto, bio, CRM)
+- Configurações (troca de senha)
+- Dashboard com métricas do blog e analytics de acesso
+
+**Gerenciado no código (pasta `data/` e páginas Next.js):**
+- Especialidades → `data/specialties.ts`
+- Tratamentos → `data/treatments.ts`
+- Convênios → `data/insurance.ts`
+- FAQ → `data/faq.ts`
+- Avaliações de amostra / totais Doctoralia → `data/reviews.ts`
+
+URLs antigas do admin clínico (`/admin/especialidades`, `/admin/faq`, etc.) redirecionam para `/admin`.
+
 ---
 
 ## 📋 PRÉ-REQUISITOS

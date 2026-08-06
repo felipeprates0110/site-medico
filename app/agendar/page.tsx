@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { AgendarForm } from "@/components/agendar-form";
 import { TrackedLink } from "@/components/analytics/tracked-link";
-import { getContactInfo, getInsurancePlans } from "@/lib/data";
+import { getContactInfo } from "@/lib/data";
+import { insurancePlans } from "@/data/insurance";
 
 export const metadata: Metadata = {
   title: "Agendar Consulta",
@@ -12,10 +13,7 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function AgendarPage() {
-  const [contact, insurancePlans] = await Promise.all([
-    getContactInfo(),
-    getInsurancePlans(),
-  ]);
+  const contact = await getContactInfo();
 
   return (
     <div className="flex flex-col">

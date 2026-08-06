@@ -1,5 +1,5 @@
-import { InsuranceForm } from "@/components/admin/insurance-form";
+import { redirect } from "next/navigation";
 
-export default function NewInsurancePage() {
-  return <InsuranceForm />;
+export default function AdminConveniosNovoRedirect() {
+  redirect("/admin");
 }

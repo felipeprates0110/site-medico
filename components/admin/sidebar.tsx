@@ -6,16 +6,9 @@ import {
   Heart,
   LayoutDashboard,
   User,
-  Phone,
-  MapPin,
-  Stethoscope,
-  Pill,
-  Shield,
-  Star,
   Image,
   Settings,
   LogOut,
-  HelpCircle,
   FileText,
   FolderTree,
   MessageSquareText,
@@ -28,31 +21,6 @@ const menuItems = [
     title: "Dashboard",
     href: "/admin",
     icon: LayoutDashboard,
-  },
-  {
-    title: "Perfil",
-    href: "/admin/perfil",
-    icon: User,
-  },
-  {
-    title: "Contato",
-    href: "/admin/contato",
-    icon: Phone,
-  },
-  {
-    title: "Endereço",
-    href: "/admin/endereco",
-    icon: MapPin,
-  },
-  {
-    title: "Especialidades",
-    href: "/admin/especialidades",
-    icon: Stethoscope,
-  },
-  {
-    title: "Tratamentos",
-    href: "/admin/tratamentos",
-    icon: Pill,
   },
   {
     title: "Blog (Artigos)",
@@ -70,24 +38,14 @@ const menuItems = [
     icon: MessageSquareText,
   },
   {
-    title: "Convênios",
-    href: "/admin/convenios",
-    icon: Shield,
-  },
-  {
-    title: "Avaliações",
-    href: "/admin/avaliacoes",
-    icon: Star,
-  },
-  {
     title: "Mídia",
     href: "/admin/midia",
     icon: Image,
   },
   {
-    title: "FAQ",
-    href: "/admin/faq",
-    icon: HelpCircle,
+    title: "Perfil",
+    href: "/admin/perfil",
+    icon: User,
   },
   {
     title: "Configurações",
@@ -95,6 +53,25 @@ const menuItems = [
     icon: Settings,
   },
 ];
+
+function isMenuItemActive(pathname: string, href: string) {
+  // Dashboard: só a raiz do admin
+  if (href === "/admin") {
+    return pathname === "/admin";
+  }
+
+  // Artigos: /admin/blog e /admin/blog/[id|novo], mas não categorias/comentários
+  if (href === "/admin/blog") {
+    if (pathname === "/admin/blog") return true;
+    if (!pathname.startsWith("/admin/blog/")) return false;
+    return (
+      !pathname.startsWith("/admin/blog/categorias") &&
+      !pathname.startsWith("/admin/blog/comentarios")
+    );
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -114,7 +91,9 @@ export function Sidebar() {
           <span className="text-sm font-bold text-gray-900">
             Dr. Pedro Felipe
           </span>
-          <span className="text-xs font-medium text-primary-600">Painel Admin</span>
+          <span className="text-xs font-medium text-primary-600">
+            RitmoBlog Admin
+          </span>
         </div>
       </div>
 
@@ -123,7 +102,7 @@ export function Sidebar() {
         <ul className="space-y-1">
           {menuItems.map((item) => {
             const Icon = item.icon;
-            const isActive = pathname === item.href;
+            const isActive = isMenuItemActive(pathname, item.href);
 
             return (
               <li key={item.href}>
@@ -136,7 +115,12 @@ export function Sidebar() {
                       : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                   )}
                 >
-                  <Icon className={cn("h-5 w-5", isActive ? "text-primary-600" : "text-gray-400")} />
+                  <Icon
+                    className={cn(
+                      "h-5 w-5",
+                      isActive ? "text-primary-600" : "text-gray-400"
+                    )}
+                  />
                   {item.title}
                 </Link>
               </li>
@@ -152,8 +136,12 @@ export function Sidebar() {
             PF
           </div>
           <div className="flex flex-col overflow-hidden">
-            <span className="truncate text-sm font-semibold text-gray-900">Dr. Pedro Felipe</span>
-            <span className="truncate text-xs text-gray-500">admin@drpedrofelipe.com.br</span>
+            <span className="truncate text-sm font-semibold text-gray-900">
+              Dr. Pedro Felipe
+            </span>
+            <span className="truncate text-xs text-gray-500">
+              admin@drpedrofelipe.com.br
+            </span>
           </div>
         </div>
         <button

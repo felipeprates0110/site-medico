@@ -1,5 +1,5 @@
-import { SpecialtyForm } from "@/components/admin/specialty-form";
+import { redirect } from "next/navigation";
 
-export default function NewSpecialtyPage() {
-  return <SpecialtyForm />;
+export default function AdminEspecialidadesNovoRedirect() {
+  redirect("/admin");
 }

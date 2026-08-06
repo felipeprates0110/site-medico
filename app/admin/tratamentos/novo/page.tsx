@@ -1,5 +1,5 @@
-import { TreatmentForm } from "@/components/admin/treatment-form";
+import { redirect } from "next/navigation";
 
-export default function NewTreatmentPage() {
-  return <TreatmentForm />;
+export default function AdminTratamentosNovoRedirect() {
+  redirect("/admin");
 }

@@ -1,5 +1,5 @@
-import { FAQForm } from "@/components/admin/faq-form";
+import { redirect } from "next/navigation";
 
-export default function NewFAQPage() {
-  return <FAQForm />;
+export default function AdminFaqNovoRedirect() {
+  redirect("/admin");
 }

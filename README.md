@@ -21,8 +21,15 @@ Site profissional do cardiologista e arritmologista Dr. Pedro Felipe Prates Silv
 - ✅ Lista de 47 convênios aceitos
 - ✅ Integração com WhatsApp Business
 - ✅ Formulário de agendamento
+- ✅ RitmoBlog com painel Admin (artigos, categorias, comentários)
 - ✅ Performance otimizada (Core Web Vitals)
 - ✅ Conformidade com CFM 1.974/2011 e LGPD
+
+### Admin = CMS do blog
+
+O painel em `/admin` gerencia o **RitmoBlog** (posts, categorias, comentários, mídia), além de perfil e senha.
+
+O restante do site clínico (especialidades, tratamentos, convênios, FAQ) está em `data/` e se altera no código — veja `ADMIN-SETUP.md`.
 
 ## 🏗️ Estrutura do Projeto
 

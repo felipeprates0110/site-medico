@@ -16,14 +16,14 @@ import { BlogCard } from "@/components/blog/BlogCard";
 import { ReviewsPlatformBadges } from "@/components/google-reviews-badge";
 import { FAQAccordion } from "@/components/faq-accordion";
 import {
-  getSpecialties,
   getApprovedReviews,
   getSiteConfig,
-  getInsurancePlans,
-  getFAQItems,
   getPublishedArticles,
 } from "@/lib/data";
 import { reviewStats } from "@/data/reviews";
+import { specialties } from "@/data/specialties";
+import { insurancePlans } from "@/data/insurance";
+import { faqItems } from "@/data/faq";
 
 // Rede de segurança: se a revalidação on-demand falhar, a home refaz no máximo em 60s
 export const revalidate = 60;
@@ -37,23 +37,21 @@ const careerHighlights = [
 ];
 
 export default async function Home() {
-  const [specialties, reviews, siteConfig, insurance, faq, articles] =
-    await Promise.all([
-      getSpecialties(),
-      getApprovedReviews(),
-      getSiteConfig(),
-      getInsurancePlans(),
-      getFAQItems(),
-      getPublishedArticles(),
-    ]);
+  // Conteúdo clínico vem de data/ (código). Blog/reviews/perfil vêm do banco.
+  const [reviews, siteConfig, articles] = await Promise.all([
+    getApprovedReviews(),
+    getSiteConfig(),
+    getPublishedArticles(),
+  ]);
 
   const featuredArticles = articles.slice(0, 3);
+  const faq = faqItems;
 
   // Totais do Doctoralia (reviewStats). O 4º slot é o selo visual (não texto).
   const authorityStats = [
     { value: `${reviewStats.total}+`, label: "Avaliações de pacientes" },
     { value: reviewStats.average.toFixed(1), label: "Nota média" },
-    { value: `${insurance.length}+`, label: "Convênios aceitos" },
+    { value: `${insurancePlans.length}+`, label: "Convênios aceitos" },
   ];
 
   return (
