@@ -145,7 +145,7 @@ export default async function ContatoPage() {
                 </h3>
                 <p className="mt-1 text-sm text-gray-600">
                   Se você já tem diagnóstico ou indicação de procedimento e
-                  quer outra avaliação em arritmologia, use o fluxo dedicado.
+                  procura outra opinião ou avaliação, clique no botão ao lado.
                 </p>
               </div>
             </div>
