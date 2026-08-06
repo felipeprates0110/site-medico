@@ -63,6 +63,13 @@ export default async function EspecialidadePage({ params }: PageProps) {
   const hasExams = specialty.exams && specialty.exams.length > 0;
   const hasPreventionNote = Boolean(specialty.preventionNote?.trim());
 
+  const benefitsHeading =
+    specialty.slug === "arritmologia"
+      ? "Em que o arritmologista pode ajudar"
+      : specialty.slug === "eletrofisiologia"
+        ? "Em que o eletrofisiologista pode ajudar"
+        : "Em que o cardiologista pode ajudar";
+
   return (
     <div className="flex flex-col">
       {/* Breadcrumb */}
@@ -119,7 +126,7 @@ export default async function EspecialidadePage({ params }: PageProps) {
       <section className={hasApproach ? "bg-gray-50 py-16" : "bg-white py-16"}>
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <h2 className="mb-8 text-3xl font-bold text-gray-900">
-            O que inclui o atendimento
+            {benefitsHeading}
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
             {specialty.benefits.map((benefit) => (
@@ -208,6 +215,15 @@ export default async function EspecialidadePage({ params }: PageProps) {
               notar estes sinais — sobretudo quando aparecem juntos — ou se há
               fatores de risco importantes.
             </p>
+            {specialty.slug === "cardiologia" && (
+              <figure className="mb-10 overflow-hidden rounded-2xl ring-1 ring-gray-200/80">
+                <img
+                  src="/images/quando-procurar-cardiologista.png"
+                  alt="Infográfico: quando procurar um cardiologista — dor ou desconforto no peito, falta de ar, fadiga excessiva e tontura ou desmaio"
+                  className="h-auto w-full object-cover"
+                />
+              </figure>
+            )}
             <ul className="grid gap-3 md:grid-cols-2">
               {specialty.whenToSeek!.map((item) => (
                 <li
@@ -219,12 +235,6 @@ export default async function EspecialidadePage({ params }: PageProps) {
                 </li>
               ))}
             </ul>
-            <p className="mt-6 max-w-3xl text-sm leading-relaxed text-gray-500">
-              Esses sintomas também podem ter outras causas. Em dor intensa no
-              peito, falta de ar grave ou desmaio, procure atendimento de
-              emergência. Nos demais casos, uma avaliação cardiológica ajuda a
-              esclarecer o quadro com segurança.
-            </p>
           </div>
         </section>
       )}
