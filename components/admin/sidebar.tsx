@@ -6,7 +6,6 @@ import {
   Heart,
   LayoutDashboard,
   User,
-  Image,
   Settings,
   LogOut,
   FileText,
@@ -36,11 +35,6 @@ const menuItems = [
     title: "Blog (Comentários)",
     href: "/admin/blog/comentarios",
     icon: MessageSquareText,
-  },
-  {
-    title: "Mídia",
-    href: "/admin/midia",
-    icon: Image,
   },
   {
     title: "Perfil",

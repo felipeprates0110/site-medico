@@ -8,7 +8,6 @@ import {
   MessageSquare,
   Plus,
   FolderTree,
-  Image as ImageIcon,
   Eye,
   Users,
   MousePointerClick,
@@ -405,12 +404,6 @@ export default function AdminDashboard() {
               {stats.pendingComments > 0 && !loading
                 ? ` (${stats.pendingComments})`
                 : ""}
-            </Link>
-          </Button>
-          <Button asChild variant="outline" className="justify-start">
-            <Link href="/admin/midia">
-              <ImageIcon className="mr-2 h-4 w-4" />
-              Biblioteca de mídia
             </Link>
           </Button>
         </CardContent>
