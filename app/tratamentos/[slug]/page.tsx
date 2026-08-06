@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ArrowLeft, AlertCircle, Stethoscope, Pill, Shield } from "lucide-react";
+import {
+  ArrowLeft,
+  AlertCircle,
+  Stethoscope,
+  Pill,
+  Shield,
+  BookOpen,
+  ChevronRight,
+} from "lucide-react";
 import { treatments } from "@/data/treatments";
 import { Button } from "@/components/ui/button";
 import { WhatsAppButton } from "@/components/whatsapp-button";
@@ -69,15 +77,52 @@ export default async function TratamentoPage({ params }: PageProps) {
           <p className="text-xl text-gray-700 leading-relaxed mb-8">
             {treatment.description}
           </p>
-          <WhatsAppButton
-            message={`Olá! Gostaria de saber mais sobre ${treatment.title}.`}
-          />
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <WhatsAppButton
+              message={`Olá! Gostaria de saber mais sobre ${treatment.title}.`}
+            />
+            {treatment.relatedBlogSlug && (
+              <Link
+                href={`/blog/${treatment.relatedBlogSlug}`}
+                className="inline-flex items-center text-sm font-semibold text-primary-700 hover:text-primary-800"
+              >
+                Ler artigo completo no blog
+                <ChevronRight className="ml-1 h-4 w-4" />
+              </Link>
+            )}
+          </div>
         </div>
       </section>
 
       {/* Content */}
       <section className="py-16 bg-white">
         <div className="mx-auto max-w-4xl px-4 lg:px-8 space-y-12">
+          {treatment.relatedBlogSlug && (
+            <div className="rounded-2xl border border-primary-100 bg-primary-50/60 p-6 sm:p-8">
+              <div className="flex items-start gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary-100 text-primary-700">
+                  <BookOpen className="h-6 w-6" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    Quer entender com mais profundidade?
+                  </h2>
+                  <p className="mt-2 text-gray-700 leading-relaxed">
+                    No RitmoBlog há um guia completo em linguagem simples — ideal
+                    para tirar dúvidas antes da consulta.
+                  </p>
+                  <Link
+                    href={`/blog/${treatment.relatedBlogSlug}`}
+                    className="mt-4 inline-flex items-center text-sm font-semibold text-primary-700 hover:text-primary-800"
+                  >
+                    {treatment.relatedBlogTitle || "Ler artigo no blog"}
+                    <ChevronRight className="ml-1 h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Symptoms */}
           {treatment.symptoms.length > 0 && (
             <div>

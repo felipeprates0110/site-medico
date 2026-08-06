@@ -211,13 +211,25 @@ export default async function EspecialidadePage({ params }: PageProps) {
               {guide.risksNote}
             </p>
 
-            <Link
-              href="/tratamentos/ablacao-por-cateter"
-              className="mt-8 inline-flex items-center text-sm font-semibold text-primary-700 hover:text-primary-800"
-            >
-              Saiba mais sobre ablação por cateter
-              <ChevronRight className="ml-1 h-4 w-4" />
-            </Link>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+              <Link
+                href="/tratamentos/ablacao-por-cateter"
+                className="inline-flex items-center text-sm font-semibold text-primary-700 hover:text-primary-800"
+              >
+                Saiba mais sobre ablação por cateter
+                <ChevronRight className="ml-1 h-4 w-4" />
+              </Link>
+              <span className="hidden text-gray-300 sm:inline" aria-hidden>
+                ·
+              </span>
+              <Link
+                href="/blog/ablacao-por-cateter-o-que-e-quando-indicada"
+                className="inline-flex items-center text-sm font-semibold text-primary-700 hover:text-primary-800"
+              >
+                Ler artigo completo no blog
+                <ChevronRight className="ml-1 h-4 w-4" />
+              </Link>
+            </div>
           </div>
         </section>
       )}

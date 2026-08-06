@@ -57,6 +57,9 @@ export interface Treatment {
   diagnosis: string[];
   treatment: string[];
   preventiveCare?: string[];
+  /** Slug do artigo relacionado no RitmoBlog (engajamento / SEO) */
+  relatedBlogSlug?: string;
+  relatedBlogTitle?: string;
 }
 
 export interface InsurancePlan {

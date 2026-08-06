@@ -38,6 +38,9 @@ export const treatments: Treatment[] = [
       "Redução do consumo de álcool",
       "Atividade física regular",
     ],
+    relatedBlogSlug: "fibrilacao-atrial-o-que-voce-precisa-saber",
+    relatedBlogTitle:
+      "Fibrilação Atrial: O Que Você Precisa Saber Sobre Essa Arritmia Silenciosa",
   },
   {
     id: "2",
@@ -65,6 +68,9 @@ export const treatments: Treatment[] = [
       "Monitoramento com Holter após procedimento",
       "Adequação de medicações",
     ],
+    relatedBlogSlug: "ablacao-por-cateter-o-que-e-quando-indicada",
+    relatedBlogTitle:
+      "Ablação por Cateter: O Que É, Quando É Indicada e Como É a Recuperação",
   },
   {
     id: "3",
