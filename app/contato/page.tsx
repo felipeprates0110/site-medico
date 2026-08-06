@@ -133,8 +133,8 @@ export default async function ContatoPage() {
                 <Image
                   src="/images/logo-idc-brasilia.png"
                   alt="Logo do iDC — Instituto de Doenças Cardiovasculares"
-                  width={320}
-                  height={80}
+                  width={232}
+                  height={74}
                   className="h-14 w-auto max-w-full object-contain sm:h-16"
                   priority
                 />
