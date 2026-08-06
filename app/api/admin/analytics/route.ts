@@ -110,7 +110,5 @@ export async function GET(request: Request) {
     emailClicks: countByName("email_click"),
     topPages,
     daily,
-    vercelAnalyticsHint:
-      "Visitas detalhadas também aparecem em Vercel → Analytics (após o deploy).",
   });
 }

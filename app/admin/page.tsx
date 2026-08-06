@@ -5,12 +5,9 @@ import {
   Star,
   Stethoscope,
   Pill,
-  Activity,
   MessageSquare,
   Plus,
   User,
-  Image,
-  Shield,
   Eye,
   Users,
   MousePointerClick,
@@ -33,7 +30,6 @@ type AnalyticsSummary = {
   emailClicks: number;
   topPages: { path: string; views: number }[];
   daily: { date: string; views: number; visitors: number }[];
-  vercelAnalyticsHint?: string;
 };
 
 const emptyAnalytics: AnalyticsSummary = {
@@ -368,71 +364,32 @@ export default function AdminDashboard() {
         </div>
       </section>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Ações Rápidas</CardTitle>
-            <CardDescription>O que você deseja fazer agora?</CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-4">
-            <Button asChild variant="outline" className="justify-start">
-              <Link href="/admin/especialidades/novo">
-                <Plus className="mr-2 h-4 w-4" />
-                Adicionar nova especialidade
-              </Link>
-            </Button>
-            <Button asChild variant="outline" className="justify-start">
-              <Link href="/admin/tratamentos/novo">
-                <Plus className="mr-2 h-4 w-4" />
-                Adicionar novo tratamento
-              </Link>
-            </Button>
-            <Button asChild variant="outline" className="justify-start">
-              <Link href="/admin/perfil">
-                <User className="mr-2 h-4 w-4" />
-                Atualizar meu perfil profissional
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Status do Sistema</CardTitle>
-            <CardDescription>Integridade das integrações</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Activity className="h-4 w-4 text-green-600" />
-                <span className="text-sm font-medium">Banco de Dados (Supabase)</span>
-              </div>
-              <Badge variant="success">Online</Badge>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Image className="h-4 w-4 text-green-600" />
-                <span className="text-sm font-medium">Armazenamento (Vercel Blob)</span>
-              </div>
-              <Badge variant="success">Online</Badge>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-green-600" />
-                <span className="text-sm font-medium">SSL / Segurança</span>
-              </div>
-              <Badge variant="success">Ativo</Badge>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Eye className="h-4 w-4 text-green-600" />
-                <span className="text-sm font-medium">Analytics (acessos)</span>
-              </div>
-              <Badge variant="success">Ativo</Badge>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <Card className="max-w-xl">
+        <CardHeader>
+          <CardTitle>Ações Rápidas</CardTitle>
+          <CardDescription>O que você deseja fazer agora?</CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-4">
+          <Button asChild variant="outline" className="justify-start">
+            <Link href="/admin/especialidades/novo">
+              <Plus className="mr-2 h-4 w-4" />
+              Adicionar nova especialidade
+            </Link>
+          </Button>
+          <Button asChild variant="outline" className="justify-start">
+            <Link href="/admin/tratamentos/novo">
+              <Plus className="mr-2 h-4 w-4" />
+              Adicionar novo tratamento
+            </Link>
+          </Button>
+          <Button asChild variant="outline" className="justify-start">
+            <Link href="/admin/perfil">
+              <User className="mr-2 h-4 w-4" />
+              Atualizar meu perfil profissional
+            </Link>
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 }

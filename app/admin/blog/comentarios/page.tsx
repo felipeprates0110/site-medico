@@ -106,6 +106,8 @@ export default function BlogCommentsAdminPage() {
         ...prev,
         [id]: updated.doctor_reply || "",
       }));
+      // Avisa o sino do header para atualizar a bolinha vermelha na hora.
+      window.dispatchEvent(new Event("admin:blog-comments-changed"));
       toast.success("Comentário atualizado");
     } catch (error) {
       toast.error(
@@ -127,6 +129,7 @@ export default function BlogCommentsAdminPage() {
       if (!response.ok) throw new Error("Falha ao excluir");
 
       setComments((prev) => prev.filter((c) => c.id !== id));
+      window.dispatchEvent(new Event("admin:blog-comments-changed"));
       toast.success("Comentário excluído");
     } catch {
       toast.error("Erro ao excluir comentário");

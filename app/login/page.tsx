@@ -121,13 +121,11 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          {/* Footer */}
+          {/* Dica: a troca de senha fica dentro do painel, após o login */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Esqueceu sua senha?{" "}
-              <a href="#" className="text-blue-600 hover:underline font-medium">
-                Recuperar acesso
-              </a>
+              Após entrar, você pode alterar a senha em{" "}
+              <span className="font-medium text-gray-800">Configurações</span>.
             </p>
           </div>
         </div>
