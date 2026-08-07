@@ -14,10 +14,10 @@ export function AuthorBox({ name, role, crm, bio, photoUrl }: AuthorBoxProps) {
 
   return (
     <div
-      className={`my-12 flex flex-col items-center gap-5 rounded-2xl border border-gray-100 bg-white shadow-sm sm:flex-row ${
+      className={`my-12 flex flex-col gap-5 rounded-2xl border border-gray-100 bg-white shadow-sm sm:flex-row ${
         shortBio
-          ? "items-start p-8 sm:items-start"
-          : "p-6 sm:items-center"
+          ? "items-center p-8 sm:items-start"
+          : "items-center p-6"
       }`}
     >
       <div className="relative flex h-24 w-24 flex-shrink-0 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-gray-100 text-gray-300 shadow-md">
