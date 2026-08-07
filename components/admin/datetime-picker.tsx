@@ -206,24 +206,24 @@ export function DateTimePicker({
         type="button"
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "flex h-11 w-full items-center gap-3 rounded-xl border bg-white px-3 text-left text-sm transition-all",
+          "flex min-h-14 w-full items-center gap-3 overflow-hidden rounded-xl border bg-white px-3 py-2.5 text-left text-sm transition-all",
           "border-primary-200 hover:border-primary-300 hover:bg-primary-50/40",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2",
           open && "border-primary-400 ring-2 ring-primary-100"
         )}
       >
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-700">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-700">
           <CalendarDays className="h-4 w-4" />
         </span>
-        <span className="min-w-0 flex-1">
+        <span className="flex min-w-0 flex-1 flex-col justify-center gap-0.5 overflow-hidden leading-snug">
           {value ? (
-            <span className="block font-medium text-gray-900">
+            <span className="truncate font-medium text-gray-900">
               {formatDisplay(value)}
             </span>
           ) : (
-            <span className="block text-gray-500">{placeholder}</span>
+            <span className="truncate text-gray-500">{placeholder}</span>
           )}
-          <span className="block text-[11px] text-gray-400">
+          <span className="truncate text-[11px] leading-none text-gray-400">
             Horário de Brasília
           </span>
         </span>
@@ -231,7 +231,7 @@ export function DateTimePicker({
           <span
             role="button"
             tabIndex={0}
-            className="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+            className="shrink-0 rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
             onClick={(e) => {
               e.stopPropagation();
               clear();
