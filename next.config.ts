@@ -11,7 +11,9 @@ const contentSecurityPolicy = [
   // Next.js + Analytics + AdSense (quando ativo em produção)
   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://pagead2.googlesyndication.com https://www.googletagservices.com https://www.google.com",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://*.supabase.co https://www.google.com https://maps.gstatic.com https://*.googleapis.com https://pagead2.googlesyndication.com https://*.googlesyndication.com",
+  // https: = fotos de ofertas afiliadas (Apple, Samsung, Amazon CDN etc.)
+  // Analogia: a lista de convidados passa a aceitar qualquer imagem segura (HTTPS).
+  "img-src 'self' data: blob: https: https://*.public.blob.vercel-storage.com https://*.supabase.co https://www.google.com https://maps.gstatic.com https://*.googleapis.com https://pagead2.googlesyndication.com https://*.googlesyndication.com",
   "font-src 'self' data:",
   "connect-src 'self' https://*.supabase.co https://va.vercel-scripts.com https://vitals.vercel-insights.com https://vercel.live wss://*.supabase.co https://pagead2.googlesyndication.com https://*.google.com",
   "frame-src 'self' https://www.google.com https://maps.google.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com",
