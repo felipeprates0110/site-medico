@@ -1,9 +1,19 @@
 # Prompt de Artigo — RitmoBlog
 
-Use este arquivo sempre que for gerar um novo post para colar no editor  
-`/admin/blog/novo`.
+Este arquivo é a **fonte das regras** de redação do blog.
 
-## Como usar (3 passos)
+## Como usar no admin (recomendado)
+
+1. Abra `/admin/blog/novo` (ou edite um rascunho).
+2. Clique em **Gerar com IA**, preencha tema / links e gere.
+3. Revise o formulário e salve como rascunho / fila / publique.
+
+A escrita **manual** no mesmo editor continua disponível.
+
+Variáveis de ambiente (servidor): `GEMINI_API_KEY` e `ANTHROPIC_API_KEY`  
+(veja `.env.example`).
+
+## Como usar manualmente (copiar/colar em outra IA)
 
 1. Copie o bloco **Prompt completo** abaixo.
 2. Troque só o que está entre `[colchetes]` na seção "ASSUNTO DO ARTIGO".

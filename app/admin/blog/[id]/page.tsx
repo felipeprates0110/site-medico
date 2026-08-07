@@ -14,6 +14,10 @@ import { SimpleEditor } from "@/components/admin/simple-editor";
 import { CoverImageField } from "@/components/admin/cover-image-field";
 import { ArticlePreview } from "@/components/admin/article-preview";
 import {
+  AiArticlePanel,
+  type AiGeneratedFields,
+} from "@/components/admin/ai-article-panel";
+import {
   STATUS_LABEL,
   type ArticleStatus,
   isoToBrazilLocalInput,
@@ -163,6 +167,22 @@ export default function EditarArtigoPage({
     (cat) => cat.id === formData.category_id
   )?.name;
 
+  const applyAiFields = (
+    fields: AiGeneratedFields,
+    categoryId?: string
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      title: fields.title,
+      slug: fields.slug,
+      excerpt: fields.excerpt,
+      seo_title: fields.seo_title,
+      seo_description: fields.seo_description,
+      content: fields.content,
+      category_id: categoryId || prev.category_id,
+    }));
+  };
+
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-20">
       <div className="space-y-3">
@@ -240,6 +260,8 @@ export default function EditarArtigoPage({
           </Button>
         </div>
       </div>
+
+      <AiArticlePanel categories={categories} onApply={applyAiFields} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">

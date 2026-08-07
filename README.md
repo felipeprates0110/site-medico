@@ -22,6 +22,7 @@ Site profissional do cardiologista e arritmologista Dr. Pedro Felipe Prates Silv
 - ✅ Integração com WhatsApp Business
 - ✅ Formulário de agendamento
 - ✅ RitmoBlog com painel Admin (artigos, categorias, comentários)
+- ✅ Máquina de artigos com IA (Gemini Flash + Claude) no admin — escrita manual continua disponível
 - ✅ Performance otimizada (Core Web Vitals)
 - ✅ Conformidade com CFM 1.974/2011 e LGPD
 
@@ -102,6 +103,18 @@ npm start
 ```
 
 ## 📝 Configurações Importantes
+
+### 0. Máquina de artigos (IA)
+
+No `.env.local` e na Vercel (Environment Variables), configure:
+
+```bash
+GEMINI_API_KEY=...      # Google AI Studio
+ANTHROPIC_API_KEY=...   # Anthropic Console
+```
+
+Só no servidor (sem `NEXT_PUBLIC_`). No admin: `/admin/blog/novo` → **Gerar com IA**.  
+Regras de redação: `PROMPT-BLOG.md`.
 
 ### 1. Atualizar Informações do Médico
 

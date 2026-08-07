@@ -12,6 +12,10 @@ import { toast } from "sonner";
 import { SimpleEditor } from "@/components/admin/simple-editor";
 import { CoverImageField } from "@/components/admin/cover-image-field";
 import { ArticlePreview } from "@/components/admin/article-preview";
+import {
+  AiArticlePanel,
+  type AiGeneratedFields,
+} from "@/components/admin/ai-article-panel";
 
 export default function NovoArtigoPage() {
   const router = useRouter();
@@ -119,6 +123,23 @@ export default function NovoArtigoPage() {
     (cat) => cat.id === formData.category_id
   )?.name;
 
+  const applyAiFields = (
+    fields: AiGeneratedFields,
+    categoryId?: string
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      title: fields.title,
+      slug: fields.slug,
+      excerpt: fields.excerpt,
+      seo_title: fields.seo_title,
+      seo_description: fields.seo_description,
+      content: fields.content,
+      category_id: categoryId || prev.category_id,
+      status: "draft",
+    }));
+  };
+
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-20">
       <div className="space-y-3">
@@ -133,7 +154,7 @@ export default function NovoArtigoPage() {
               Novo Artigo
             </h1>
             <p className="mt-1 text-gray-600">
-              Escreva e deixe na fila do calendário ou publique agora.
+              Escreva manualmente ou use a IA — depois revise e publique.
             </p>
           </div>
         </div>
@@ -181,6 +202,8 @@ export default function NovoArtigoPage() {
           </Button>
         </div>
       </div>
+
+      <AiArticlePanel categories={categories} onApply={applyAiFields} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">

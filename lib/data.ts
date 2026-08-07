@@ -199,6 +199,7 @@ export async function getPublishedArticles() {
           cover_image_url,
           created_at,
           published_at,
+          updated_at,
           category:blog_categories(name)
         `)
         .eq("status", "published")

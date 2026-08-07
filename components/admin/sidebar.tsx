@@ -12,42 +12,73 @@ import {
   FolderTree,
   MessageSquareText,
   CalendarDays,
+  Newspaper,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 
-const menuItems = [
+type MenuLink = {
+  type: "link";
+  title: string;
+  href: string;
+  icon: typeof LayoutDashboard;
+};
+
+type MenuGroup = {
+  type: "group";
+  title: string;
+  icon: typeof LayoutDashboard;
+  children: {
+    title: string;
+    href: string;
+    icon: typeof LayoutDashboard;
+  }[];
+};
+
+type MenuItem = MenuLink | MenuGroup;
+
+const menuItems: MenuItem[] = [
   {
+    type: "link",
     title: "Dashboard",
     href: "/admin",
     icon: LayoutDashboard,
   },
   {
-    title: "Blog (Artigos)",
-    href: "/admin/blog",
-    icon: FileText,
-  },
-  {
-    title: "Calendário editorial",
-    href: "/admin/blog/calendario",
-    icon: CalendarDays, // publicação automática por categoria/dia
-  },
-  {
-    title: "Blog (Categorias)",
-    href: "/admin/blog/categorias",
-    icon: FolderTree,
-  },
-  {
-    title: "Blog (Comentários)",
-    href: "/admin/blog/comentarios",
-    icon: MessageSquareText,
-  },
-  {
+    type: "link",
     title: "Perfil",
     href: "/admin/perfil",
     icon: User,
   },
   {
+    type: "group",
+    title: "RitmoBlog",
+    icon: Newspaper,
+    children: [
+      {
+        title: "Artigos",
+        href: "/admin/blog",
+        icon: FileText,
+      },
+      {
+        title: "Calendário",
+        href: "/admin/blog/calendario",
+        icon: CalendarDays,
+      },
+      {
+        title: "Categorias",
+        href: "/admin/blog/categorias",
+        icon: FolderTree,
+      },
+      {
+        title: "Comentários",
+        href: "/admin/blog/comentarios",
+        icon: MessageSquareText,
+      },
+    ],
+  },
+  {
+    type: "link",
     title: "Configurações",
     href: "/admin/configuracoes",
     icon: Settings,
@@ -79,6 +110,10 @@ function isMenuItemActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+function isGroupActive(pathname: string, children: MenuGroup["children"]) {
+  return children.some((child) => isMenuItemActive(pathname, child.href));
+}
+
 export function Sidebar() {
   const pathname = usePathname();
 
@@ -107,6 +142,58 @@ export function Sidebar() {
       <nav className="flex-1 overflow-y-auto p-4">
         <ul className="space-y-1">
           {menuItems.map((item) => {
+            if (item.type === "group") {
+              const GroupIcon = item.icon;
+              const groupActive = isGroupActive(pathname, item.children);
+
+              return (
+                <li key={item.title} className="pt-1">
+                  <div
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold",
+                      groupActive ? "text-primary-700" : "text-gray-800"
+                    )}
+                  >
+                    <GroupIcon
+                      className={cn(
+                        "h-5 w-5",
+                        groupActive ? "text-primary-600" : "text-gray-500"
+                      )}
+                    />
+                    {item.title}
+                  </div>
+                  <ul className="mt-1 space-y-1 border-l border-gray-100 ml-5 pl-2">
+                    {item.children.map((child) => {
+                      const ChildIcon = child.icon;
+                      const isActive = isMenuItemActive(pathname, child.href);
+
+                      return (
+                        <li key={child.href}>
+                          <Link
+                            href={child.href}
+                            className={cn(
+                              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
+                              isActive
+                                ? "bg-primary-50 text-primary-700 shadow-sm"
+                                : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                            )}
+                          >
+                            <ChildIcon
+                              className={cn(
+                                "h-4 w-4",
+                                isActive ? "text-primary-600" : "text-gray-400"
+                              )}
+                            />
+                            {child.title}
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </li>
+              );
+            }
+
             const Icon = item.icon;
             const isActive = isMenuItemActive(pathname, item.href);
 
