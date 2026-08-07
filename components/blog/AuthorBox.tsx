@@ -13,7 +13,13 @@ export function AuthorBox({ name, role, crm, bio, photoUrl }: AuthorBoxProps) {
   const shortBio = bio?.trim();
 
   return (
-    <div className="my-12 flex flex-col items-center gap-6 rounded-2xl border border-gray-100 bg-white p-8 shadow-sm sm:flex-row sm:items-start">
+    <div
+      className={`my-12 flex flex-col items-center gap-5 rounded-2xl border border-gray-100 bg-white shadow-sm sm:flex-row ${
+        shortBio
+          ? "items-start p-8 sm:items-start"
+          : "p-6 sm:items-center"
+      }`}
+    >
       <div className="relative flex h-24 w-24 flex-shrink-0 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-gray-100 text-gray-300 shadow-md">
         {photoUrl ? (
           <Image src={photoUrl} alt={name} fill className="object-cover" />
@@ -23,7 +29,7 @@ export function AuthorBox({ name, role, crm, bio, photoUrl }: AuthorBoxProps) {
           </svg>
         )}
       </div>
-      <div className="text-center sm:text-left">
+      <div className="min-w-0 text-center sm:text-left">
         <h3 className="mb-1 text-xl font-bold text-gray-900">{name}</h3>
         <p
           className={`text-sm font-semibold text-primary-700 ${

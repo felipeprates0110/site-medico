@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthorBox } from "@/components/blog/AuthorBox";
+import { resolveAuthorCardBio } from "@/lib/author-bio";
 import {
   DEFAULT_DOCTOR_PHOTO,
   resolveDoctorPhoto,
@@ -105,8 +106,8 @@ export function ArticlePreview({ open, onClose, article }: ArticlePreviewProps) 
   const doctorName = profile?.doctor_name?.trim() || "Dr. Pedro Felipe";
   const role = formatRole(profile?.specialty, profile?.subspecialty);
   const crm = formatCrm(profile?.doctor_crm, profile?.doctor_rqe);
-  // Só mostra biografia se a bio curta estiver preenchida (campo opcional).
-  const bio = profile?.bio_short?.trim() || undefined;
+  // Bio curta, se houver; senão um trecho da biografia completa.
+  const bio = resolveAuthorCardBio(profile?.bio_short, profile?.bio);
   const photoUrl = resolveDoctorPhoto(
     profile?.profile_photo_url || DEFAULT_DOCTOR_PHOTO
   );

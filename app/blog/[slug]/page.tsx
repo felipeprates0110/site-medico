@@ -8,6 +8,7 @@ import {
   getSiteConfig,
 } from "@/lib/data";
 import { AuthorBox } from "@/components/blog/AuthorBox";
+import { resolveAuthorCardBio } from "@/lib/author-bio";
 import { AdSenseUnit } from "@/components/blog/AdSenseUnit";
 import { AffiliateBox } from "@/components/blog/AffiliateBox";
 import { BlogComments } from "@/components/blog/BlogComments";
@@ -211,7 +212,10 @@ export default async function BlogPostPage({
             name={doctorName}
             role={`${specialty} ${subspecialty}`.trim()}
             crm={crm}
-            bio={siteConfig?.bio_short?.trim() || undefined}
+            bio={resolveAuthorCardBio(
+              siteConfig?.bio_short,
+              siteConfig?.bio
+            )}
             photoUrl={siteConfig?.profile_photo_url || DEFAULT_DOCTOR_PHOTO}
           />
 
