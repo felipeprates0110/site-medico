@@ -35,12 +35,20 @@ export function CoverImageField({
   const [showUrlInput, setShowUrlInput] = useState(Boolean(value));
   const [cropSrc, setCropSrc] = useState<string | null>(null);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
+  /** Prévia local enquanto o upload sobe — não grava blob: no formulário */
+  const [localPreview, setLocalPreview] = useState<string | null>(null);
 
   useEffect(() => {
     return () => {
       if (cropSrc) URL.revokeObjectURL(cropSrc);
     };
   }, [cropSrc]);
+
+  useEffect(() => {
+    return () => {
+      if (localPreview) URL.revokeObjectURL(localPreview);
+    };
+  }, [localPreview]);
 
   useEffect(() => {
     if (value) setShowUrlInput(true);
@@ -71,6 +79,12 @@ export function CoverImageField({
 
   const uploadCover = async (file: File) => {
     setIsUploading(true);
+    const previewUrl = URL.createObjectURL(file);
+    setLocalPreview((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return previewUrl;
+    });
+
     try {
       const readyFile = await prepareForUpload(file);
       const body = new FormData();
@@ -88,10 +102,23 @@ export function CoverImageField({
         throw new Error(data.error || "Falha no upload");
       }
 
-      onChange(data.url);
+      const uploadedUrl = data.url as string | undefined;
+      if (!uploadedUrl) {
+        throw new Error("Servidor não retornou a URL da imagem.");
+      }
+
+      onChange(uploadedUrl);
       setShowUrlInput(true);
-      toast.success("Capa enviada com sucesso!");
+      setLocalPreview((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return null;
+      });
+      toast.success("Capa enviada! Lembre de salvar o artigo para gravar a capa.");
     } catch (error) {
+      setLocalPreview((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return null;
+      });
       toast.error(
         error instanceof Error
           ? error.message
@@ -102,6 +129,8 @@ export function CoverImageField({
       closeCropDialog();
     }
   };
+
+  const displaySrc = localPreview || value;
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -138,18 +167,22 @@ export function CoverImageField({
     <div className="space-y-3">
       <label className="text-sm font-medium">Imagem de Capa</label>
 
-      {value ? (
+      {displaySrc ? (
         <div className="relative aspect-video overflow-hidden rounded-lg border bg-slate-100">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={value}
+            src={displaySrc}
             alt="Prévia da capa"
             className="h-full w-full object-cover"
             onError={(e) => {
-              (e.target as HTMLImageElement).src =
-                'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%23cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>';
+              (e.target as HTMLImageElement).style.display = "none";
             }}
           />
+          {isUploading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-sm font-medium text-white">
+              Enviando capa...
+            </div>
+          )}
         </div>
       ) : (
         <div className="flex aspect-video flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 bg-slate-50 px-4 text-center">
@@ -190,12 +223,18 @@ export function CoverImageField({
           {showUrlInput ? "Ocultar URL" : "Usar URL"}
         </Button>
 
-        {value && (
+        {(value || localPreview) && (
           <Button
             type="button"
             variant="ghost"
             size="sm"
-            onClick={() => onChange("")}
+            onClick={() => {
+              setLocalPreview((prev) => {
+                if (prev) URL.revokeObjectURL(prev);
+                return null;
+              });
+              onChange("");
+            }}
             disabled={busy}
           >
             <Trash2 className="mr-2 h-4 w-4" />

@@ -99,7 +99,7 @@ export default function EditarArtigoPage({
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const title = e.target.value;
-    setFormData({ ...formData, title });
+    setFormData((prev) => ({ ...prev, title }));
   };
 
   const handleSubmit = async (e: React.FormEvent, newStatus?: string) => {
@@ -121,7 +121,7 @@ export default function EditarArtigoPage({
       status,
       scheduled_at: status === "scheduled" ? scheduledLocal : undefined,
     };
-    setFormData({ ...formData, status });
+    setFormData((prev) => ({ ...prev, status }));
 
     try {
       const response = await fetch(
@@ -264,7 +264,9 @@ export default function EditarArtigoPage({
                 </label>
                 <SimpleEditor
                   value={formData.content}
-                  onChange={(val) => setFormData({ ...formData, content: val })}
+                  onChange={(val) =>
+                    setFormData((prev) => ({ ...prev, content: val }))
+                  }
                 />
               </div>
             </CardContent>
@@ -283,7 +285,10 @@ export default function EditarArtigoPage({
                   id="seo_title"
                   value={formData.seo_title}
                   onChange={(e) =>
-                    setFormData({ ...formData, seo_title: e.target.value })
+                    setFormData((prev) => ({
+                      ...prev,
+                      seo_title: e.target.value,
+                    }))
                   }
                 />
               </div>
@@ -296,10 +301,10 @@ export default function EditarArtigoPage({
                   rows={2}
                   value={formData.seo_description}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
+                    setFormData((prev) => ({
+                      ...prev,
                       seo_description: e.target.value,
-                    })
+                    }))
                   }
                 />
               </div>
@@ -322,7 +327,7 @@ export default function EditarArtigoPage({
                   required
                   value={formData.slug}
                   onChange={(e) =>
-                    setFormData({ ...formData, slug: e.target.value })
+                    setFormData((prev) => ({ ...prev, slug: e.target.value }))
                   }
                 />
               </div>
@@ -336,7 +341,10 @@ export default function EditarArtigoPage({
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                   value={formData.category_id}
                   onChange={(e) =>
-                    setFormData({ ...formData, category_id: e.target.value })
+                    setFormData((prev) => ({
+                      ...prev,
+                      category_id: e.target.value,
+                    }))
                   }
                 >
                   <option value="">Selecione uma categoria...</option>
@@ -395,7 +403,10 @@ export default function EditarArtigoPage({
                   rows={3}
                   value={formData.excerpt}
                   onChange={(e) =>
-                    setFormData({ ...formData, excerpt: e.target.value })
+                    setFormData((prev) => ({
+                      ...prev,
+                      excerpt: e.target.value,
+                    }))
                   }
                 />
               </div>
@@ -404,7 +415,7 @@ export default function EditarArtigoPage({
                 value={formData.cover_image_url}
                 altText={formData.title || "Capa do artigo"}
                 onChange={(url) =>
-                  setFormData({ ...formData, cover_image_url: url })
+                  setFormData((prev) => ({ ...prev, cover_image_url: url }))
                 }
               />
             </CardContent>
