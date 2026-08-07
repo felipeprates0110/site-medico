@@ -158,17 +158,19 @@ export default function EditarArtigoPage({
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-20">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex items-center gap-4">
-          <Button variant="outline" size="icon" asChild>
+      <div className="space-y-3">
+        <div className="flex items-center gap-3">
+          <Button variant="outline" size="icon" asChild className="shrink-0">
             <Link href="/admin/blog">
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Editar Artigo</h1>
-            <p className="text-gray-600 flex items-center gap-2">
-              Status atual:{" "}
+          <div className="min-w-0">
+            <h1 className="text-2xl font-bold text-gray-900 whitespace-nowrap">
+              Editar Artigo
+            </h1>
+            <p className="mt-1 flex flex-wrap items-center gap-2 text-gray-600">
+              <span>Status atual:</span>
               <Badge
                 variant={
                   formData.status === "published"
@@ -185,50 +187,57 @@ export default function EditarArtigoPage({
             </p>
           </div>
         </div>
-        <div className="flex flex-wrap gap-2">
+
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border bg-white p-2.5 shadow-sm">
           <Button
             type="button"
             variant="outline"
+            size="sm"
             onClick={() => setShowPreview(true)}
           >
-            <Eye className="h-4 w-4 mr-2" />
+            <Eye className="h-4 w-4 mr-1.5" />
             Pré-visualizar
           </Button>
           <Button
             variant="outline"
+            size="sm"
             onClick={(e) => handleSubmit(e, "draft")}
             disabled={loading}
           >
-            Salvar Rascunho
+            Salvar rascunho
           </Button>
           <Button
             variant="outline"
+            size="sm"
             onClick={(e) => handleSubmit(e, "ready")}
             disabled={loading}
           >
-            <ListOrdered className="h-4 w-4 mr-2" />
-            Pronto para fila
+            <ListOrdered className="h-4 w-4 mr-1.5" />
+            Na fila
           </Button>
           <Button
             variant="outline"
+            size="sm"
             onClick={(e) => handleSubmit(e, "scheduled")}
             disabled={loading}
           >
-            <CalendarClock className="h-4 w-4 mr-2" />
+            <CalendarClock className="h-4 w-4 mr-1.5" />
             Agendar
           </Button>
           <Button
+            size="sm"
+            className="sm:ml-auto"
             onClick={(e) => handleSubmit(e, "published")}
             disabled={loading}
           >
             {loading ? (
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent mr-2" />
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent mr-1.5" />
             ) : (
-              <Save className="h-4 w-4 mr-2" />
+              <Save className="h-4 w-4 mr-1.5" />
             )}
             {formData.status === "published"
-              ? "Atualizar Publicação"
-              : "Publicar agora"}
+              ? "Atualizar"
+              : "Publicar"}
           </Button>
         </div>
       </div>

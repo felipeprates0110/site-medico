@@ -6,9 +6,13 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PhotoCropDialog } from "@/components/admin/photo-crop-dialog";
+import {
+  compressImageFile,
+  formatBytes,
+  MAX_UPLOAD_BYTES,
+} from "@/lib/compress-image";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
 interface CoverImageFieldProps {
   value: string;
@@ -27,6 +31,7 @@ export function CoverImageField({
 }: CoverImageFieldProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isCompressing, setIsCompressing] = useState(false);
   const [showUrlInput, setShowUrlInput] = useState(Boolean(value));
   const [cropSrc, setCropSrc] = useState<string | null>(null);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
@@ -48,11 +53,28 @@ export function CoverImageField({
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  const prepareForUpload = async (file: File) => {
+    const result = await compressImageFile(file, {
+      maxBytes: MAX_UPLOAD_BYTES,
+      maxWidth: 1920,
+      maxHeight: 1080,
+    });
+
+    if (result.compressed && result.finalSize < result.originalSize) {
+      toast.message(
+        `Imagem compactada: ${formatBytes(result.originalSize)} → ${formatBytes(result.finalSize)}`
+      );
+    }
+
+    return result.file;
+  };
+
   const uploadCover = async (file: File) => {
     setIsUploading(true);
     try {
+      const readyFile = await prepareForUpload(file);
       const body = new FormData();
-      body.append("file", file);
+      body.append("file", readyFile);
       body.append("type", "cover");
       body.append("alt_text", altText);
 
@@ -81,7 +103,7 @@ export function CoverImageField({
     }
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -91,16 +113,26 @@ export function CoverImageField({
       return;
     }
 
-    if (file.size > MAX_SIZE) {
-      toast.error("Arquivo muito grande. Máximo: 5MB.");
+    setIsCompressing(true);
+    try {
+      // Compacta antes do crop: foto grande do celular vira um arquivo leve
+      const readyFile = await prepareForUpload(file);
+      const objectUrl = URL.createObjectURL(readyFile);
+      setPendingFile(readyFile);
+      setCropSrc(objectUrl);
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível preparar a imagem."
+      );
       e.target.value = "";
-      return;
+    } finally {
+      setIsCompressing(false);
     }
-
-    const objectUrl = URL.createObjectURL(file);
-    setPendingFile(file);
-    setCropSrc(objectUrl);
   };
+
+  const busy = isUploading || isCompressing;
 
   return (
     <div className="space-y-3">
@@ -133,15 +165,19 @@ export function CoverImageField({
           type="button"
           variant="outline"
           size="sm"
-          disabled={isUploading}
+          disabled={busy}
           onClick={() => fileInputRef.current?.click()}
         >
-          {isUploading ? (
+          {busy ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
             <Upload className="mr-2 h-4 w-4" />
           )}
-          {isUploading ? "Enviando..." : "Enviar imagem"}
+          {isCompressing
+            ? "Compactando..."
+            : isUploading
+              ? "Enviando..."
+              : "Enviar imagem"}
         </Button>
 
         <Button
@@ -160,7 +196,7 @@ export function CoverImageField({
             variant="ghost"
             size="sm"
             onClick={() => onChange("")}
-            disabled={isUploading}
+            disabled={busy}
           >
             <Trash2 className="mr-2 h-4 w-4" />
             Remover
@@ -174,7 +210,7 @@ export function CoverImageField({
         accept="image/jpeg,image/png,image/webp,image/gif"
         className="hidden"
         onChange={handleFileSelect}
-        disabled={isUploading}
+        disabled={busy}
       />
 
       {showUrlInput && (
@@ -192,7 +228,8 @@ export function CoverImageField({
       )}
 
       <p className="text-xs text-gray-500">
-        Proporção recomendada: 16:9 (mesma do blog). Máximo 5MB.
+        Proporção recomendada: 16:9. Imagens grandes são compactadas
+        automaticamente (limite 5MB no servidor).
       </p>
 
       {cropSrc && pendingFile && (

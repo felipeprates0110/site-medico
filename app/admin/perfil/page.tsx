@@ -4,6 +4,11 @@ import { useState, useEffect, useRef } from "react";
 import { User, Save, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PhotoCropDialog } from "@/components/admin/photo-crop-dialog";
+import {
+  compressImageFile,
+  formatBytes,
+  MAX_UPLOAD_BYTES,
+} from "@/lib/compress-image";
 
 interface ProfileData {
   id: string;
@@ -17,12 +22,12 @@ interface ProfileData {
 }
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
 export default function PerfilPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isCompressing, setIsCompressing] = useState(false);
   const [message, setMessage] = useState<{
     type: "success" | "error";
     text: string;
@@ -80,13 +85,31 @@ export default function PerfilPage() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  const prepareForUpload = async (file: File) => {
+    const result = await compressImageFile(file, {
+      maxBytes: MAX_UPLOAD_BYTES,
+      maxWidth: 1200,
+      maxHeight: 1200,
+    });
+
+    if (result.compressed && result.finalSize < result.originalSize) {
+      showMessage(
+        "success",
+        `Imagem compactada: ${formatBytes(result.originalSize)} → ${formatBytes(result.finalSize)}`
+      );
+    }
+
+    return result.file;
+  };
+
   const uploadPhoto = async (file: File) => {
     setIsUploading(true);
     setMessage(null);
 
     try {
+      const readyFile = await prepareForUpload(file);
       const body = new FormData();
-      body.append("file", file);
+      body.append("file", readyFile);
       body.append("type", "profile");
       body.append("alt_text", formData.doctor_name || "Foto de perfil");
 
@@ -120,7 +143,7 @@ export default function PerfilPage() {
     }
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -133,15 +156,24 @@ export default function PerfilPage() {
       return;
     }
 
-    if (file.size > MAX_SIZE) {
-      showMessage("error", "Arquivo muito grande. Máximo: 5MB.");
+    setIsCompressing(true);
+    setMessage(null);
+    try {
+      const readyFile = await prepareForUpload(file);
+      const objectUrl = URL.createObjectURL(readyFile);
+      setPendingFile(readyFile);
+      setCropSrc(objectUrl);
+    } catch (error) {
+      showMessage(
+        "error",
+        error instanceof Error
+          ? error.message
+          : "Não foi possível preparar a imagem."
+      );
       e.target.value = "";
-      return;
+    } finally {
+      setIsCompressing(false);
     }
-
-    const objectUrl = URL.createObjectURL(file);
-    setPendingFile(file);
-    setCropSrc(objectUrl);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -251,15 +283,20 @@ export default function PerfilPage() {
                 accept="image/jpeg,image/png,image/webp,image/gif"
                 className="hidden"
                 onChange={handleFileSelect}
-                disabled={isUploading}
+                disabled={isUploading || isCompressing}
               />
               <Button
                 type="button"
                 variant="outline"
-                disabled={isUploading}
+                disabled={isUploading || isCompressing}
                 onClick={() => fileInputRef.current?.click()}
               >
-                {isUploading ? (
+                {isCompressing ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Compactando...
+                  </>
+                ) : isUploading ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Enviando...
@@ -269,8 +306,8 @@ export default function PerfilPage() {
                 )}
               </Button>
               <p className="text-sm text-gray-600 mt-2">
-                JPG, PNG, WEBP ou GIF. Máximo 5MB. Você pode recortar antes de
-                enviar.
+                JPG, PNG, WEBP ou GIF. Imagens grandes são compactadas
+                automaticamente. Você pode recortar antes de enviar.
               </p>
             </div>
           </div>
