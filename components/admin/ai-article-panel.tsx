@@ -301,8 +301,7 @@ export function AiArticlePanel({ categories, onApply }: AiArticlePanelProps) {
 
         {generating && (
           <p className="text-xs text-gray-600">
-            Gemini monta o outline e o Claude escreve o HTML (~1–2 min). Não
-            feche a página.
+            A IA está escrevendo o artigo (~1–2 min). Não feche a página.
           </p>
         )}
 

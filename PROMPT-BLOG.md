@@ -10,8 +10,8 @@ Este arquivo é a **fonte das regras** de redação do blog.
 
 A escrita **manual** no mesmo editor continua disponível.
 
-Variáveis de ambiente (servidor): `GEMINI_API_KEY` e `ANTHROPIC_API_KEY`  
-(veja `.env.example`).
+Variáveis de ambiente (servidor): `ANTHROPIC_API_KEY` (obrigatória)  
+(veja `.env.example`). O fluxo atual usa só Claude — sem Gemini.
 
 ## Como usar manualmente (copiar/colar em outra IA)
 

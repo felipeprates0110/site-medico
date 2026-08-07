@@ -22,7 +22,7 @@ Site profissional do cardiologista e arritmologista Dr. Pedro Felipe Prates Silv
 - ✅ Integração com WhatsApp Business
 - ✅ Formulário de agendamento
 - ✅ RitmoBlog com painel Admin (artigos, categorias, comentários)
-- ✅ Máquina de artigos com IA (Gemini Flash + Claude) no admin — escrita manual continua disponível
+- ✅ Máquina de artigos com IA (Claude) no admin — escrita manual continua disponível
 - ✅ Performance otimizada (Core Web Vitals)
 - ✅ Conformidade com CFM 1.974/2011 e LGPD
 
@@ -109,8 +109,8 @@ npm start
 No `.env.local` e na Vercel (Environment Variables), configure:
 
 ```bash
-GEMINI_API_KEY=...      # Google AI Studio
-ANTHROPIC_API_KEY=...   # Anthropic Console
+ANTHROPIC_API_KEY=...   # Anthropic Console (obrigatória para Gerar com IA)
+# GEMINI_API_KEY=...    # opcional — não usada no fluxo atual
 ```
 
 Só no servidor (sem `NEXT_PUBLIC_`). No admin: `/admin/blog/novo` → **Gerar com IA**.  

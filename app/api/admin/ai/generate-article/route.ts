@@ -6,7 +6,6 @@ import {
   fetchReferenceSnippets,
   formatReferencesForPrompt,
 } from "@/lib/ai/fetch-references";
-import { buildOutlineWithGemini } from "@/lib/ai/gemini";
 
 export const maxDuration = 120;
 
@@ -39,18 +38,11 @@ export async function POST(request: Request) {
     const refs = await fetchReferenceSnippets(referenceUrls);
     const referencesText = formatReferencesForPrompt(refs);
 
-    const outline = await buildOutlineWithGemini({
-      topic,
-      keyword,
-      categoryHint,
-      referencesText,
-    });
-
+    // Caminho simples: uma chamada Claude (sem Gemini / sem cota Google)
     const article = await writeArticleWithClaude({
       topic,
       keyword,
       categoryHint,
-      outline,
       referencesText,
     });
 

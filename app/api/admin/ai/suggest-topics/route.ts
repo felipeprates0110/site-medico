@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { suggestTopicsWithGemini } from "@/lib/ai/gemini";
+import { suggestTopicsWithClaude } from "@/lib/ai/claude";
 
 export async function POST(request: Request) {
   try {
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     const category =
       typeof body.category === "string" ? body.category.trim() : undefined;
 
-    const topics = await suggestTopicsWithGemini({ seed, category });
+    const topics = await suggestTopicsWithClaude({ seed, category });
 
     return NextResponse.json({ topics });
   } catch (error: unknown) {
