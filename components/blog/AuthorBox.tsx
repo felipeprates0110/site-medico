@@ -28,7 +28,9 @@ export function AuthorBox({ name, role, crm, bio, photoUrl }: AuthorBoxProps) {
             {crm}
           </span>
         </p>
-        <p className="text-sm leading-relaxed text-gray-600">{bio}</p>
+        <p className="whitespace-pre-line text-sm leading-relaxed text-gray-600">
+          {bio}
+        </p>
       </div>
     </div>
   );

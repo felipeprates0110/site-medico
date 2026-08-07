@@ -92,6 +92,8 @@ export interface SiteConfig {
   specialty: string | null;
   subspecialty: string | null;
   bio: string | null;
+  /** Bio curta opcional do card do autor no blog (não substitui o currículo completo). */
+  bio_short: string | null;
   profile_photo_url: string | null;
   updated_at: string;
 }
@@ -176,7 +178,7 @@ export interface Review {
 
 export interface Media {
   id: string;
-  type: "profile" | "clinic" | "procedure" | "other";
+  type: "profile" | "clinic" | "procedure" | "cover" | "other";
   url: string;
   alt_text: string | null;
   file_size: number | null;

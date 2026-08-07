@@ -1,9 +1,13 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthorBox } from "@/components/blog/AuthorBox";
-import { DEFAULT_DOCTOR_PHOTO } from "@/lib/doctor-photo";
+import {
+  DEFAULT_DOCTOR_PHOTO,
+  resolveDoctorPhoto,
+} from "@/lib/doctor-photo";
 
 export interface ArticlePreviewData {
   title: string;
@@ -19,15 +23,89 @@ interface ArticlePreviewProps {
   article: ArticlePreviewData;
 }
 
+/** Dados do perfil que o AuthorBox precisa mostrar (mesma fonte do blog público). */
+interface AuthorProfile {
+  doctor_name: string | null;
+  doctor_crm: string | null;
+  doctor_rqe: string[] | null;
+  specialty: string | null;
+  subspecialty: string | null;
+  bio: string | null;
+  bio_short: string | null;
+  profile_photo_url: string | null;
+}
+
+const FALLBACK_BIO =
+  "Especialista dedicado a traduzir a medicina complexa em prevenção prática para o dia a dia.";
+
+function formatCrm(crm: string | null | undefined, rqe: string[] | null | undefined) {
+  const raw = (crm || "").trim();
+  // O perfil já pode salvar "CRM DF 18951" — evitamos "CRM CRM..."
+  const crmLabel = !raw
+    ? "CRM"
+    : raw.toUpperCase().startsWith("CRM")
+      ? raw
+      : `CRM ${raw}`;
+
+  if (rqe?.length) {
+    return `${crmLabel} / RQE ${rqe[0]}`;
+  }
+  return crmLabel;
+}
+
+function formatRole(
+  specialty: string | null | undefined,
+  subspecialty: string | null | undefined
+) {
+  const main = (specialty || "Cardiologista").trim();
+  const sub = (subspecialty || "").trim();
+  return sub ? `${main} e ${sub}` : main;
+}
+
 /**
  * Mostra como o artigo deve aparecer no blog público.
  * Analogia: é o "provador" da loja — você vê a peça vestida antes de publicar.
+ * Nome, CRM, bio e foto vêm do perfil do admin (Informações Pessoais).
  */
 export function ArticlePreview({ open, onClose, article }: ArticlePreviewProps) {
+  const [profile, setProfile] = useState<AuthorProfile | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    let cancelled = false;
+
+    async function loadProfile() {
+      try {
+        const response = await fetch("/api/admin/profile");
+        if (!response.ok) return;
+        const data = (await response.json()) as AuthorProfile;
+        if (!cancelled) setProfile(data);
+      } catch (error) {
+        console.error("Erro ao carregar perfil na prévia:", error);
+      }
+    }
+
+    loadProfile();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [open]);
+
   if (!open) return null;
 
   const title = article.title.trim() || "Título do artigo";
   const hasContent = Boolean(article.content.trim());
+
+  const doctorName = profile?.doctor_name?.trim() || "Dr. Pedro Felipe";
+  const role = formatRole(profile?.specialty, profile?.subspecialty);
+  const crm = formatCrm(profile?.doctor_crm, profile?.doctor_rqe);
+  // Preferimos a bio curta do perfil; a bio longa (currículo) não cabe no card.
+  const bio = profile?.bio_short?.trim() || FALLBACK_BIO;
+  const photoUrl = resolveDoctorPhoto(
+    profile?.profile_photo_url || DEFAULT_DOCTOR_PHOTO
+  );
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-black/50">
@@ -83,11 +161,11 @@ export function ArticlePreview({ open, onClose, article }: ArticlePreviewProps) 
             )}
 
             <AuthorBox
-              name="Dr. Pedro Felipe"
-              role="Cardiologista e Arritmologista"
-              crm="CRM DF 18951"
-              bio="Especialista dedicado a traduzir a medicina complexa em prevenção prática para o dia a dia."
-              photoUrl={DEFAULT_DOCTOR_PHOTO}
+              name={doctorName}
+              role={role}
+              crm={crm}
+              bio={bio}
+              photoUrl={photoUrl}
             />
 
             {hasContent ? (

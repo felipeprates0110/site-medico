@@ -114,9 +114,16 @@ export default async function BlogPostPage({
   const subspecialty = siteConfig?.subspecialty
     ? `e ${siteConfig.subspecialty}`
     : "";
-  const crm = `CRM ${siteConfig?.doctor_crm || ""} ${
-    siteConfig?.doctor_rqe?.length ? `/ RQE ${siteConfig.doctor_rqe[0]}` : ""
-  }`.trim();
+  // O perfil já pode salvar "CRM DF 18951" — evitamos "CRM CRM..."
+  const rawCrm = (siteConfig?.doctor_crm || "").trim();
+  const crmLabel = !rawCrm
+    ? "CRM"
+    : rawCrm.toUpperCase().startsWith("CRM")
+      ? rawCrm
+      : `CRM ${rawCrm}`;
+  const crm = siteConfig?.doctor_rqe?.length
+    ? `${crmLabel} / RQE ${siteConfig.doctor_rqe[0]}`
+    : crmLabel;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -201,7 +208,7 @@ export default async function BlogPostPage({
             role={`${specialty} ${subspecialty}`.trim()}
             crm={crm}
             bio={
-              siteConfig?.bio ||
+              siteConfig?.bio_short?.trim() ||
               "Especialista dedicado a traduzir a medicina complexa em prevenção prática para o dia a dia."
             }
             photoUrl={siteConfig?.profile_photo_url || DEFAULT_DOCTOR_PHOTO}

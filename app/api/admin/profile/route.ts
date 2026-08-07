@@ -51,6 +51,7 @@ export async function PUT(request: NextRequest) {
         specialty: body.specialty,
         subspecialty: body.subspecialty,
         bio: body.bio,
+        bio_short: body.bio_short?.trim() ? body.bio_short.trim() : null,
         profile_photo_url: body.profile_photo_url,
         updated_by: session.user.id,
       })

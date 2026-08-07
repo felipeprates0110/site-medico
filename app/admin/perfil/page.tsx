@@ -18,6 +18,7 @@ interface ProfileData {
   specialty: string;
   subspecialty: string;
   bio: string;
+  bio_short: string;
   profile_photo_url: string | null;
 }
 
@@ -41,6 +42,7 @@ export default function PerfilPage() {
     specialty: "",
     subspecialty: "",
     bio: "",
+    bio_short: "",
     profile_photo_url: null,
   });
 
@@ -64,7 +66,11 @@ export default function PerfilPage() {
       const response = await fetch("/api/admin/profile");
       if (response.ok) {
         const data = await response.json();
-        setFormData(data);
+        setFormData({
+          ...data,
+          bio: data.bio ?? "",
+          bio_short: data.bio_short ?? "",
+        });
       }
     } catch (error) {
       console.error("Erro ao buscar perfil:", error);
@@ -405,6 +411,29 @@ export default function PerfilPage() {
               className="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               placeholder="Conte um pouco sobre sua formação e experiência..."
             />
+            <p className="mt-1 text-xs text-gray-500">
+              Currículo completo (formação, residências, títulos).
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Bio curta do blog{" "}
+              <span className="font-normal text-gray-400">(opcional)</span>
+            </label>
+            <textarea
+              name="bio_short"
+              rows={3}
+              value={formData.bio_short}
+              onChange={handleChange}
+              maxLength={280}
+              className="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+              placeholder="Uma frase curta para o card do autor nos artigos do blog..."
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Aparece só no card do autor do artigo. Se ficar vazia, usamos um
+              texto padrão. {formData.bio_short.length}/280
+            </p>
           </div>
         </div>
 

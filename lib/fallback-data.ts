@@ -24,6 +24,8 @@ export const fallbackSiteConfig: SiteConfig = {
   specialty: metadataConfig.doctor.specialty,
   subspecialty: metadataConfig.doctor.subspecialty,
   bio: metadataConfig.description,
+  bio_short:
+    "Especialista dedicado a traduzir a medicina complexa em prevenção prática para o dia a dia.",
   profile_photo_url: DEFAULT_DOCTOR_PHOTO,
   updated_at: timestamp,
 };

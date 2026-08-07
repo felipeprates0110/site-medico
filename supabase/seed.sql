@@ -27,7 +27,7 @@ SET password_hash = EXCLUDED.password_hash,
 -- CONFIGURAÇÕES DO SITE
 -- ============================================
 INSERT INTO site_config (
-  doctor_name, doctor_crm, doctor_rqe, specialty, subspecialty, bio
+  doctor_name, doctor_crm, doctor_rqe, specialty, subspecialty, bio, bio_short
 )
 SELECT
   'Dr. Pedro Felipe Prates Silva',
@@ -35,7 +35,8 @@ SELECT
   ARRAY['RQE 16475', 'RQE 16476']::TEXT[],
   'Cardiologia e Arritmologia',
   'Eletrofisiologia Clínica e Invasiva',
-  'Cardiologista e Arritmologista especialista em Eletrofisiologia Clínica e Invasiva pela UNIFESP/EPM. Tratamento de arritmias cardíacas, fibrilação atrial e ablação por cateter em Brasília - DF.'
+  'Cardiologista e Arritmologista especialista em Eletrofisiologia Clínica e Invasiva pela UNIFESP/EPM. Tratamento de arritmias cardíacas, fibrilação atrial e ablação por cateter em Brasília - DF.',
+  'Especialista dedicado a traduzir a medicina complexa em prevenção prática para o dia a dia.'
 WHERE NOT EXISTS (SELECT 1 FROM site_config LIMIT 1);
 
 -- ============================================
