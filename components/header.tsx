@@ -12,7 +12,7 @@ const navigation = [
   { name: "Início", href: "/" },
   { name: "Sobre", href: "/sobre" },
   { name: "Especialidades", href: "/especialidades" },
-  { name: "RitmoBlog", href: "/blog" },
+  { name: "RitmoBlog", href: "/blog", featured: true },
   { name: "Avaliações", href: "/avaliacoes" },
   { name: "Contato", href: "/contato" },
 ];
@@ -73,10 +73,12 @@ export function Header() {
               key={item.name}
               href={item.href}
               className={cn(
-                "rounded-lg px-3.5 py-2 text-sm font-medium transition-all duration-300",
+                "rounded-lg px-3.5 py-2 text-sm transition-all duration-300",
                 isActive(item.href)
-                  ? "bg-primary-50 text-primary-700"
-                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  ? "bg-primary-50 font-medium text-primary-700"
+                  : item.featured
+                    ? "font-semibold text-primary-700 hover:bg-primary-50/70 hover:text-primary-800"
+                    : "font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               )}
             >
               {item.name}
@@ -135,10 +137,12 @@ export function Header() {
                 key={item.name}
                 href={item.href}
                 className={cn(
-                  "block rounded-xl px-4 py-3.5 text-base font-semibold transition-all duration-300",
+                  "block rounded-xl px-4 py-3.5 text-base transition-all duration-300",
                   isActive(item.href)
-                    ? "bg-primary-50 text-primary-700"
-                    : "text-gray-900 hover:bg-gray-50"
+                    ? "bg-primary-50 font-semibold text-primary-700"
+                    : item.featured
+                      ? "font-semibold text-primary-700 hover:bg-primary-50/70"
+                      : "font-semibold text-gray-900 hover:bg-gray-50"
                 )}
                 onClick={() => setMobileMenuOpen(false)}
               >
