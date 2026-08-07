@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { SimpleEditor } from "@/components/admin/simple-editor";
 import { CoverImageField } from "@/components/admin/cover-image-field";
 import { ArticlePreview } from "@/components/admin/article-preview";
+import { DateTimePicker } from "@/components/admin/datetime-picker";
 import {
   AiArticlePanel,
   type AiGeneratedFields,
@@ -341,11 +342,11 @@ export default function NovoArtigoPage() {
                     (terça/quinta…), use <strong>Na fila</strong> no topo.
                   </p>
                 </div>
-                <Input
+                <DateTimePicker
                   id="scheduled_at"
-                  type="datetime-local"
                   value={scheduledLocal}
-                  onChange={(e) => setScheduledLocal(e.target.value)}
+                  onChange={setScheduledLocal}
+                  placeholder="Escolher data e hora"
                 />
                 <Button
                   type="button"
@@ -366,7 +367,6 @@ export default function NovoArtigoPage() {
                   <CalendarClock className="h-4 w-4 mr-1.5" />
                   Agendar este post
                 </Button>
-                <p className="text-xs text-gray-500">Horário de Brasília.</p>
               </div>
 
               <div className="space-y-2">
