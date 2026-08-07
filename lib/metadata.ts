@@ -4,13 +4,15 @@ export const siteConfig = {
   name: "Dr. Pedro Felipe Prates Silva",
   title: "Dr. Pedro Felipe Prates Silva - Cardiologista e Arritmologista em Brasília",
   description:
-    "Cardiologista e Arritmologista especialista em Eletrofisiologia Clínica e Invasiva. Tratamento de arritmias cardíacas, fibrilação atrial e ablação por cateter em Brasília - DF. CRM DF 18951.",
+    "Cardiologista e Arritmologista especialista em Eletrofisiologia Clínica e Invasiva. Atendimento presencial na IDC Brasília (Asa Sul). Tratamento de arritmias cardíacas, fibrilação atrial e ablação por cateter em Brasília - DF. CRM DF 18951.",
   url: "https://drpedrofelipe.com.br",
   ogImage: "https://drpedrofelipe.com.br/images/dr-pedro-felipe.png",
   keywords: [
     "cardiologista brasília",
     "cardiologista gama df",
     "arritmologista brasília",
+    "arritmologista asa sul",
+    "arritmologista idc brasília",
     "tratamento fibrilação atrial",
     "ablação por cateter brasília",
     "eletrofisiologia brasília",
@@ -35,6 +37,10 @@ export const siteConfig = {
       state: "DF",
       zip: "70390-700",
       clinic: "IDC - Instituto de Doenças Cardiovasculares",
+      // Site oficial da clínica e página do corpo clínico (ponte SEO médico ↔ IDC)
+      clinicUrl: "https://idcbrasilia.com.br/",
+      clinicProfileUrl:
+        "https://idcbrasilia.com.br/dr-pedro-felipe-prates-silva/",
       // Coordenadas oficiais do Google Place (IDC Brasília)
       latitude: -15.8276092,
       longitude: -47.9286098,

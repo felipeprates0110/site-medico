@@ -25,6 +25,7 @@ import { reviewStats } from "@/data/reviews";
 import { specialties } from "@/data/specialties";
 import { insurancePlans } from "@/data/insurance";
 import { faqItems } from "@/data/faq";
+import { siteConfig as metaConfig } from "@/lib/metadata";
 
 // Rede de segurança: se a revalidação on-demand falhar, a home refaz no máximo em 60s
 export const revalidate = 60;
@@ -73,7 +74,16 @@ export default async function Home() {
 
               <p className="mb-9 text-lg leading-relaxed text-gray-600">
                 Diagnóstico preciso e acompanhamento cardiológico completo no
-                Distrito Federal.
+                Distrito Federal. Consultas presenciais na{" "}
+                <a
+                  href={metaConfig.doctor.address.clinicProfileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-primary-700 underline-offset-2 hover:underline"
+                >
+                  IDC Brasília — Asa Sul
+                </a>
+                .
               </p>
 
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">

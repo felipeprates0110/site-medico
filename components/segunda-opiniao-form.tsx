@@ -10,6 +10,7 @@ import {
 import { TrackedAnchor } from "@/components/analytics/tracked-link";
 import { trackEvent } from "@/lib/analytics";
 import { MapPin, Phone, User, Mail, CheckCircle, Stethoscope } from "lucide-react";
+import { siteConfig } from "@/lib/metadata";
 
 interface SegundaOpiniaoFormProps {
   phone: string;
@@ -154,10 +155,10 @@ export function SegundaOpiniaoForm({
         {/* Clínica presencial — IDC */}
         <div className="rounded-xl border border-gray-200 bg-white p-6">
           <a
-            href="https://idcbrasilia.com.br/"
+            href={siteConfig.doctor.address.clinicProfileUrl}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Abrir o site da IDC Brasília"
+            aria-label="Abrir o perfil do Dr. Pedro Felipe no site da IDC Brasília"
             className="mb-4 inline-block rounded-sm transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2"
           >
             <Image

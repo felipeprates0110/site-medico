@@ -130,7 +130,14 @@ export async function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary-400" />
                 <span className="text-sm text-gray-400">
-                  {address.clinic_name}
+                  <a
+                    href={siteConfig.doctor.address.clinicProfileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-300 transition-colors hover:text-primary-300"
+                  >
+                    {address.clinic_name}
+                  </a>
                   <br />
                   {address.street}
                   <br />

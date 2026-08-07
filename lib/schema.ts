@@ -1,6 +1,26 @@
 import { reviewStats } from "@/data/reviews";
 import { siteConfig } from "./metadata";
 
+const clinicUrl = siteConfig.doctor.address.clinicUrl;
+const clinicProfileUrl = siteConfig.doctor.address.clinicProfileUrl;
+/** ID estável da clínica no schema — aponta para o domínio oficial da IDC */
+const clinicEntityId = `${clinicUrl}#clinic`;
+
+const clinicPostalAddress = {
+  "@type": "PostalAddress" as const,
+  streetAddress: siteConfig.doctor.address.street,
+  addressLocality: siteConfig.doctor.address.city,
+  addressRegion: siteConfig.doctor.address.state,
+  postalCode: siteConfig.doctor.address.zip,
+  addressCountry: "BR",
+};
+
+const clinicGeo = {
+  "@type": "GeoCoordinates" as const,
+  latitude: String(siteConfig.doctor.address.latitude),
+  longitude: String(siteConfig.doctor.address.longitude),
+};
+
 // Schema.org - Physician
 export const physicianSchema = {
   "@context": "https://schema.org",
@@ -12,6 +32,13 @@ export const physicianSchema = {
   telephone: siteConfig.doctor.phone,
   email: siteConfig.doctor.email,
   medicalSpecialty: ["Cardiology", "Cardiac Electrophysiology"],
+  // Ponte médico → clínica: o Google associa você à IDC
+  worksFor: { "@id": clinicEntityId },
+  affiliation: { "@id": clinicEntityId },
+  sameAs: [
+    "https://www.doctoralia.com.br/pedro-felipe-prates-silva/cardiologista/brasilia",
+    clinicProfileUrl,
+  ],
   availableService: [
     {
       "@type": "MedicalProcedure",
@@ -29,14 +56,7 @@ export const physicianSchema = {
       description: "Procedimento minimamente invasivo para tratamento de arritmias",
     },
   ],
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: siteConfig.doctor.address.street,
-    addressLocality: siteConfig.doctor.address.city,
-    addressRegion: siteConfig.doctor.address.state,
-    postalCode: siteConfig.doctor.address.zip,
-    addressCountry: "BR",
-  },
+  address: clinicPostalAddress,
   aggregateRating: {
     "@type": "AggregateRating",
     ratingValue: reviewStats.average.toFixed(1),
@@ -56,27 +76,17 @@ export const physicianSchema = {
   ],
 };
 
-// Schema.org - Medical Clinic
+// Schema.org - Medical Clinic (entidade IDC, não o site do médico)
 export const medicalClinicSchema = {
   "@context": "https://schema.org",
   "@type": "MedicalClinic",
-  "@id": `${siteConfig.url}#clinic`,
+  "@id": clinicEntityId,
   name: siteConfig.doctor.address.clinic,
-  url: siteConfig.url,
+  url: clinicUrl,
   telephone: siteConfig.doctor.phone,
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: siteConfig.doctor.address.street,
-    addressLocality: siteConfig.doctor.address.city,
-    addressRegion: siteConfig.doctor.address.state,
-    postalCode: siteConfig.doctor.address.zip,
-    addressCountry: "BR",
-  },
-  geo: {
-    "@type": "GeoCoordinates",
-    latitude: String(siteConfig.doctor.address.latitude),
-    longitude: String(siteConfig.doctor.address.longitude),
-  },
+  sameAs: [clinicUrl, clinicProfileUrl],
+  address: clinicPostalAddress,
+  geo: clinicGeo,
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",
@@ -90,9 +100,10 @@ export const medicalClinicSchema = {
     "@type": "MedicalProcedure",
     name: "Consulta Cardiológica e Arritmológica",
   },
+  employee: { "@id": `${siteConfig.url}#physician` },
 };
 
-// Schema.org - Local Business
+// Schema.org - Local Business (prática do médico no endereço da IDC)
 export const localBusinessSchema = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
@@ -102,19 +113,9 @@ export const localBusinessSchema = {
   url: siteConfig.url,
   telephone: siteConfig.doctor.phone,
   priceRange: "R$ 200",
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: siteConfig.doctor.address.street,
-    addressLocality: siteConfig.doctor.address.city,
-    addressRegion: siteConfig.doctor.address.state,
-    postalCode: siteConfig.doctor.address.zip,
-    addressCountry: "BR",
-  },
-  geo: {
-    "@type": "GeoCoordinates",
-    latitude: String(siteConfig.doctor.address.latitude),
-    longitude: String(siteConfig.doctor.address.longitude),
-  },
+  address: clinicPostalAddress,
+  geo: clinicGeo,
+  parentOrganization: { "@id": clinicEntityId },
   aggregateRating: {
     "@type": "AggregateRating",
     ratingValue: reviewStats.average.toFixed(1),
@@ -123,8 +124,8 @@ export const localBusinessSchema = {
     worstRating: "1",
   },
   sameAs: [
-    // Adicionar links de redes sociais quando disponível
     "https://www.doctoralia.com.br/pedro-felipe-prates-silva/cardiologista/brasilia",
+    clinicProfileUrl,
   ],
 };
 

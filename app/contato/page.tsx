@@ -162,13 +162,13 @@ export default async function ContatoPage() {
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
             <div>
-              {/* Logo da clínica (IDC) — abre o site oficial em nova aba */}
+              {/* Logo da clínica (IDC) — abre o perfil do médico no site da IDC */}
               <div className="mb-6">
                 <a
-                  href="https://idcbrasilia.com.br/"
+                  href={siteConfig.doctor.address.clinicProfileUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Abrir o site da IDC Brasília"
+                  aria-label="Abrir o perfil do Dr. Pedro Felipe no site da IDC Brasília"
                   className="inline-block transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-sm"
                 >
                   <Image
@@ -193,12 +193,32 @@ export default async function ContatoPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">Endereço</h3>
-                    <p className="text-gray-600">{address.clinic_name}</p>
+                    <p className="text-gray-600">
+                      <a
+                        href={siteConfig.doctor.address.clinicProfileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-blue-600 hover:underline"
+                      >
+                        {address.clinic_name}
+                      </a>
+                    </p>
                     <p className="text-gray-600">{address.street}</p>
                     <p className="text-gray-600">
                       {address.neighborhood} — {address.city}, {address.state}
                     </p>
                     <p className="text-gray-600">CEP {address.zip}</p>
+                    <p className="mt-2 text-sm text-gray-500">
+                      Consultas presenciais na IDC Brasília — Asa Sul.{" "}
+                      <a
+                        href={siteConfig.doctor.address.clinicProfileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-blue-600 hover:underline"
+                      >
+                        Ver perfil no site da IDC
+                      </a>
+                    </p>
                     <div className="mt-3 flex flex-wrap gap-3">
                       <a
                         href={mapsLink}

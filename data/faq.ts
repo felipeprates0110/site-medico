@@ -48,4 +48,11 @@ export const faqItems: FAQItem[] = [
       "Você deve buscar atendimento imediato em um pronto-socorro se as palpitações vierem acompanhadas de: desmaios (síncopes) ou sensação iminente de perda de consciência; dor ou aperto forte no peito; falta de ar intensa e repentina; tonturas severas ou queda abrupta da pressão arterial. Para tonturas leves pontuais, palpitações esporádicas ou para uma avaliação preventiva de rotina, agende uma consulta eletiva no consultório.",
     category: "agendamento",
   },
+  {
+    id: "7",
+    question: "Onde o Dr. Pedro Felipe atende em Brasília?",
+    answer:
+      "As consultas presenciais são na IDC — Instituto de Doenças Cardiovasculares, no Centro Médico de Brasília (SHLS 716, Conjunto B, Bloco C — Asa Sul/DF). O Dr. Pedro Felipe faz parte do corpo clínico da IDC em cardiologia e eletrofisiologia. Para agendar, use o WhatsApp, o telefone (61) 3346-0202 ou o formulário deste site. Perfil oficial na IDC: https://idcbrasilia.com.br/dr-pedro-felipe-prates-silva/",
+    category: "agendamento",
+  },
 ];

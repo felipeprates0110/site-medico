@@ -3,12 +3,13 @@ import { Award, GraduationCap, Briefcase, Heart, CheckCircle } from "lucide-reac
 import { Button } from "@/components/ui/button";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { DEFAULT_DOCTOR_PHOTO } from "@/lib/doctor-photo";
+import { siteConfig } from "@/lib/metadata";
 import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Sobre o Dr. Pedro Felipe Prates Silva",
   description:
-    "Conheça a formação, experiência e trajetória do Dr. Pedro Felipe Prates Silva, cardiologista e arritmologista especialista em eletrofisiologia clínica e invasiva pela UNIFESP.",
+    "Conheça a formação, experiência e trajetória do Dr. Pedro Felipe Prates Silva, cardiologista e arritmologista especialista em eletrofisiologia. Atendimento presencial na IDC Brasília — Asa Sul.",
 };
 
 export default function SobrePage() {
@@ -100,6 +101,19 @@ export default function SobrePage() {
               bem-estar.
             </p>
             <p>
+              Atendo presencialmente na{" "}
+              <a
+                href={siteConfig.doctor.address.clinicProfileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-primary-700 underline-offset-2 hover:underline"
+              >
+                IDC — Instituto de Doenças Cardiovasculares
+              </a>
+              , no Centro Médico de Brasília (Asa Sul), onde faço parte do corpo
+              clínico em cardiologia e eletrofisiologia.
+            </p>
+            <p>
               Acredito que confiança se constrói no detalhe — no olhar atento, na escuta
               cuidadosa e na sensação de que você não está enfrentando nada sozinho.
             </p>
@@ -149,7 +163,13 @@ export default function SobrePage() {
               },
               {
                 icon: Briefcase,
-                title: "Médico do Corpo Clínico",
+                title: "Médico do Corpo Clínico — IDC Brasília",
+                detail:
+                  "IDC — Instituto de Doenças Cardiovasculares · Centro Médico de Brasília (Asa Sul)",
+              },
+              {
+                icon: Briefcase,
+                title: "Médico do Corpo Clínico — Hospital de Base",
                 detail:
                   "Setor de Eletrofisiologia e Arritmias Cardíacas — Instituto Hospital de Base do Distrito Federal",
               },
