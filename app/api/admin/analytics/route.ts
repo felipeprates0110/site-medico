@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase";
+import { getBrazilNowParts } from "@/lib/blog-calendar";
 
 type SiteEventRow = {
   event_name: string;
@@ -10,14 +11,26 @@ type SiteEventRow = {
   created_at: string;
 };
 
-function startOfDayISO(date: Date) {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  return d.toISOString();
+/** Dia civil em Brasília (YYYY-MM-DD), para o gráfico bater com o relógio do consultório. */
+function brazilDayKey(iso: string) {
+  return getBrazilNowParts(new Date(iso)).dateStr;
 }
 
-function dayKey(iso: string) {
-  return iso.slice(0, 10);
+/** Meia-noite de Brasília (N dias atrás) em ISO UTC, para filtrar no banco. */
+function brazilStartOfDayUTC(daysAgo: number) {
+  const parts = getBrazilNowParts();
+  // Monta "hoje 00:00" em Brasília e recua N dias
+  const asUtc = new Date(
+    `${parts.dateStr}T00:00:00-03:00`
+  );
+  asUtc.setUTCDate(asUtc.getUTCDate() - daysAgo);
+  return asUtc.toISOString();
+}
+
+function addBrazilDays(dateStr: string, offset: number) {
+  const d = new Date(`${dateStr}T12:00:00-03:00`);
+  d.setUTCDate(d.getUTCDate() + offset);
+  return getBrazilNowParts(d).dateStr;
 }
 
 /**
@@ -35,9 +48,9 @@ export async function GET(request: Request) {
   const rawDays = Number(searchParams.get("days") || "7");
   const days = [7, 30].includes(rawDays) ? rawDays : 7;
 
-  const since = new Date();
-  since.setDate(since.getDate() - (days - 1));
-  const sinceISO = startOfDayISO(since);
+  const sinceISO = brazilStartOfDayUTC(days - 1);
+  const todayBR = getBrazilNowParts().dateStr;
+  const firstDayBR = addBrazilDays(todayBR, -(days - 1));
 
   const { data, error } = await supabaseAdmin
     .from("site_events")
@@ -71,21 +84,19 @@ export async function GET(request: Request) {
     .sort((a, b) => b.views - a.views)
     .slice(0, 5);
 
-  // Série diária
+  // Série diária no fuso de Brasília
   const dailyMap = new Map<
     string,
     { date: string; views: number; visitors: Set<string> }
   >();
 
   for (let i = 0; i < days; i++) {
-    const d = new Date(since);
-    d.setDate(since.getDate() + i);
-    const key = d.toISOString().slice(0, 10);
+    const key = addBrazilDays(firstDayBR, i);
     dailyMap.set(key, { date: key, views: 0, visitors: new Set() });
   }
 
   for (const ev of pageViews) {
-    const key = dayKey(ev.created_at);
+    const key = brazilDayKey(ev.created_at);
     const bucket = dailyMap.get(key);
     if (!bucket) continue;
     bucket.views += 1;

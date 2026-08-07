@@ -410,33 +410,53 @@ export default function AdminDashboard() {
             <CardContent>
               {analyticsLoading ? (
                 <p className="text-sm text-gray-500">Carregando gráfico...</p>
-              ) : analytics.daily.every((d) => d.views === 0) ? (
+              ) : analytics.daily.length === 0 ||
+                analytics.daily.every((d) => d.views === 0) ? (
                 <p className="text-sm text-gray-500">
                   Ainda não há visitas registradas neste período. Abra o site público e
                   navegue um pouco — os números aparecem aqui.
                 </p>
               ) : (
-                <div className="flex h-40 items-end gap-1.5">
-                  {analytics.daily.map((day) => (
-                    <div
-                      key={day.date}
-                      className="group flex min-w-0 flex-1 flex-col items-center justify-end gap-1"
-                      title={`${formatDayLabel(day.date)}: ${day.views} views, ${day.visitors} visitantes`}
-                    >
-                      <span className="text-[10px] font-medium text-gray-500 opacity-0 transition-opacity group-hover:opacity-100">
-                        {day.views}
-                      </span>
-                      <div
-                        className="w-full rounded-t bg-teal-500/80 transition-all group-hover:bg-teal-600"
-                        style={{
-                          height: `${Math.max(4, (day.views / maxDailyViews) * 100)}%`,
-                        }}
-                      />
-                      <span className="truncate text-[10px] text-gray-400">
+                <div className="space-y-2">
+                  {/*
+                    As barras ficam numa faixa com altura fixa (h-36).
+                    Antes a altura era em % dentro de um pai sem altura —
+                    no CSS isso vira 0px e o gráfico parece vazio.
+                  */}
+                  <div className="flex h-36 items-end gap-1.5">
+                    {analytics.daily.map((day) => {
+                      // Altura em pixels (não %), deixando espaço pro número no hover
+                      const barPx =
+                        day.views <= 0
+                          ? 2
+                          : Math.max(8, Math.round((day.views / maxDailyViews) * 120));
+                      return (
+                        <div
+                          key={day.date}
+                          className="group flex h-full min-w-0 flex-1 flex-col items-center justify-end"
+                          title={`${formatDayLabel(day.date)}: ${day.views} views, ${day.visitors} visitantes`}
+                        >
+                          <span className="mb-1 text-[10px] font-medium text-gray-500 opacity-0 transition-opacity group-hover:opacity-100">
+                            {day.views}
+                          </span>
+                          <div
+                            className="w-full rounded-t bg-teal-500/80 transition-all group-hover:bg-teal-600"
+                            style={{ height: `${barPx}px` }}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="flex gap-1.5">
+                    {analytics.daily.map((day) => (
+                      <span
+                        key={`${day.date}-label`}
+                        className="min-w-0 flex-1 truncate text-center text-[10px] text-gray-400"
+                      >
                         {formatDayLabel(day.date)}
                       </span>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               )}
             </CardContent>
