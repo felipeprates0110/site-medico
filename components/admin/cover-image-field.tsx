@@ -196,24 +196,28 @@ export function CoverImageField({
         </div>
       )}
 
-      <div className="flex flex-wrap gap-2">
+      {/* Barra compacta: na coluna estreita do admin, botões grandes quebravam em 2 linhas */}
+      <div className="flex items-center gap-1.5">
         <Button
           type="button"
           variant="outline"
           size="sm"
           disabled={busy}
           onClick={() => fileInputRef.current?.click()}
+          className="h-8 min-w-0 flex-1 gap-1.5 px-2.5 text-xs font-medium"
         >
           {busy ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin" />
           ) : (
-            <Upload className="mr-2 h-4 w-4" />
+            <Upload className="h-3.5 w-3.5 shrink-0" />
           )}
-          {isCompressing
-            ? "Compactando..."
-            : isUploading
-              ? "Enviando..."
-              : "Enviar imagem"}
+          <span className="truncate">
+            {isCompressing
+              ? "Compactando..."
+              : isUploading
+                ? "Enviando..."
+                : "Enviar"}
+          </span>
         </Button>
 
         <Button
@@ -221,9 +225,12 @@ export function CoverImageField({
           variant="outline"
           size="sm"
           onClick={() => setShowUrlInput((prev) => !prev)}
+          className="h-8 min-w-0 flex-1 gap-1.5 px-2.5 text-xs font-medium"
         >
-          <Link2 className="mr-2 h-4 w-4" />
-          {showUrlInput ? "Ocultar URL" : "Usar URL"}
+          <Link2 className="h-3.5 w-3.5 shrink-0" />
+          <span className="truncate">
+            {showUrlInput ? "Ocultar" : "URL"}
+          </span>
         </Button>
 
         {(value || localPreview) && (
@@ -239,8 +246,10 @@ export function CoverImageField({
               onChange("");
             }}
             disabled={busy}
+            className="h-8 shrink-0 gap-1.5 px-2 text-xs font-medium text-gray-600"
+            title="Remover capa"
           >
-            <Trash2 className="mr-2 h-4 w-4" />
+            <Trash2 className="h-3.5 w-3.5 shrink-0" />
             Remover
           </Button>
         )}
