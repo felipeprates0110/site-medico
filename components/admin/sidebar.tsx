@@ -11,6 +11,7 @@ import {
   FileText,
   FolderTree,
   MessageSquareText,
+  CalendarDays,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
@@ -25,6 +26,11 @@ const menuItems = [
     title: "Blog (Artigos)",
     href: "/admin/blog",
     icon: FileText,
+  },
+  {
+    title: "Calendário editorial",
+    href: "/admin/blog/calendario",
+    icon: CalendarDays,
   },
   {
     title: "Blog (Categorias)",
@@ -54,13 +60,19 @@ function isMenuItemActive(pathname: string, href: string) {
     return pathname === "/admin";
   }
 
-  // Artigos: /admin/blog e /admin/blog/[id|novo], mas não categorias/comentários
+  // Calendário tem rota própria no menu
+  if (href === "/admin/blog/calendario") {
+    return pathname.startsWith("/admin/blog/calendario");
+  }
+
+  // Artigos: /admin/blog e /admin/blog/[id|novo], mas não categorias/comentários/calendário
   if (href === "/admin/blog") {
     if (pathname === "/admin/blog") return true;
     if (!pathname.startsWith("/admin/blog/")) return false;
     return (
       !pathname.startsWith("/admin/blog/categorias") &&
-      !pathname.startsWith("/admin/blog/comentarios")
+      !pathname.startsWith("/admin/blog/comentarios") &&
+      !pathname.startsWith("/admin/blog/calendario")
     );
   }
 

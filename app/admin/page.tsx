@@ -12,12 +12,16 @@ import {
   Users,
   MousePointerClick,
   ExternalLink,
+  ListOrdered,
+  AlertTriangle,
+  CalendarDays,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 type AnalyticsSummary = {
   days: number;
@@ -38,6 +42,13 @@ type BlogArticleRow = {
 
 type BlogCommentRow = {
   status?: string;
+};
+
+type PublishAlertRow = {
+  id: string;
+  message: string;
+  slot_date: string;
+  created_at: string;
 };
 
 const emptyAnalytics: AnalyticsSummary = {
@@ -63,43 +74,81 @@ export default function AdminDashboard() {
     articles: 0,
     published: 0,
     drafts: 0,
+    ready: 0,
+    scheduled: 0,
     pendingComments: 0,
   });
+  const [alerts, setAlerts] = useState<PublishAlertRow[]>([]);
   const [analytics, setAnalytics] = useState<AnalyticsSummary>(emptyAnalytics);
   const [analyticsDays, setAnalyticsDays] = useState<7 | 30>(7);
   const [loading, setLoading] = useState(true);
   const [analyticsLoading, setAnalyticsLoading] = useState(true);
 
+  const fetchStats = async () => {
+    try {
+      const [articlesRes, commentsRes, alertsRes] = await Promise.all([
+        fetch("/api/admin/blog/articles"),
+        fetch("/api/admin/blog/comments"),
+        fetch("/api/admin/blog/publish-alerts?unresolved=1"),
+      ]);
+
+      const articles = (await articlesRes.json()) as BlogArticleRow[];
+      const comments = (await commentsRes.json()) as BlogCommentRow[];
+      const alertList = (await alertsRes.json()) as PublishAlertRow[];
+
+      const articleList = Array.isArray(articles) ? articles : [];
+      const commentList = Array.isArray(comments) ? comments : [];
+
+      setStats({
+        articles: articleList.length,
+        published: articleList.filter((a) => a.status === "published").length,
+        drafts: articleList.filter((a) => a.status === "draft").length,
+        ready: articleList.filter((a) => a.status === "ready").length,
+        scheduled: articleList.filter((a) => a.status === "scheduled").length,
+        pendingComments: commentList.filter((c) => c.status === "pending")
+          .length,
+      });
+      setAlerts(Array.isArray(alertList) ? alertList : []);
+    } catch (error) {
+      console.error("Erro ao carregar estatísticas do blog", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const [articlesRes, commentsRes] = await Promise.all([
-          fetch("/api/admin/blog/articles"),
-          fetch("/api/admin/blog/comments"),
-        ]);
-
-        const articles = (await articlesRes.json()) as BlogArticleRow[];
-        const comments = (await commentsRes.json()) as BlogCommentRow[];
-
-        const articleList = Array.isArray(articles) ? articles : [];
-        const commentList = Array.isArray(comments) ? comments : [];
-
-        setStats({
-          articles: articleList.length,
-          published: articleList.filter((a) => a.status === "published").length,
-          drafts: articleList.filter((a) => a.status === "draft").length,
-          pendingComments: commentList.filter((c) => c.status === "pending")
-            .length,
-        });
-      } catch (error) {
-        console.error("Erro ao carregar estatísticas do blog", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchStats();
   }, []);
+
+  const resolveAlert = async (id: string) => {
+    try {
+      const res = await fetch("/api/admin/blog/publish-alerts", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      if (!res.ok) throw new Error("Falha ao resolver alerta");
+      setAlerts((prev) => prev.filter((a) => a.id !== id));
+      toast.success("Alerta marcado como resolvido");
+    } catch {
+      toast.error("Não foi possível resolver o alerta");
+    }
+  };
+
+  const resolveAllAlerts = async () => {
+    try {
+      const res = await fetch("/api/admin/blog/publish-alerts", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resolveAll: true }),
+      });
+      if (!res.ok) throw new Error("Falha ao resolver alertas");
+      setAlerts([]);
+      toast.success("Todos os alertas foram resolvidos");
+    } catch {
+      toast.error("Não foi possível resolver os alertas");
+    }
+  };
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -140,10 +189,22 @@ export default function AdminDashboard() {
       href: "/admin/blog",
     },
     {
+      title: "Na fila",
+      value: stats.ready,
+      icon: ListOrdered,
+      description: "Prontos para o calendário",
+      color: "text-primary-600",
+      bg: "bg-primary-50",
+      href: "/admin/blog/calendario",
+    },
+    {
       title: "Rascunhos",
       value: stats.drafts,
       icon: FileEdit,
-      description: "Ainda não publicados",
+      description:
+        stats.scheduled > 0
+          ? `${stats.scheduled} também agendado(s) pontualmente`
+          : "Ainda em edição",
       color: "text-amber-600",
       bg: "bg-amber-50",
       href: "/admin/blog",
@@ -215,10 +276,10 @@ export default function AdminDashboard() {
       </div>
 
       {/* Métricas do blog */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
         {cards.map((card) => (
           <Link key={card.title} href={card.href}>
-            <Card className="cursor-pointer transition-all hover:scale-[1.02]">
+            <Card className="cursor-pointer transition-all hover:scale-[1.02] h-full">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-gray-600">
                   {card.title}
@@ -237,6 +298,56 @@ export default function AdminDashboard() {
           </Link>
         ))}
       </div>
+
+      {/* Alertas do calendário editorial */}
+      {alerts.length > 0 && (
+        <Card className="border-amber-200 bg-amber-50/40">
+          <CardHeader className="flex flex-row items-start justify-between gap-4">
+            <div>
+              <CardTitle className="flex items-center gap-2 text-amber-900">
+                <AlertTriangle className="h-5 w-5" />
+                Slots vazios no calendário
+              </CardTitle>
+              <CardDescription className="text-amber-800/80">
+                Chegou o dia da categoria, mas não havia artigo &quot;Na fila&quot;.
+                Escreva ou marque um artigo pronto para a próxima vez.
+              </CardDescription>
+            </div>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={resolveAllAlerts}
+            >
+              Resolver todos
+            </Button>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {alerts.map((alert) => (
+              <div
+                key={alert.id}
+                className="flex flex-col gap-2 rounded-lg border border-amber-200 bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <p className="text-sm text-gray-800">{alert.message}</p>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => resolveAlert(alert.id)}
+                >
+                  Ok, entendi
+                </Button>
+              </div>
+            ))}
+            <Button asChild variant="outline" size="sm">
+              <Link href="/admin/blog/calendario">
+                <CalendarDays className="mr-2 h-4 w-4" />
+                Abrir calendário editorial
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Acesso ao site */}
       <section className="space-y-4">
@@ -389,6 +500,13 @@ export default function AdminDashboard() {
             <Link href="/admin/blog/novo">
               <Plus className="mr-2 h-4 w-4" />
               Escrever novo artigo
+            </Link>
+          </Button>
+          <Button asChild variant="outline" className="justify-start">
+            <Link href="/admin/blog/calendario">
+              <CalendarDays className="mr-2 h-4 w-4" />
+              Calendário editorial
+              {stats.ready > 0 && !loading ? ` (${stats.ready} na fila)` : ""}
             </Link>
           </Button>
           <Button asChild variant="outline" className="justify-start">

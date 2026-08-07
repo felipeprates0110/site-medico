@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Plus, Pencil, Trash2, Search, ExternalLink } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, ExternalLink, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,14 +16,33 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import {
+  STATUS_LABEL,
+  type ArticleStatus,
+  isoToBrazilLocalInput,
+} from "@/lib/blog-calendar";
 
 interface Article {
   id: string;
   title: string;
   slug: string;
-  status: string;
+  status: ArticleStatus | string;
   created_at: string;
+  scheduled_at?: string | null;
   category: { name: string } | null;
+}
+
+function statusBadgeVariant(
+  status: string
+): "success" | "secondary" | "warning" | "default" {
+  if (status === "published") return "success";
+  if (status === "ready") return "default";
+  if (status === "scheduled") return "warning";
+  return "secondary";
+}
+
+function statusLabel(status: string) {
+  return STATUS_LABEL[status as ArticleStatus] ?? status;
 }
 
 export default function BlogArticlesPage() {
@@ -41,7 +60,7 @@ export default function BlogArticlesPage() {
       if (!response.ok) throw new Error("Falha ao carregar artigos");
       const data = await response.json();
       setArticles(data);
-    } catch (error) {
+    } catch {
       toast.error("Erro ao carregar artigos");
     } finally {
       setLoading(false);
@@ -60,7 +79,7 @@ export default function BlogArticlesPage() {
 
       setArticles(articles.filter((a) => a.id !== id));
       toast.success("Artigo excluído com sucesso");
-    } catch (error) {
+    } catch {
       toast.error("Erro ao excluir artigo");
     }
   };
@@ -71,24 +90,35 @@ export default function BlogArticlesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Artigos do Blog</h1>
-          <p className="text-gray-600">Gerencie as publicações do RitmoBlog.</p>
+          <p className="text-gray-600">
+            Gerencie as publicações do RitmoBlog. Use &quot;Na fila&quot; para o
+            calendário automático.
+          </p>
         </div>
-        <Button asChild>
-          <Link href="/admin/blog/novo">
-            <Plus className="mr-2 h-4 w-4" />
-            Novo Artigo
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" asChild>
+            <Link href="/admin/blog/calendario">
+              <CalendarDays className="mr-2 h-4 w-4" />
+              Calendário
+            </Link>
+          </Button>
+          <Button asChild>
+            <Link href="/admin/blog/novo">
+              <Plus className="mr-2 h-4 w-4" />
+              Novo Artigo
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
             <CardTitle>Lista de Artigos</CardTitle>
-            <div className="relative w-72">
+            <div className="relative w-72 max-w-full">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <Input
                 placeholder="Buscar artigo..."
@@ -130,11 +160,20 @@ export default function BlogArticlesPage() {
                         {article.category?.name || "Sem categoria"}
                       </TableCell>
                       <TableCell className="text-gray-600">
-                        {new Date(article.created_at).toLocaleDateString("pt-BR")}
+                        {article.status === "scheduled" && article.scheduled_at ? (
+                          <span title="Agendado para">
+                            {isoToBrazilLocalInput(article.scheduled_at).replace(
+                              "T",
+                              " "
+                            )}
+                          </span>
+                        ) : (
+                          new Date(article.created_at).toLocaleDateString("pt-BR")
+                        )}
                       </TableCell>
                       <TableCell>
-                        <Badge variant={article.status === "published" ? "success" : "secondary"}>
-                          {article.status === "published" ? "Publicado" : "Rascunho"}
+                        <Badge variant={statusBadgeVariant(article.status)}>
+                          {statusLabel(article.status)}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">

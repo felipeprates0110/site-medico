@@ -3,6 +3,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase";
 import { revalidatePublicSite } from "@/lib/revalidate-public";
+import {
+  brazilLocalToIso,
+  isValidArticleStatus,
+} from "@/lib/blog-calendar";
 
 export async function GET() {
   try {
@@ -22,8 +26,9 @@ export async function GET() {
     if (error) throw error;
 
     return NextResponse.json(data);
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Erro interno";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -35,13 +40,62 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { title, slug, content, excerpt, cover_image_url, category_id, status, seo_title, seo_description } = body;
+    const {
+      title,
+      slug,
+      content,
+      excerpt,
+      cover_image_url,
+      category_id,
+      status,
+      seo_title,
+      seo_description,
+      scheduled_at,
+    } = body;
 
     if (!title || !slug || !content) {
-      return NextResponse.json({ error: "Título, slug e conteúdo são obrigatórios" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Título, slug e conteúdo são obrigatórios" },
+        { status: 400 }
+      );
     }
 
-    // Get the user ID from session to set as author
+    const nextStatus = status && isValidArticleStatus(status) ? status : "draft";
+
+    if (nextStatus === "ready" && !category_id) {
+      return NextResponse.json(
+        {
+          error:
+            "Para colocar na fila, escolha uma categoria (o calendário precisa saber a prateleira).",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (nextStatus === "scheduled" && !scheduled_at) {
+      return NextResponse.json(
+        { error: "Informe a data/hora de agendamento." },
+        { status: 400 }
+      );
+    }
+
+    let scheduledAtIso: string | null = null;
+    if (nextStatus === "scheduled") {
+      scheduledAtIso =
+        typeof scheduled_at === "string" && scheduled_at.includes("T") && !scheduled_at.endsWith("Z") && !scheduled_at.includes("+")
+          ? brazilLocalToIso(scheduled_at)
+          : scheduled_at
+            ? new Date(scheduled_at).toISOString()
+            : null;
+
+      if (!scheduledAtIso) {
+        return NextResponse.json(
+          { error: "Data de agendamento inválida." },
+          { status: 400 }
+        );
+      }
+    }
+
     const { data: userData } = await supabaseAdmin
       .from("users")
       .select("id")
@@ -59,8 +113,10 @@ export async function POST(request: Request) {
           cover_image_url,
           category_id: category_id || null,
           author_id: userData?.id || null,
-          status: status || 'draft',
-          published_at: status === 'published' ? new Date().toISOString() : null,
+          status: nextStatus,
+          published_at:
+            nextStatus === "published" ? new Date().toISOString() : null,
+          scheduled_at: nextStatus === "scheduled" ? scheduledAtIso : null,
           seo_title,
           seo_description,
         },
@@ -70,10 +126,13 @@ export async function POST(request: Request) {
 
     if (error) throw error;
 
-    revalidatePublicSite();
+    if (nextStatus === "published") {
+      revalidatePublicSite();
+    }
 
     return NextResponse.json(data);
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Erro interno";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

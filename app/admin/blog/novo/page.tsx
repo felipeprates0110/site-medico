@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Save, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Save, ListOrdered, CalendarClock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,7 +14,10 @@ import { SimpleEditor } from "@/components/admin/simple-editor";
 export default function NovoArtigoPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [categories, setCategories] = useState<{id: string, name: string}[]>([]);
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>(
+    []
+  );
+  const [scheduledLocal, setScheduledLocal] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     slug: "",
@@ -56,15 +59,34 @@ export default function NovoArtigoPage() {
     setFormData({ ...formData, title, slug });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  const saveWithStatus = async (
+    status: string,
+    extra?: { scheduled_at?: string }
+  ) => {
+    if (status === "ready" && !formData.category_id) {
+      toast.error("Escolha uma categoria para colocar o artigo na fila.");
+      return;
+    }
+    if (status === "scheduled" && !extra?.scheduled_at && !scheduledLocal) {
+      toast.error("Escolha a data e hora do agendamento.");
+      return;
+    }
 
+    setLoading(true);
     try {
+      const payload = {
+        ...formData,
+        status,
+        scheduled_at:
+          status === "scheduled"
+            ? extra?.scheduled_at || scheduledLocal
+            : undefined,
+      };
+
       const response = await fetch("/api/admin/blog/articles", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -72,11 +94,19 @@ export default function NovoArtigoPage() {
         throw new Error(data.error || "Falha ao criar artigo");
       }
 
-      toast.success("Artigo salvo com sucesso!");
+      const messages: Record<string, string> = {
+        draft: "Rascunho salvo!",
+        ready: "Artigo na fila do calendário!",
+        scheduled: "Artigo agendado!",
+        published: "Artigo publicado!",
+      };
+      toast.success(messages[status] || "Artigo salvo com sucesso!");
       router.push("/admin/blog");
       router.refresh();
-    } catch (error: any) {
-      toast.error(error.message || "Erro ao salvar artigo");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Erro ao salvar artigo";
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -84,7 +114,7 @@ export default function NovoArtigoPage() {
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-20">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-center gap-4">
           <Button variant="outline" size="icon" asChild>
             <Link href="/admin/blog">
@@ -93,39 +123,53 @@ export default function NovoArtigoPage() {
           </Button>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Novo Artigo</h1>
-            <p className="text-gray-600">Escreva uma nova publicação para o RitmoBlog.</p>
+            <p className="text-gray-600">
+              Escreva e deixe na fila do calendário ou publique agora.
+            </p>
           </div>
         </div>
-        <div className="flex gap-2">
-          <Button 
-            variant="outline" 
-            onClick={(e) => {
-              setFormData({...formData, status: 'draft'});
-              handleSubmit(e);
-            }}
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant="outline"
+            onClick={() => saveWithStatus("draft")}
             disabled={loading}
           >
             Salvar Rascunho
           </Button>
-          <Button 
-            onClick={(e) => {
-              setFormData({...formData, status: 'published'});
-              handleSubmit(e);
+          <Button
+            variant="outline"
+            onClick={() => saveWithStatus("ready")}
+            disabled={loading}
+          >
+            <ListOrdered className="h-4 w-4 mr-2" />
+            Pronto para fila
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              if (!scheduledLocal) {
+                toast.error("Preencha a data de agendamento na lateral.");
+                return;
+              }
+              saveWithStatus("scheduled", { scheduled_at: scheduledLocal });
             }}
             disabled={loading}
           >
+            <CalendarClock className="h-4 w-4 mr-2" />
+            Agendar
+          </Button>
+          <Button onClick={() => saveWithStatus("published")} disabled={loading}>
             {loading ? (
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent mr-2" />
             ) : (
               <Save className="h-4 w-4 mr-2" />
             )}
-            Publicar Artigo
+            Publicar agora
           </Button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Coluna Principal - Editor */}
         <div className="lg:col-span-2 space-y-6">
           <Card>
             <CardContent className="p-6 space-y-4">
@@ -147,9 +191,9 @@ export default function NovoArtigoPage() {
                 <label htmlFor="content" className="text-sm font-medium">
                   Conteúdo *
                 </label>
-                <SimpleEditor 
+                <SimpleEditor
                   value={formData.content}
-                  onChange={(val) => setFormData({...formData, content: val})}
+                  onChange={(val) => setFormData({ ...formData, content: val })}
                   placeholder="Escreva o conteúdo do artigo aqui..."
                 />
               </div>
@@ -168,7 +212,9 @@ export default function NovoArtigoPage() {
                 <Input
                   id="seo_title"
                   value={formData.seo_title}
-                  onChange={(e) => setFormData({ ...formData, seo_title: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, seo_title: e.target.value })
+                  }
                   placeholder="Título otimizado para o Google"
                 />
               </div>
@@ -180,7 +226,12 @@ export default function NovoArtigoPage() {
                   id="seo_description"
                   rows={2}
                   value={formData.seo_description}
-                  onChange={(e) => setFormData({ ...formData, seo_description: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      seo_description: e.target.value,
+                    })
+                  }
                   placeholder="Resumo de 150 caracteres para aparecer no Google"
                 />
               </div>
@@ -188,7 +239,6 @@ export default function NovoArtigoPage() {
           </Card>
         </div>
 
-        {/* Coluna Lateral - Configurações */}
         <div className="space-y-6">
           <Card>
             <CardHeader>
@@ -203,19 +253,23 @@ export default function NovoArtigoPage() {
                   id="slug"
                   required
                   value={formData.slug}
-                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, slug: e.target.value })
+                  }
                 />
               </div>
 
               <div className="space-y-2">
                 <label htmlFor="category" className="text-sm font-medium">
-                  Categoria
+                  Categoria *
                 </label>
                 <select
                   id="category"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   value={formData.category_id}
-                  onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, category_id: e.target.value })
+                  }
                 >
                   <option value="">Selecione uma categoria...</option>
                   {categories.map((cat) => (
@@ -224,6 +278,25 @@ export default function NovoArtigoPage() {
                     </option>
                   ))}
                 </select>
+                <p className="text-xs text-gray-500">
+                  Obrigatória para entrar na fila do calendário (ex.: Cardiologia
+                  na terça).
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="scheduled_at" className="text-sm font-medium">
+                  Agendar data (opcional)
+                </label>
+                <Input
+                  id="scheduled_at"
+                  type="datetime-local"
+                  value={scheduledLocal}
+                  onChange={(e) => setScheduledLocal(e.target.value)}
+                />
+                <p className="text-xs text-gray-500">
+                  Para posts especiais fora do ritmo semanal. Horário de Brasília.
+                </p>
               </div>
 
               <div className="space-y-2">
@@ -234,7 +307,9 @@ export default function NovoArtigoPage() {
                   id="excerpt"
                   rows={3}
                   value={formData.excerpt}
-                  onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, excerpt: e.target.value })
+                  }
                   placeholder="Breve introdução do artigo..."
                 />
               </div>
@@ -243,23 +318,27 @@ export default function NovoArtigoPage() {
                 <label htmlFor="cover_image" className="text-sm font-medium">
                   URL da Imagem de Capa
                 </label>
-                <div className="flex gap-2">
-                  <Input
-                    id="cover_image"
-                    value={formData.cover_image_url}
-                    onChange={(e) => setFormData({ ...formData, cover_image_url: e.target.value })}
-                    placeholder="https://..."
-                  />
-                </div>
+                <Input
+                  id="cover_image"
+                  value={formData.cover_image_url}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      cover_image_url: e.target.value,
+                    })
+                  }
+                  placeholder="https://..."
+                />
                 {formData.cover_image_url && (
                   <div className="mt-2 relative aspect-video rounded-lg overflow-hidden bg-slate-100 border">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img 
-                      src={formData.cover_image_url} 
-                      alt="Preview da capa" 
+                    <img
+                      src={formData.cover_image_url}
+                      alt="Preview da capa"
                       className="object-cover w-full h-full"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%23cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>';
+                        (e.target as HTMLImageElement).src =
+                          'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%23cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>';
                       }}
                     />
                   </div>

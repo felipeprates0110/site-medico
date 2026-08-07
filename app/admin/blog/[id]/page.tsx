@@ -1,23 +1,35 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, Save, ListOrdered, CalendarClock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { SimpleEditor } from "@/components/admin/simple-editor";
-import { use } from "react";
+import {
+  STATUS_LABEL,
+  type ArticleStatus,
+  isoToBrazilLocalInput,
+} from "@/lib/blog-calendar";
 
-export default function EditarArtigoPage({ params }: { params: Promise<{ id: string }> }) {
+export default function EditarArtigoPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const router = useRouter();
   const resolvedParams = use(params);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
-  const [categories, setCategories] = useState<{id: string, name: string}[]>([]);
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>(
+    []
+  );
+  const [scheduledLocal, setScheduledLocal] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     slug: "",
@@ -25,7 +37,7 @@ export default function EditarArtigoPage({ params }: { params: Promise<{ id: str
     excerpt: "",
     cover_image_url: "",
     category_id: "",
-    status: "draft",
+    status: "draft" as string,
     seo_title: "",
     seo_description: "",
   });
@@ -33,6 +45,7 @@ export default function EditarArtigoPage({ params }: { params: Promise<{ id: str
   useEffect(() => {
     fetchCategories();
     fetchArticle();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resolvedParams.id]);
 
   const fetchCategories = async () => {
@@ -49,7 +62,9 @@ export default function EditarArtigoPage({ params }: { params: Promise<{ id: str
 
   const fetchArticle = async () => {
     try {
-      const response = await fetch(`/api/admin/blog/articles/${resolvedParams.id}`);
+      const response = await fetch(
+        `/api/admin/blog/articles/${resolvedParams.id}`
+      );
       if (!response.ok) throw new Error("Falha ao carregar artigo");
       const data = await response.json();
       setFormData({
@@ -63,7 +78,8 @@ export default function EditarArtigoPage({ params }: { params: Promise<{ id: str
         seo_title: data.seo_title || "",
         seo_description: data.seo_description || "",
       });
-    } catch (error) {
+      setScheduledLocal(isoToBrazilLocalInput(data.scheduled_at));
+    } catch {
       toast.error("Erro ao carregar dados do artigo");
       router.push("/admin/blog");
     } finally {
@@ -78,20 +94,34 @@ export default function EditarArtigoPage({ params }: { params: Promise<{ id: str
 
   const handleSubmit = async (e: React.FormEvent, newStatus?: string) => {
     e.preventDefault();
-    setLoading(true);
+    const status = newStatus || formData.status;
 
-    const submitData = { ...formData };
-    if (newStatus) {
-      submitData.status = newStatus;
-      setFormData(submitData);
+    if (status === "ready" && !formData.category_id) {
+      toast.error("Escolha uma categoria para colocar o artigo na fila.");
+      return;
+    }
+    if (status === "scheduled" && !scheduledLocal) {
+      toast.error("Escolha a data e hora do agendamento.");
+      return;
     }
 
+    setLoading(true);
+    const submitData = {
+      ...formData,
+      status,
+      scheduled_at: status === "scheduled" ? scheduledLocal : undefined,
+    };
+    setFormData({ ...formData, status });
+
     try {
-      const response = await fetch(`/api/admin/blog/articles/${resolvedParams.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(submitData),
-      });
+      const response = await fetch(
+        `/api/admin/blog/articles/${resolvedParams.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(submitData),
+        }
+      );
 
       if (!response.ok) {
         const data = await response.json();
@@ -101,8 +131,10 @@ export default function EditarArtigoPage({ params }: { params: Promise<{ id: str
       toast.success("Artigo atualizado com sucesso!");
       router.push("/admin/blog");
       router.refresh();
-    } catch (error: any) {
-      toast.error(error.message || "Erro ao atualizar artigo");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Erro ao atualizar artigo";
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -116,9 +148,11 @@ export default function EditarArtigoPage({ params }: { params: Promise<{ id: str
     );
   }
 
+  const statusKey = formData.status as ArticleStatus;
+
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-20">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-center gap-4">
           <Button variant="outline" size="icon" asChild>
             <Link href="/admin/blog">
@@ -127,21 +161,50 @@ export default function EditarArtigoPage({ params }: { params: Promise<{ id: str
           </Button>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Editar Artigo</h1>
-            <p className="text-gray-600">Altere o conteúdo da publicação.</p>
+            <p className="text-gray-600 flex items-center gap-2">
+              Status atual:{" "}
+              <Badge
+                variant={
+                  formData.status === "published"
+                    ? "success"
+                    : formData.status === "ready"
+                      ? "default"
+                      : formData.status === "scheduled"
+                        ? "warning"
+                        : "secondary"
+                }
+              >
+                {STATUS_LABEL[statusKey] ?? formData.status}
+              </Badge>
+            </p>
           </div>
         </div>
-        <div className="flex gap-2">
-          {formData.status === 'draft' && (
-            <Button 
-              variant="outline" 
-              onClick={(e) => handleSubmit(e, 'draft')}
-              disabled={loading}
-            >
-              Salvar Rascunho
-            </Button>
-          )}
-          <Button 
-            onClick={(e) => handleSubmit(e, 'published')}
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant="outline"
+            onClick={(e) => handleSubmit(e, "draft")}
+            disabled={loading}
+          >
+            Salvar Rascunho
+          </Button>
+          <Button
+            variant="outline"
+            onClick={(e) => handleSubmit(e, "ready")}
+            disabled={loading}
+          >
+            <ListOrdered className="h-4 w-4 mr-2" />
+            Pronto para fila
+          </Button>
+          <Button
+            variant="outline"
+            onClick={(e) => handleSubmit(e, "scheduled")}
+            disabled={loading}
+          >
+            <CalendarClock className="h-4 w-4 mr-2" />
+            Agendar
+          </Button>
+          <Button
+            onClick={(e) => handleSubmit(e, "published")}
             disabled={loading}
           >
             {loading ? (
@@ -149,13 +212,14 @@ export default function EditarArtigoPage({ params }: { params: Promise<{ id: str
             ) : (
               <Save className="h-4 w-4 mr-2" />
             )}
-            {formData.status === 'published' ? 'Atualizar Publicação' : 'Publicar Artigo'}
+            {formData.status === "published"
+              ? "Atualizar Publicação"
+              : "Publicar agora"}
           </Button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Coluna Principal - Editor */}
         <div className="lg:col-span-2 space-y-6">
           <Card>
             <CardContent className="p-6 space-y-4">
@@ -176,9 +240,9 @@ export default function EditarArtigoPage({ params }: { params: Promise<{ id: str
                 <label htmlFor="content" className="text-sm font-medium">
                   Conteúdo *
                 </label>
-                <SimpleEditor 
+                <SimpleEditor
                   value={formData.content}
-                  onChange={(val) => setFormData({...formData, content: val})}
+                  onChange={(val) => setFormData({ ...formData, content: val })}
                 />
               </div>
             </CardContent>
@@ -196,7 +260,9 @@ export default function EditarArtigoPage({ params }: { params: Promise<{ id: str
                 <Input
                   id="seo_title"
                   value={formData.seo_title}
-                  onChange={(e) => setFormData({ ...formData, seo_title: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, seo_title: e.target.value })
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -207,14 +273,18 @@ export default function EditarArtigoPage({ params }: { params: Promise<{ id: str
                   id="seo_description"
                   rows={2}
                   value={formData.seo_description}
-                  onChange={(e) => setFormData({ ...formData, seo_description: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      seo_description: e.target.value,
+                    })
+                  }
                 />
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Coluna Lateral - Configurações */}
         <div className="space-y-6">
           <Card>
             <CardHeader>
@@ -229,19 +299,23 @@ export default function EditarArtigoPage({ params }: { params: Promise<{ id: str
                   id="slug"
                   required
                   value={formData.slug}
-                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, slug: e.target.value })
+                  }
                 />
               </div>
 
               <div className="space-y-2">
                 <label htmlFor="category" className="text-sm font-medium">
-                  Categoria
+                  Categoria *
                 </label>
                 <select
                   id="category"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                   value={formData.category_id}
-                  onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, category_id: e.target.value })
+                  }
                 >
                   <option value="">Selecione uma categoria...</option>
                   {categories.map((cat) => (
@@ -253,6 +327,21 @@ export default function EditarArtigoPage({ params }: { params: Promise<{ id: str
               </div>
 
               <div className="space-y-2">
+                <label htmlFor="scheduled_at" className="text-sm font-medium">
+                  Agendar data (opcional)
+                </label>
+                <Input
+                  id="scheduled_at"
+                  type="datetime-local"
+                  value={scheduledLocal}
+                  onChange={(e) => setScheduledLocal(e.target.value)}
+                />
+                <p className="text-xs text-gray-500">
+                  Posts especiais fora do ritmo semanal. Horário de Brasília.
+                </p>
+              </div>
+
+              <div className="space-y-2">
                 <label htmlFor="excerpt" className="text-sm font-medium">
                   Resumo (Exibido nos cards)
                 </label>
@@ -260,7 +349,9 @@ export default function EditarArtigoPage({ params }: { params: Promise<{ id: str
                   id="excerpt"
                   rows={3}
                   value={formData.excerpt}
-                  onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, excerpt: e.target.value })
+                  }
                 />
               </div>
 
@@ -268,22 +359,26 @@ export default function EditarArtigoPage({ params }: { params: Promise<{ id: str
                 <label htmlFor="cover_image" className="text-sm font-medium">
                   URL da Imagem de Capa
                 </label>
-                <div className="flex gap-2">
-                  <Input
-                    id="cover_image"
-                    value={formData.cover_image_url}
-                    onChange={(e) => setFormData({ ...formData, cover_image_url: e.target.value })}
-                  />
-                </div>
+                <Input
+                  id="cover_image"
+                  value={formData.cover_image_url}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      cover_image_url: e.target.value,
+                    })
+                  }
+                />
                 {formData.cover_image_url && (
                   <div className="mt-2 relative aspect-video rounded-lg overflow-hidden bg-slate-100 border">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img 
-                      src={formData.cover_image_url} 
-                      alt="Preview da capa" 
+                    <img
+                      src={formData.cover_image_url}
+                      alt="Preview da capa"
                       className="object-cover w-full h-full"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%23cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>';
+                        (e.target as HTMLImageElement).src =
+                          'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%23cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>';
                       }}
                     />
                   </div>
