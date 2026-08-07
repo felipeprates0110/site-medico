@@ -9,6 +9,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import {
+  AffiliateProductsFields,
+  ProductFormRow,
+  productsToPayload,
+} from "@/components/admin/affiliate-products-fields";
 
 interface CategoryOption {
   id: string;
@@ -23,12 +28,13 @@ export default function NovaOfertaPage() {
     category_id: "",
     title: "",
     description: "",
-    button_text: "",
-    url: "",
     weight: "1",
     sort_order: "0",
     is_active: true,
   });
+  const [products, setProducts] = useState<ProductFormRow[]>([
+    { label: "", url: "", image_url: "", sort_order: "0" },
+  ]);
 
   useEffect(() => {
     fetch("/api/admin/blog/categories")
@@ -52,6 +58,7 @@ export default function NovaOfertaPage() {
           ...formData,
           weight: Number(formData.weight),
           sort_order: Number(formData.sort_order),
+          products: productsToPayload(products),
         }),
       });
 
@@ -81,7 +88,7 @@ export default function NovaOfertaPage() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Nova Oferta</h1>
           <p className="text-gray-600">
-            Vincule um produto/link a uma categoria do blog.
+            Uma oferta pode ter vários produtos relacionados (com foto e link).
           </p>
         </div>
       </div>
@@ -125,7 +132,7 @@ export default function NovaOfertaPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, title: e.target.value })
                 }
-                placeholder="Ex: Monitoramento Residencial Recomendado"
+                placeholder="Ex: Como Monitorar o Ritmo Cardíaco no Dia a Dia"
               />
             </div>
 
@@ -141,43 +148,11 @@ export default function NovaOfertaPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
                 }
-                placeholder="Texto educativo explicando por que o produto pode ajudar..."
+                placeholder="Texto educativo comum a todos os produtos desta oferta..."
               />
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="button_text" className="text-sm font-medium">
-                Texto do botão *
-              </label>
-              <Input
-                id="button_text"
-                required
-                value={formData.button_text}
-                onChange={(e) =>
-                  setFormData({ ...formData, button_text: e.target.value })
-                }
-                placeholder="Ex: Ver Monitores Aprovados na Amazon"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label htmlFor="url" className="text-sm font-medium">
-                URL do afiliado *
-              </label>
-              <Input
-                id="url"
-                type="url"
-                required
-                value={formData.url}
-                onChange={(e) =>
-                  setFormData({ ...formData, url: e.target.value })
-                }
-                placeholder="https://..."
-              />
-              <p className="text-xs text-gray-500">
-                Amazon, Hotmart ou outro link completo com https://
-              </p>
-            </div>
+            <AffiliateProductsFields products={products} onChange={setProducts} />
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -195,7 +170,7 @@ export default function NovaOfertaPage() {
                   }
                 />
                 <p className="text-xs text-gray-500">
-                  Maior peso = aparece em mais artigos da categoria
+                  Maior peso = esta oferta aparece em mais artigos da categoria
                 </p>
               </div>
               <div className="space-y-2">

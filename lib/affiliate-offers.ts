@@ -1,23 +1,111 @@
 /**
- * Ofertas afiliadas do blog: tipos e escolha ponderada estável.
+ * Ofertas afiliadas do blog: tipos, normalização de produtos e escolha ponderada.
  *
- * Analogia: cada categoria é uma prateleira com vários produtos.
- * O "peso" define quanto espaço o produto ganha na prateleira.
- * A "semente" (id do artigo) faz o mesmo artigo sempre apontar
- * para o mesmo produto — sem mudar a cada refresh.
+ * Analogia: cada oferta é uma prateleira (título + texto).
+ * Dentro dela ficam vários produtos lado a lado (Apple Watch, Galaxy Watch…).
+ * O "peso" decide qual prateleira aparece no artigo; a semente (id do artigo)
+ * mantém a mesma escolha a cada refresh.
  */
+
+export type AffiliateProduct = {
+  label: string;
+  url: string;
+  image_url: string;
+  sort_order: number;
+};
 
 export type AffiliateOffer = {
   id: string;
   category_id: string;
   title: string;
   description: string;
-  button_text: string;
-  url: string;
+  /** @deprecated Preferir products — mantido sincronizado com o 1º produto */
+  button_text?: string;
+  /** @deprecated Preferir products — mantido sincronizado com o 1º produto */
+  url?: string;
+  products: AffiliateProduct[];
   weight: number;
   is_active?: boolean;
   sort_order?: number;
 };
+
+export function isValidHttpUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Valida e limpa a lista de produtos vinda do admin.
+ * Retorna { products } ou { error }.
+ */
+export function normalizeAffiliateProducts(
+  raw: unknown
+): { products: AffiliateProduct[] } | { error: string } {
+  if (!Array.isArray(raw) || raw.length === 0) {
+    return { error: "Adicione pelo menos um produto na oferta" };
+  }
+
+  const products: AffiliateProduct[] = [];
+
+  for (let i = 0; i < raw.length; i++) {
+    const item = raw[i] as Record<string, unknown>;
+    const label = String(item?.label ?? "").trim();
+    const url = String(item?.url ?? "").trim();
+    const imageUrl = String(item?.image_url ?? "").trim();
+    const sortRaw = Number(item?.sort_order);
+    const sort_order = Number.isFinite(sortRaw) ? Math.floor(sortRaw) : i;
+
+    if (!label) {
+      return { error: `Produto ${i + 1}: informe o nome/texto do botão` };
+    }
+    if (!url || !isValidHttpUrl(url)) {
+      return {
+        error: `Produto ${i + 1}: URL afiliada inválida (use http:// ou https://)`,
+      };
+    }
+    if (imageUrl && !isValidHttpUrl(imageUrl)) {
+      return {
+        error: `Produto ${i + 1}: URL da foto inválida (use http:// ou https://)`,
+      };
+    }
+
+    products.push({
+      label,
+      url,
+      image_url: imageUrl,
+      sort_order,
+    });
+  }
+
+  products.sort((a, b) => a.sort_order - b.sort_order);
+  return { products };
+}
+
+/** Garante products[] mesmo se o registro for antigo (só button_text/url). */
+export function resolveOfferProducts(
+  offer: Partial<AffiliateOffer> & {
+    button_text?: string | null;
+    url?: string | null;
+    products?: unknown;
+  }
+): AffiliateProduct[] {
+  const normalized = normalizeAffiliateProducts(offer.products);
+  if ("products" in normalized && normalized.products.length > 0) {
+    return normalized.products;
+  }
+
+  const label = String(offer.button_text ?? "").trim();
+  const url = String(offer.url ?? "").trim();
+  if (label && url && isValidHttpUrl(url)) {
+    return [{ label, url, image_url: "", sort_order: 0 }];
+  }
+
+  return [];
+}
 
 /** Hash simples e determinístico (mesmo texto → mesmo número). */
 export function hashString(seed: string): number {

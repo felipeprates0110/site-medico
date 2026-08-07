@@ -9,6 +9,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import {
+  AffiliateProductsFields,
+  ProductFormRow,
+  productsFromApi,
+  productsToPayload,
+} from "@/components/admin/affiliate-products-fields";
 
 interface CategoryOption {
   id: string;
@@ -29,12 +35,13 @@ export default function EditarOfertaPage({
     category_id: "",
     title: "",
     description: "",
-    button_text: "",
-    url: "",
     weight: "1",
     sort_order: "0",
     is_active: true,
   });
+  const [products, setProducts] = useState<ProductFormRow[]>([
+    { label: "", url: "", image_url: "", sort_order: "0" },
+  ]);
 
   useEffect(() => {
     const load = async () => {
@@ -55,12 +62,16 @@ export default function EditarOfertaPage({
           category_id: offer.category_id || "",
           title: offer.title || "",
           description: offer.description || "",
-          button_text: offer.button_text || "",
-          url: offer.url || "",
           weight: String(offer.weight ?? 1),
           sort_order: String(offer.sort_order ?? 0),
           is_active: offer.is_active !== false,
         });
+        setProducts(
+          productsFromApi(offer.products, {
+            label: offer.button_text,
+            url: offer.url,
+          })
+        );
       } catch {
         toast.error("Erro ao carregar dados da oferta");
         router.push("/admin/blog/ofertas");
@@ -86,6 +97,7 @@ export default function EditarOfertaPage({
             ...formData,
             weight: Number(formData.weight),
             sort_order: Number(formData.sort_order),
+            products: productsToPayload(products),
           }),
         }
       );
@@ -123,7 +135,9 @@ export default function EditarOfertaPage({
         </Button>
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Editar Oferta</h1>
-          <p className="text-gray-600">Altere o produto, o peso ou o link afiliado.</p>
+          <p className="text-gray-600">
+            Ajuste produtos, fotos (URL do fabricante) e links afiliados.
+          </p>
         </div>
       </div>
 
@@ -184,34 +198,7 @@ export default function EditarOfertaPage({
               />
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="button_text" className="text-sm font-medium">
-                Texto do botão *
-              </label>
-              <Input
-                id="button_text"
-                required
-                value={formData.button_text}
-                onChange={(e) =>
-                  setFormData({ ...formData, button_text: e.target.value })
-                }
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label htmlFor="url" className="text-sm font-medium">
-                URL do afiliado *
-              </label>
-              <Input
-                id="url"
-                type="url"
-                required
-                value={formData.url}
-                onChange={(e) =>
-                  setFormData({ ...formData, url: e.target.value })
-                }
-              />
-            </div>
+            <AffiliateProductsFields products={products} onChange={setProducts} />
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">

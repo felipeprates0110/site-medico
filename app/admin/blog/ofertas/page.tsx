@@ -21,6 +21,13 @@ interface CategoryOption {
   name: string;
 }
 
+interface AffiliateProductRow {
+  label: string;
+  url: string;
+  image_url?: string;
+  sort_order?: number;
+}
+
 interface AffiliateOfferRow {
   id: string;
   category_id: string;
@@ -28,6 +35,7 @@ interface AffiliateOfferRow {
   description: string;
   button_text: string;
   url: string;
+  products?: AffiliateProductRow[];
   weight: number;
   is_active: boolean;
   sort_order: number;
@@ -98,6 +106,18 @@ export default function BlogOfertasPage() {
   const handleToggleActive = async (offer: AffiliateOfferRow) => {
     setTogglingId(offer.id);
     try {
+      const products =
+        Array.isArray(offer.products) && offer.products.length > 0
+          ? offer.products
+          : [
+              {
+                label: offer.button_text,
+                url: offer.url,
+                image_url: "",
+                sort_order: 0,
+              },
+            ];
+
       const response = await fetch(`/api/admin/blog/affiliate-offers/${offer.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -105,8 +125,7 @@ export default function BlogOfertasPage() {
           category_id: offer.category_id,
           title: offer.title,
           description: offer.description,
-          button_text: offer.button_text,
-          url: offer.url,
+          products,
           weight: offer.weight,
           sort_order: offer.sort_order,
           is_active: !offer.is_active,
@@ -222,7 +241,9 @@ export default function BlogOfertasPage() {
                       <TableCell>
                         <div className="font-medium">{offer.title}</div>
                         <div className="text-xs text-gray-500 truncate max-w-xs">
-                          {offer.button_text}
+                          {Array.isArray(offer.products) && offer.products.length > 0
+                            ? `${offer.products.length} produto${offer.products.length > 1 ? "s" : ""}: ${offer.products.map((p) => p.label).join(" · ")}`
+                            : offer.button_text}
                         </div>
                       </TableCell>
                       <TableCell className="text-gray-600">

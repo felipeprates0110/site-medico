@@ -247,7 +247,7 @@ export async function getActiveAffiliateOffersByCategoryId(
       const { data, error } = await supabase
         .from("affiliate_offers")
         .select(
-          "id, category_id, title, description, button_text, url, weight, is_active, sort_order"
+          "id, category_id, title, description, button_text, url, products, weight, is_active, sort_order"
         )
         .eq("category_id", categoryId)
         .eq("is_active", true)

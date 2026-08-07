@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase";
 import { revalidatePublicSite } from "@/lib/revalidate-public";
+import { normalizeAffiliateProducts } from "@/lib/affiliate-offers";
 
 function parseWeight(value: unknown): number | null {
   const n = typeof value === "number" ? value : Number(value);
@@ -14,15 +15,6 @@ function parseSortOrder(value: unknown): number {
   const n = typeof value === "number" ? value : Number(value);
   if (!Number.isFinite(n)) return 0;
   return Math.floor(n);
-}
-
-function isValidUrl(url: string): boolean {
-  try {
-    const parsed = new URL(url);
-    return parsed.protocol === "http:" || parsed.protocol === "https:";
-  } catch {
-    return false;
-  }
 }
 
 export async function GET(request: Request) {
@@ -72,26 +64,26 @@ export async function POST(request: Request) {
       category_id,
       title,
       description,
-      button_text,
-      url,
+      products: rawProducts,
       weight,
       is_active,
       sort_order,
     } = body;
 
-    if (!category_id || !title?.trim() || !description?.trim() || !button_text?.trim() || !url?.trim()) {
+    if (!category_id || !title?.trim() || !description?.trim()) {
       return NextResponse.json(
-        { error: "Categoria, título, descrição, texto do botão e URL são obrigatórios" },
+        { error: "Categoria, título e descrição são obrigatórios" },
         { status: 400 }
       );
     }
 
-    if (!isValidUrl(String(url).trim())) {
-      return NextResponse.json(
-        { error: "URL inválida. Use um link começando com http:// ou https://" },
-        { status: 400 }
-      );
+    const normalized = normalizeAffiliateProducts(rawProducts);
+    if ("error" in normalized) {
+      return NextResponse.json({ error: normalized.error }, { status: 400 });
     }
+
+    const { products } = normalized;
+    const first = products[0];
 
     const parsedWeight = parseWeight(weight ?? 1);
     if (parsedWeight === null) {
@@ -108,8 +100,10 @@ export async function POST(request: Request) {
           category_id,
           title: String(title).trim(),
           description: String(description).trim(),
-          button_text: String(button_text).trim(),
-          url: String(url).trim(),
+          products,
+          // Campos legados sincronizados com o 1º produto (lista/admin antigo)
+          button_text: first.label,
+          url: first.url,
           weight: parsedWeight,
           is_active: is_active !== false,
           sort_order: parseSortOrder(sort_order ?? 0),

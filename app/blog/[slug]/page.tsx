@@ -8,7 +8,10 @@ import {
   getPublishedArticleBySlug,
   getSiteConfig,
 } from "@/lib/data";
-import { pickWeightedOffer } from "@/lib/affiliate-offers";
+import {
+  pickWeightedOffer,
+  resolveOfferProducts,
+} from "@/lib/affiliate-offers";
 import { AuthorBox } from "@/components/blog/AuthorBox";
 import { resolveAuthorCardBio } from "@/lib/author-bio";
 import { formatDoctorCrmBadge } from "@/lib/doctor-credentials";
@@ -131,6 +134,9 @@ export default async function BlogPostPage({
   ]);
 
   const affiliateOffer = pickWeightedOffer(affiliateOffers, article.id);
+  const affiliateProducts = affiliateOffer
+    ? resolveOfferProducts(affiliateOffer)
+    : [];
 
   const doctorName = siteConfig?.doctor_name || "Dr. Pedro Felipe";
   const specialty = siteConfig?.specialty || "Cardiologista";
@@ -265,12 +271,11 @@ export default async function BlogPostPage({
 
           <AdSenseUnit slot="middle_article" />
 
-          {affiliateOffer && (
+          {affiliateOffer && affiliateProducts.length > 0 && (
             <AffiliateBox
               title={affiliateOffer.title}
               description={affiliateOffer.description}
-              buttonText={affiliateOffer.button_text}
-              url={affiliateOffer.url}
+              products={affiliateProducts}
             />
           )}
 
