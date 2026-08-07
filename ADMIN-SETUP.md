@@ -63,9 +63,9 @@ URLs antigas do admin clínico (`/admin/especialidades`, `/admin/faq`, etc.) red
 2. Copie as seguintes informações:
 
 ```
-Project URL: https://xxxxxxxxxxxxx.supabase.co
-anon public key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-service_role key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Project URL: https://SEU_PROJECT_REF.supabase.co
+anon public key: COLE_AQUI_A_ANON_KEY
+service_role key: COLE_AQUI_A_SERVICE_ROLE_KEY
 ```
 
 ⚠️ **IMPORTANTE:** O `service_role key` é SECRETO! Nunca compartilhe!
@@ -84,12 +84,12 @@ NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=gere-uma-chave-secreta-aqui-use-o-comando-abaixo
 
 # Supabase (cole as credenciais do passo 1.3)
-NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxxxxxxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+NEXT_PUBLIC_SUPABASE_URL=https://SEU_PROJECT_REF.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=COLE_AQUI_A_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY=COLE_AQUI_A_SERVICE_ROLE_KEY
 
 # Vercel Blob (configurar depois do deploy)
-# BLOB_READ_WRITE_TOKEN=vercel_blob_rw_xxxxxxxxxx
+# BLOB_READ_WRITE_TOKEN=COLE_AQUI_O_TOKEN_DO_BLOB
 ```
 
 ### 2.2 Gerar NEXTAUTH_SECRET
@@ -172,29 +172,28 @@ npm install
 npm run dev
 ```
 
-### 4.3 Acessar o Painel Admin
+### 4.3 Criar / atualizar a senha do admin (obrigatório)
 
-1. Abra: http://localhost:3000/login
-2. **Email:** `admin@drpedrofelipe.com.br`
-3. **Senha:** `admin123`
-4. Clique em "Entrar"
+**Nunca documente senhas reais neste repositório.** Gere um hash bcrypt e grave no banco:
+
+1. Gere um hash (10 rounds) em https://bcrypt-generator.com/ ou com Node:
+   ```bash
+   node -e "require('bcryptjs').hash('SUA_SENHA_FORTE', 10).then(console.log)"
+   ```
+2. No Supabase SQL Editor:
+
+```sql
+UPDATE users
+SET password_hash = '$2a$10$COLE_O_HASH_AQUI'
+WHERE email = 'admin@drpedrofelipe.com.br';
+```
+
+3. Abra http://localhost:3000/login
+4. Entre com `admin@drpedrofelipe.com.br` e a senha que você acabou de definir
 
 ✅ Se funcionou, você verá o Dashboard do admin!
 
-### 4.4 ⚠️ TROCAR SENHA PADRÃO
-
-**MUITO IMPORTANTE:** A senha `admin123` é temporária!
-
-Para trocar, execute no Supabase SQL Editor:
-
-```sql
--- Gere uma nova senha com bcrypt: https://bcrypt-generator.com/
--- Use 10 rounds
-
-UPDATE users 
-SET password_hash = '$2a$10$SEU_NOVO_HASH_AQUI'
-WHERE email = 'admin@drpedrofelipe.com.br';
-```
+Depois do primeiro acesso, prefira trocar a senha em **Admin → Configurações**.
 
 ---
 
@@ -286,7 +285,7 @@ Ou use o script de migração (se criado).
 
 ### Checklist de Segurança:
 
-- [ ] Trocar senha padrão `admin123`
+- [ ] Usar senha forte só no banco/Vercel (nunca em arquivos `.md` do Git)
 - [ ] Nunca commitar `.env.local` no Git
 - [ ] Manter `SUPABASE_SERVICE_ROLE_KEY` secreto
 - [ ] Configurar Row Level Security (RLS) no Supabase

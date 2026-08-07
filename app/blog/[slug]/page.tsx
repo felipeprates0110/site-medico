@@ -30,6 +30,7 @@ import {
   stripHtml,
 } from "@/lib/reading-time";
 import { ListenArticleButton } from "@/components/blog/ListenArticleButton";
+import { SafeHtml } from "@/components/blog/safe-html";
 
 export const revalidate = 60;
 
@@ -287,9 +288,9 @@ export default async function BlogPostPage({
             photoUrl={siteConfig?.profile_photo_url || DEFAULT_DOCTOR_PHOTO}
           />
 
-          <div
+          <SafeHtml
             className="prose prose-lg prose-slate mt-10 max-w-none space-y-8 text-lg leading-loose text-gray-700 prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-gray-900 prose-a:text-primary-700 prose-a:no-underline hover:prose-a:underline"
-            dangerouslySetInnerHTML={{ __html: article.content }}
+            html={article.content || ""}
           />
 
           <AdSenseUnit slot="middle_article" />

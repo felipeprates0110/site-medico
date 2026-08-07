@@ -8,6 +8,7 @@ import {
   isValidArticleStatus,
 } from "@/lib/blog-calendar";
 import { isAffiliateDisplayMode } from "@/lib/affiliate-offers";
+import { sanitizeArticleHtml } from "@/lib/sanitize-html";
 
 export async function GET() {
   try {
@@ -116,13 +117,15 @@ export async function POST(request: Request) {
       .eq("email", session.user?.email)
       .single();
 
+    const safeContent = sanitizeArticleHtml(String(content));
+
     const { data, error } = await supabaseAdmin
       .from("blog_articles")
       .insert([
         {
           title,
           slug,
-          content,
+          content: safeContent,
           excerpt,
           cover_image_url,
           category_id: category_id || null,

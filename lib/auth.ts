@@ -21,7 +21,15 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Senha", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        const email =
+          typeof credentials?.email === "string"
+            ? credentials.email.trim().toLowerCase()
+            : "";
+        const password =
+          typeof credentials?.password === "string" ? credentials.password : "";
+
+        // Limites simples evitam payloads absurdos (DoS por input gigante)
+        if (!email || !password || email.length > 254 || password.length > 200) {
           return null;
         }
 
@@ -30,7 +38,7 @@ export const authOptions: NextAuthOptions = {
           const { data: user, error } = await supabaseAdmin
             .from("users")
             .select("*")
-            .eq("email", credentials.email)
+            .eq("email", email)
             .eq("is_active", true)
             .single();
 
@@ -40,7 +48,7 @@ export const authOptions: NextAuthOptions = {
 
           // Verificar senha
           const passwordMatch = await compare(
-            credentials.password,
+            password,
             user.password_hash
           );
 

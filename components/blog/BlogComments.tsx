@@ -98,7 +98,7 @@ export function BlogComments({
         Tem alguma dúvida sobre este tema?
       </h2>
       <p className="mb-8 max-w-2xl text-base leading-relaxed text-gray-600">
-        Deixe sua pergunta abaixo. Quando possível, {doctorName} responde por
+        Deixe sua pergunta abaixo. Quando possível, o Dr. Pedro Felipe responderá por
         aqui. Este espaço é educativo e{" "}
         <strong className="font-semibold text-gray-800">
           não substitui consulta médica

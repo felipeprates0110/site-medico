@@ -15,9 +15,9 @@
 - Suporte a múltiplos níveis de permissão (admin, secretary, viewer)
 - Logout seguro
 
-**Login padrão:**
+**Login admin:**
 - Email: `admin@drpedrofelipe.com.br`
-- Senha: `admin123` (⚠️ TROCAR após primeiro acesso!)
+- Senha: definida por você no banco (hash bcrypt) — **nunca** documentar senha em texto no repositório. Veja `ADMIN-SETUP.md`.
 
 ---
 
@@ -171,7 +171,7 @@ Acesse: http://localhost:3000/login
 ### **3. Fazer Login** (30 segundos)
 
 - Email: `admin@drpedrofelipe.com.br`
-- Senha: `admin123`
+- Senha: a que você definiu no banco (ver `ADMIN-SETUP.md`)
 
 ### **4. Editar Perfil** (5 minutos)
 
@@ -298,7 +298,7 @@ Acesse: http://localhost:3000/login
 ### **Segurança:**
 
 1. **NUNCA** commitar `.env.local` no Git
-2. **TROCAR** senha `admin123` imediatamente
+2. **USAR** senha forte só no banco — nunca em arquivos do Git
 3. **MANTER** `SUPABASE_SERVICE_ROLE_KEY` secreto
 4. **HABILITAR** 2FA no Supabase e Vercel
 5. **USAR** senhas fortes (12+ caracteres)
