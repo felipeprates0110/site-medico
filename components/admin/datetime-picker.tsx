@@ -65,10 +65,13 @@ function toValue(
   return `${year}-${pad(month)}-${pad(day)}T${hour}:${minute}`;
 }
 
-function formatDisplay(value: string) {
+function formatDisplayParts(value: string) {
   const parsed = parseValue(value);
-  if (!parsed) return "";
-  return `${pad(parsed.day)}/${pad(parsed.month)}/${parsed.year} às ${parsed.hour}:${parsed.minute}`;
+  if (!parsed) return null;
+  return {
+    date: `${pad(parsed.day)}/${pad(parsed.month)}/${parsed.year}`,
+    time: `${parsed.hour}:${parsed.minute}`,
+  };
 }
 
 function daysInMonth(year: number, month: number) {
@@ -199,6 +202,8 @@ export function DateTimePicker({
     return parsed.year === viewYear && parsed.month === viewMonth;
   };
 
+  const display = value ? formatDisplayParts(value) : null;
+
   return (
     <div ref={rootRef} className="relative">
       <button
@@ -206,7 +211,7 @@ export function DateTimePicker({
         type="button"
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "flex min-h-14 w-full items-center gap-3 overflow-hidden rounded-xl border bg-white px-3 py-2.5 text-left text-sm transition-all",
+          "flex min-h-14 w-full items-center gap-3 rounded-xl border bg-white px-3 py-2.5 text-left text-sm transition-all",
           "border-primary-200 hover:border-primary-300 hover:bg-primary-50/40",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2",
           open && "border-primary-400 ring-2 ring-primary-100"
@@ -215,17 +220,26 @@ export function DateTimePicker({
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-700">
           <CalendarDays className="h-4 w-4" />
         </span>
-        <span className="flex min-w-0 flex-1 flex-col justify-center gap-0.5 overflow-hidden leading-snug">
-          {value ? (
-            <span className="truncate font-medium text-gray-900">
-              {formatDisplay(value)}
-            </span>
+        <span className="flex min-w-0 flex-1 flex-col justify-center gap-0.5 leading-snug">
+          {display ? (
+            <>
+              <span className="font-medium text-gray-900">{display.date}</span>
+              <span className="flex flex-wrap items-center gap-x-1.5 text-[12px] text-gray-600">
+                <span className="inline-flex items-center gap-1 font-semibold tabular-nums text-primary-800">
+                  <Clock className="h-3 w-3 shrink-0" />
+                  {display.time}
+                </span>
+                <span className="text-gray-400">· Brasília</span>
+              </span>
+            </>
           ) : (
-            <span className="truncate text-gray-500">{placeholder}</span>
+            <>
+              <span className="text-gray-500">{placeholder}</span>
+              <span className="text-[11px] leading-none text-gray-400">
+                Horário de Brasília
+              </span>
+            </>
           )}
-          <span className="truncate text-[11px] leading-none text-gray-400">
-            Horário de Brasília
-          </span>
         </span>
         {value ? (
           <span

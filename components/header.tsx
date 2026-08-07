@@ -12,7 +12,7 @@ const navigation = [
   { name: "Início", href: "/" },
   { name: "Sobre", href: "/sobre" },
   { name: "Especialidades", href: "/especialidades" },
-  { name: "Blog", href: "/blog" },
+  { name: "RitmoBlog", href: "/blog" },
   { name: "Avaliações", href: "/avaliacoes" },
   { name: "Contato", href: "/contato" },
 ];

@@ -18,6 +18,8 @@ interface CoverImageFieldProps {
   value: string;
   onChange: (url: string) => void;
   altText?: string;
+  /** Dica após upload — qual botão usar para gravar no artigo */
+  saveHint?: string;
 }
 
 /**
@@ -28,6 +30,7 @@ export function CoverImageField({
   value,
   onChange,
   altText = "Capa do artigo",
+  saveHint = "Capa pronta. Clique em Salvar alterações para gravar no artigo.",
 }: CoverImageFieldProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -113,7 +116,7 @@ export function CoverImageField({
         if (prev) URL.revokeObjectURL(prev);
         return null;
       });
-      toast.success("Capa enviada! Lembre de salvar o artigo para gravar a capa.");
+      toast.success(saveHint);
     } catch (error) {
       setLocalPreview((prev) => {
         if (prev) URL.revokeObjectURL(prev);

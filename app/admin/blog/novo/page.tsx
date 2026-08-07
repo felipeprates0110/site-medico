@@ -17,6 +17,7 @@ import {
   AiArticlePanel,
   type AiGeneratedFields,
 } from "@/components/admin/ai-article-panel";
+import { CategorySelect } from "@/components/admin/category-select";
 
 export default function NovoArtigoPage() {
   const router = useRouter();
@@ -171,11 +172,16 @@ export default function NovoArtigoPage() {
             Pré-visualizar
           </Button>
           <Button
-            variant="outline"
             size="sm"
             onClick={() => saveWithStatus("draft")}
             disabled={loading}
+            title="Salva o artigo como rascunho (ainda não entra na fila nem publica)"
           >
+            {loading ? (
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent mr-1.5" />
+            ) : (
+              <Save className="h-4 w-4 mr-1.5" />
+            )}
             Salvar rascunho
           </Button>
           <Button
@@ -190,16 +196,12 @@ export default function NovoArtigoPage() {
           </Button>
           <Button
             size="sm"
+            variant="outline"
             className="sm:ml-auto"
             onClick={() => saveWithStatus("published")}
             disabled={loading}
           >
-            {loading ? (
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent mr-1.5" />
-            ) : (
-              <Save className="h-4 w-4 mr-1.5" />
-            )}
-            Publicar
+            Publicar agora
           </Button>
         </div>
       </div>
@@ -301,33 +303,17 @@ export default function NovoArtigoPage() {
                 />
               </div>
 
-              <div className="space-y-2">
-                <label htmlFor="category" className="text-sm font-medium">
-                  Categoria *
-                </label>
-                <select
-                  id="category"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  value={formData.category_id}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      category_id: e.target.value,
-                    }))
-                  }
-                >
-                  <option value="">Selecione uma categoria...</option>
-                  {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
-                <p className="text-xs text-gray-500">
-                  Obrigatória para entrar na fila do calendário (ex.: Cardiologia
-                  na terça).
-                </p>
-              </div>
+              <CategorySelect
+                value={formData.category_id}
+                categories={categories}
+                onChange={(categoryId) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    category_id: categoryId,
+                  }))
+                }
+                onCategoriesChange={setCategories}
+              />
 
               <div className="space-y-3 rounded-lg border border-amber-200 bg-amber-50/50 p-3">
                 <div>
@@ -393,6 +379,7 @@ export default function NovoArtigoPage() {
                 onChange={(url) =>
                   setFormData((prev) => ({ ...prev, cover_image_url: url }))
                 }
+                saveHint="Capa pronta. Clique em Salvar rascunho (ou Na fila / Publicar) para gravar no artigo."
               />
             </CardContent>
           </Card>

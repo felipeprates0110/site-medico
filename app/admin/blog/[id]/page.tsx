@@ -18,6 +18,7 @@ import {
   AiArticlePanel,
   type AiGeneratedFields,
 } from "@/components/admin/ai-article-panel";
+import { CategorySelect } from "@/components/admin/category-select";
 import {
   STATUS_LABEL,
   type ArticleStatus,
@@ -107,9 +108,29 @@ export default function EditarArtigoPage({
     setFormData((prev) => ({ ...prev, title }));
   };
 
-  const handleSubmit = async (e: React.FormEvent, newStatus?: string) => {
+  const handleSubmit = async (
+    e: React.FormEvent,
+    options?: {
+      status?: string;
+      /** Se true, permanece na página (ex.: Salvar alterações) */
+      stay?: boolean;
+    }
+  ) => {
     e.preventDefault();
-    const status = newStatus || formData.status;
+    const status = options?.status ?? formData.status;
+    const stay = options?.stay ?? false;
+
+    if (
+      status === "draft" &&
+      formData.status !== "draft" &&
+      !confirm(
+        formData.status === "scheduled"
+          ? "Isso cancela o agendamento e volta o artigo para rascunho. Continuar?"
+          : "Isso tira o artigo da fila/publicação e volta para rascunho. Continuar?"
+      )
+    ) {
+      return;
+    }
 
     if (status === "ready" && !formData.category_id) {
       toast.error("Escolha uma categoria para colocar o artigo na fila.");
@@ -143,9 +164,25 @@ export default function EditarArtigoPage({
         throw new Error(data.error || "Falha ao atualizar artigo");
       }
 
-      toast.success("Artigo atualizado com sucesso!");
-      router.push("/admin/blog");
-      router.refresh();
+      const successMessages: Record<string, string> = {
+        draft: "Salvo como rascunho.",
+        ready: "Artigo na fila do calendário.",
+        scheduled: "Agendamento salvo.",
+        published: "Artigo publicado.",
+      };
+
+      toast.success(
+        stay
+          ? "Alterações salvas (status mantido)."
+          : successMessages[status] || "Artigo atualizado com sucesso!"
+      );
+
+      if (stay) {
+        router.refresh();
+      } else {
+        router.push("/admin/blog");
+        router.refresh();
+      }
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : "Erro ao atualizar artigo";
@@ -227,17 +264,35 @@ export default function EditarArtigoPage({
             Pré-visualizar
           </Button>
           <Button
-            variant="outline"
             size="sm"
-            onClick={(e) => handleSubmit(e, "draft")}
+            onClick={(e) =>
+              handleSubmit(e, { status: formData.status, stay: true })
+            }
             disabled={loading}
+            title="Grava título, texto, capa e SEO sem mudar o status"
           >
-            Salvar rascunho
+            {loading ? (
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent mr-1.5" />
+            ) : (
+              <Save className="h-4 w-4 mr-1.5" />
+            )}
+            Salvar alterações
           </Button>
+          {formData.status !== "draft" && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={(e) => handleSubmit(e, { status: "draft" })}
+              disabled={loading}
+              title="Cancela agendamento/fila e volta para rascunho"
+            >
+              Voltar a rascunho
+            </Button>
+          )}
           <Button
             variant="outline"
             size="sm"
-            onClick={(e) => handleSubmit(e, "ready")}
+            onClick={(e) => handleSubmit(e, { status: "ready" })}
             disabled={loading}
             title="Entra no ritmo semanal do calendário editorial"
           >
@@ -246,18 +301,12 @@ export default function EditarArtigoPage({
           </Button>
           <Button
             size="sm"
+            variant="outline"
             className="sm:ml-auto"
-            onClick={(e) => handleSubmit(e, "published")}
+            onClick={(e) => handleSubmit(e, { status: "published" })}
             disabled={loading}
           >
-            {loading ? (
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent mr-1.5" />
-            ) : (
-              <Save className="h-4 w-4 mr-1.5" />
-            )}
-            {formData.status === "published"
-              ? "Atualizar"
-              : "Publicar"}
+            {formData.status === "published" ? "Publicar de novo" : "Publicar agora"}
           </Button>
         </div>
       </div>
@@ -355,29 +404,18 @@ export default function EditarArtigoPage({
                 />
               </div>
 
-              <div className="space-y-2">
-                <label htmlFor="category" className="text-sm font-medium">
-                  Categoria *
-                </label>
-                <select
-                  id="category"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  value={formData.category_id}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      category_id: e.target.value,
-                    }))
-                  }
-                >
-                  <option value="">Selecione uma categoria...</option>
-                  {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <CategorySelect
+                value={formData.category_id}
+                categories={categories}
+                onChange={(categoryId) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    category_id: categoryId,
+                  }))
+                }
+                onCategoriesChange={setCategories}
+                hint=""
+              />
 
               <div className="space-y-3 rounded-lg border border-amber-200 bg-amber-50/50 p-3">
                 <div>
@@ -408,7 +446,7 @@ export default function EditarArtigoPage({
                   variant="outline"
                   size="sm"
                   className="w-full border-amber-300 bg-white"
-                  onClick={(e) => handleSubmit(e, "scheduled")}
+                  onClick={(e) => handleSubmit(e, { status: "scheduled" })}
                   disabled={loading}
                 >
                   <CalendarClock className="h-4 w-4 mr-1.5" />
@@ -439,6 +477,7 @@ export default function EditarArtigoPage({
                 onChange={(url) =>
                   setFormData((prev) => ({ ...prev, cover_image_url: url }))
                 }
+                saveHint="Capa pronta. Clique em Salvar alterações para gravar no artigo."
               />
             </CardContent>
           </Card>
