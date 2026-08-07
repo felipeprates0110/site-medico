@@ -17,7 +17,7 @@
 
 **Login admin:**
 - Email: `admin@drpedrofelipe.com.br`
-- Senha: definida por você no banco (hash bcrypt) — **nunca** documentar senha em texto no repositório. Veja `ADMIN-SETUP.md`.
+- Senha: definida por você no banco (hash bcrypt) — **nunca** documentar senha em texto no repositório.
 
 ---
 
@@ -143,8 +143,7 @@ site-medico/
 │   └── schema.sql               # 🆕 Schema completo do banco
 │
 ├── middleware.ts                 # 🆕 Proteção de rotas
-├── ADMIN-SETUP.md               # 🆕 Guia de configuração
-└── .env.example                 # ⚠️ Atualizado com novas vars
+└── .env.example                 # Variáveis de ambiente (placeholders)
 ```
 
 ---
@@ -153,11 +152,10 @@ site-medico/
 
 ### **1. Configurar Supabase** (10 minutos)
 
-Siga o guia em `ADMIN-SETUP.md`:
 1. Criar projeto no Supabase
-2. Executar o schema SQL
-3. Copiar credenciais
-4. Criar arquivo `.env.local`
+2. Executar o schema em `supabase/schema.sql`
+3. Copiar credenciais do painel Supabase (Settings → API)
+4. Criar `.env.local` a partir de `.env.example` (nunca commitar chaves reais)
 
 ### **2. Testar Localmente** (2 minutos)
 
@@ -171,7 +169,7 @@ Acesse: http://localhost:3000/login
 ### **3. Fazer Login** (30 segundos)
 
 - Email: `admin@drpedrofelipe.com.br`
-- Senha: a que você definiu no banco (ver `ADMIN-SETUP.md`)
+- Senha: a que você definiu no banco (hash bcrypt em `users.password_hash`)
 
 ### **4. Editar Perfil** (5 minutos)
 
@@ -270,8 +268,8 @@ Acesse: http://localhost:3000/login
 
 ### **Imediato (Hoje):**
 
-1. ✅ Ler `ADMIN-SETUP.md`
-2. ✅ Criar conta no Supabase
+1. ✅ Criar conta no Supabase
+2. ✅ Executar `supabase/schema.sql` e preencher `.env.local` via `.env.example`
 3. ✅ Configurar banco de dados
 4. ✅ Testar login local
 5. ✅ **TROCAR SENHA PADRÃO**
@@ -333,9 +331,9 @@ Este painel admin é:
 ## 🤝 SUPORTE
 
 **Documentação Criada:**
-- ✅ `ADMIN-SETUP.md` - Guia de configuração completo
 - ✅ `RESUMO-PAINEL-ADMIN.md` - Este documento
 - ✅ `README.md` - Documentação geral do projeto
+- ✅ `.env.example` - Modelo de variáveis de ambiente (sem segredos reais)
 - ✅ Comentários no código SQL e TypeScript
 
 **Logs para Debug:**

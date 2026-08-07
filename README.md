@@ -30,7 +30,7 @@ Site profissional do cardiologista e arritmologista Dr. Pedro Felipe Prates Silv
 
 O painel em `/admin` gerencia o **RitmoBlog** (posts, categorias, comentários, mídia), além de perfil e senha.
 
-O restante do site clínico (especialidades, tratamentos, convênios, FAQ) está em `data/` e se altera no código — veja `ADMIN-SETUP.md`.
+O restante do site clínico (especialidades, tratamentos, convênios, FAQ) está em `data/` e se altera no código.
 
 ## 🏗️ Estrutura do Projeto
 
