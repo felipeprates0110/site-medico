@@ -31,6 +31,7 @@ import {
 } from "@/lib/reading-time";
 import { ListenArticleButton } from "@/components/blog/ListenArticleButton";
 import { SafeHtml } from "@/components/blog/safe-html";
+import { toJsonLdScript } from "@/lib/json-ld";
 
 export const revalidate = 60;
 
@@ -198,7 +199,7 @@ export default async function BlogPostPage({
     <div className="min-h-screen bg-gray-50 pb-20">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: toJsonLdScript(jsonLd) }}
       />
 
       <main className="w-full pt-28 pb-12 md:pt-32 md:pb-20">

@@ -44,8 +44,13 @@
     "typescript": "^5"
   },
   "overrides": {
-    "@vercel/blob": {
-      "undici": "6.28.0"
+    "zod": "$zod",
+    "undici": "7.29.0",
+    "next-auth": {
+      "jose": "4.15.9"
+    },
+    "openid-client": {
+      "jose": "4.15.9"
     }
   }
 }

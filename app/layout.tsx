@@ -8,6 +8,7 @@ import { SiteShell } from "@/components/site-shell";
 import { SiteAnalyticsProvider } from "@/components/analytics/site-analytics-provider";
 import { defaultMetadata } from "@/lib/metadata";
 import { combinedSchema } from "@/lib/schema";
+import { toJsonLdScript } from "@/lib/json-ld";
 import { getContactInfo } from "@/lib/data";
 import { Providers } from "./providers";
 
@@ -33,7 +34,7 @@ export default async function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(combinedSchema),
+            __html: toJsonLdScript(combinedSchema),
           }}
         />
       </head>
