@@ -19,7 +19,7 @@ import { toast } from "sonner";
 import {
   STATUS_LABEL,
   type ArticleStatus,
-  isoToBrazilLocalInput,
+  formatBrazilDateTimeLabel,
 } from "@/lib/blog-calendar";
 
 interface Article {
@@ -162,10 +162,7 @@ export default function BlogArticlesPage() {
                       <TableCell className="text-gray-600">
                         {article.status === "scheduled" && article.scheduled_at ? (
                           <span title="Agendado para">
-                            {isoToBrazilLocalInput(article.scheduled_at).replace(
-                              "T",
-                              " "
-                            )}
+                            {formatBrazilDateTimeLabel(article.scheduled_at)}
                           </span>
                         ) : (
                           new Date(article.created_at).toLocaleDateString("pt-BR")

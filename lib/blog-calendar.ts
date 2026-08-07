@@ -123,6 +123,26 @@ export function upcomingDatesForWeekday(
   return dates;
 }
 
+/**
+ * Normaliza timestamps vindos do Postgres/Supabase.
+ * Ex.: "2026-08-07 12:47:00+00" → Date válido no navegador.
+ */
+export function parseTimestamp(value: string | null | undefined): Date | null {
+  if (!value) return null;
+
+  let normalized = String(value).trim();
+  // Espaço entre data e hora (Postgres) → ISO com T
+  if (/^\d{4}-\d{2}-\d{2} /.test(normalized)) {
+    normalized = normalized.replace(" ", "T");
+  }
+  // "+00" / "-03" sem minutos → "+00:00"
+  normalized = normalized.replace(/([+-]\d{2})$/, "$1:00");
+
+  const date = new Date(normalized);
+  if (Number.isNaN(date.getTime())) return null;
+  return date;
+}
+
 /** Converte datetime-local (Brasília, sem DST) para ISO UTC. */
 export function brazilLocalToIso(localDatetime: string): string | null {
   if (!localDatetime) return null;
@@ -137,14 +157,24 @@ export function brazilLocalToIso(localDatetime: string): string | null {
   return date.toISOString();
 }
 
-/** Formata ISO para input datetime-local em Brasília. */
+/** Formata ISO/Postgres para input datetime-local em Brasília. */
 export function isoToBrazilLocalInput(iso: string | null | undefined): string {
-  if (!iso) return "";
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return "";
+  const date = parseTimestamp(iso);
+  if (!date) return "";
 
   const parts = getBrazilNowParts(date);
   return `${parts.dateStr}T${String(parts.hour).padStart(2, "0")}:${String(parts.minute).padStart(2, "0")}`;
+}
+
+/** Texto legível: "07/08/2026 às 09:47". */
+export function formatBrazilDateTimeLabel(
+  iso: string | null | undefined
+): string {
+  const local = isoToBrazilLocalInput(iso);
+  if (!local) return "";
+  const [datePart, timePart] = local.split("T");
+  const [y, m, d] = datePart.split("-");
+  return `${d}/${m}/${y} às ${timePart}`;
 }
 
 export function isValidArticleStatus(status: string): status is ArticleStatus {

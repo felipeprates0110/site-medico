@@ -161,24 +161,10 @@ export default function NovoArtigoPage() {
             size="sm"
             onClick={() => saveWithStatus("ready")}
             disabled={loading}
+            title="Entra no ritmo semanal do calendário editorial"
           >
             <ListOrdered className="h-4 w-4 mr-1.5" />
             Na fila
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              if (!scheduledLocal) {
-                toast.error("Preencha a data de agendamento na lateral.");
-                return;
-              }
-              saveWithStatus("scheduled", { scheduled_at: scheduledLocal });
-            }}
-            disabled={loading}
-          >
-            <CalendarClock className="h-4 w-4 mr-1.5" />
-            Agendar
           </Button>
           <Button
             size="sm"
@@ -311,19 +297,45 @@ export default function NovoArtigoPage() {
                 </p>
               </div>
 
-              <div className="space-y-2">
-                <label htmlFor="scheduled_at" className="text-sm font-medium">
-                  Agendar data (opcional)
-                </label>
+              <div className="space-y-3 rounded-lg border border-amber-200 bg-amber-50/50 p-3">
+                <div>
+                  <label
+                    htmlFor="scheduled_at"
+                    className="text-sm font-medium text-amber-950"
+                  >
+                    Agendar fora do calendário
+                  </label>
+                  <p className="mt-1 text-xs text-amber-900/80">
+                    Use só para data/hora fixa neste post. Para o ritmo semanal
+                    (terça/quinta…), use <strong>Na fila</strong> no topo.
+                  </p>
+                </div>
                 <Input
                   id="scheduled_at"
                   type="datetime-local"
                   value={scheduledLocal}
                   onChange={(e) => setScheduledLocal(e.target.value)}
                 />
-                <p className="text-xs text-gray-500">
-                  Para posts especiais fora do ritmo semanal. Horário de Brasília.
-                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="w-full border-amber-300 bg-white"
+                  onClick={() => {
+                    if (!scheduledLocal) {
+                      toast.error("Escolha a data e hora acima.");
+                      return;
+                    }
+                    saveWithStatus("scheduled", {
+                      scheduled_at: scheduledLocal,
+                    });
+                  }}
+                  disabled={loading}
+                >
+                  <CalendarClock className="h-4 w-4 mr-1.5" />
+                  Agendar este post
+                </Button>
+                <p className="text-xs text-gray-500">Horário de Brasília.</p>
               </div>
 
               <div className="space-y-2">
