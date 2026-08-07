@@ -14,6 +14,7 @@ export function normalizeForBlocklist(text: string): string {
 /**
  * Converte o texto salvo no admin (uma palavra por linha)
  * em uma lista limpa, sem vazios e sem duplicatas.
+ * Linhas que começam com # são tratadas como comentário (ignoradas).
  */
 export function parseBlockedTerms(raw: string | null | undefined): string[] {
   if (!raw) return [];
@@ -22,9 +23,10 @@ export function parseBlockedTerms(raw: string | null | undefined): string[] {
   const terms: string[] = [];
 
   for (const line of raw.split(/\r?\n/)) {
-    const term = line.trim();
-    if (!term) continue;
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
 
+    const term = trimmed;
     const key = normalizeForBlocklist(term);
     if (!key || seen.has(key)) continue;
 
@@ -35,7 +37,15 @@ export function parseBlockedTerms(raw: string | null | undefined): string[] {
   return terms;
 }
 
-/** Retorna true se o texto contiver algum termo da lista. */
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Retorna true se o texto contiver algum termo da lista.
+ * - Frases (com espaço ou hífen composto longo): busca como trecho.
+ * - Palavras isoladas: respeita "borda" de palavra (evita "cu" em "cura").
+ */
 export function containsBlockedTerm(
   text: string,
   blockedTerms: string[]
@@ -46,6 +56,17 @@ export function containsBlockedTerm(
 
   return blockedTerms.some((term) => {
     const normalizedTerm = normalizeForBlocklist(term);
-    return normalizedTerm.length > 0 && normalizedText.includes(normalizedTerm);
+    if (!normalizedTerm) return false;
+
+    // Frase / expressão: pode aparecer no meio do texto
+    if (/\s/.test(normalizedTerm)) {
+      return normalizedText.includes(normalizedTerm);
+    }
+
+    // Palavra: só conta se estiver "sozinha" (não dentro de outra palavra)
+    const pattern = new RegExp(
+      `(^|[^a-z0-9])${escapeRegExp(normalizedTerm)}([^a-z0-9]|$)`
+    );
+    return pattern.test(normalizedText);
   });
 }
