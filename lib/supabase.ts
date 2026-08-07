@@ -99,6 +99,11 @@ export interface SiteConfig {
    * Usado só no admin/API — não precisa aparecer no site público.
    */
   blocked_comment_terms: string | null;
+  /**
+   * Interruptor mestre das ofertas afiliadas.
+   * false = nenhuma oferta aparece no site (cadastro individual intacto).
+   */
+  affiliate_offers_enabled: boolean;
   profile_photo_url: string | null;
   updated_at: string;
 }

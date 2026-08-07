@@ -26,6 +26,7 @@ export const fallbackSiteConfig: SiteConfig = {
   bio: metadataConfig.description,
   bio_short: null,
   blocked_comment_terms: "",
+  affiliate_offers_enabled: false,
   profile_photo_url: DEFAULT_DOCTOR_PHOTO,
   updated_at: timestamp,
 };

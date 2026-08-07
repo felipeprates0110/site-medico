@@ -126,15 +126,20 @@ export default async function BlogPostPage({
     ? article.category[0]
     : article.category;
   const categoryId = category?.id as string | undefined;
+  // Interruptor mestre: se desligado, nenhuma oferta no site (cadastro intacto)
+  const affiliateOffersGloballyEnabled =
+    siteConfig?.affiliate_offers_enabled === true;
   const affiliateDisplay = (article.affiliate_display as string) || "auto";
   const forcedOfferId =
-    affiliateDisplay === "offer"
+    affiliateOffersGloballyEnabled && affiliateDisplay === "offer"
       ? (article.affiliate_offer_id as string | null)
       : null;
 
   const [comments, affiliateOffers, forcedOffer] = await Promise.all([
     getApprovedCommentsByArticleId(article.id),
-    categoryId && affiliateDisplay !== "hide"
+    affiliateOffersGloballyEnabled &&
+      categoryId &&
+      affiliateDisplay !== "hide"
       ? getActiveAffiliateOffersByCategoryId(categoryId)
       : Promise.resolve([]),
     forcedOfferId
@@ -142,14 +147,16 @@ export default async function BlogPostPage({
       : Promise.resolve(null),
   ]);
 
-  const affiliateOffer = resolveArticleAffiliateOffer({
-    display: affiliateDisplay,
-    offerId: forcedOfferId,
-    articleId: article.id,
-    categoryId,
-    forcedOffer,
-    categoryOffers: affiliateOffers,
-  });
+  const affiliateOffer = affiliateOffersGloballyEnabled
+    ? resolveArticleAffiliateOffer({
+        display: affiliateDisplay,
+        offerId: forcedOfferId,
+        articleId: article.id,
+        categoryId,
+        forcedOffer,
+        categoryOffers: affiliateOffers,
+      })
+    : null;
   const affiliateProducts = affiliateOffer
     ? resolveOfferProducts(affiliateOffer)
     : [];

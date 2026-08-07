@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Plus, Pencil, Trash2, Search, ShoppingBag } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, ShoppingBag, Power } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -49,9 +49,14 @@ export default function BlogOfertasPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [togglingId, setTogglingId] = useState<string | null>(null);
+  /** Interruptor mestre: liga/desliga ofertas em todo o site. */
+  const [globalEnabled, setGlobalEnabled] = useState(false);
+  const [globalLoading, setGlobalLoading] = useState(true);
+  const [globalSaving, setGlobalSaving] = useState(false);
 
   useEffect(() => {
     fetchCategories();
+    fetchGlobalToggle();
   }, []);
 
   useEffect(() => {
@@ -66,6 +71,60 @@ export default function BlogOfertasPage() {
       setCategories(data);
     } catch {
       toast.error("Erro ao carregar categorias");
+    }
+  };
+
+  const fetchGlobalToggle = async () => {
+    setGlobalLoading(true);
+    try {
+      const response = await fetch(
+        "/api/admin/blog/affiliate-offers/global-toggle"
+      );
+      if (!response.ok) throw new Error("Falha ao carregar interruptor");
+      const data = await response.json();
+      setGlobalEnabled(data.affiliate_offers_enabled === true);
+    } catch {
+      toast.error("Erro ao carregar o interruptor de ofertas");
+    } finally {
+      setGlobalLoading(false);
+    }
+  };
+
+  const handleToggleGlobal = async () => {
+    const next = !globalEnabled;
+    const confirmMsg = next
+      ? "Ligar ofertas no site inteiro? Elas voltam a aparecer nos artigos (respeitando Ativa/Inativa)."
+      : "Desligar ofertas no site inteiro? Nenhuma caixa de oferta aparecerá para o público. O cadastro continua intacto.";
+
+    if (!confirm(confirmMsg)) return;
+
+    setGlobalSaving(true);
+    try {
+      const response = await fetch(
+        "/api/admin/blog/affiliate-offers/global-toggle",
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ affiliate_offers_enabled: next }),
+        }
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Falha ao atualizar");
+      }
+
+      const data = await response.json();
+      setGlobalEnabled(data.affiliate_offers_enabled === true);
+      toast.success(
+        data.affiliate_offers_enabled
+          ? "Ofertas ligadas no site"
+          : "Ofertas desligadas no site (cadastro intacto)"
+      );
+    } catch (error: any) {
+      toast.error(error.message || "Erro ao alterar interruptor");
+    } finally {
+      setGlobalSaving(false);
     }
   };
 
@@ -174,13 +233,45 @@ export default function BlogOfertasPage() {
             estável por artigo.
           </p>
         </div>
-        <Button asChild>
-          <Link href="/admin/blog/ofertas/novo">
-            <Plus className="mr-2 h-4 w-4" />
-            Nova Oferta
-          </Link>
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            type="button"
+            variant={globalEnabled ? "default" : "outline"}
+            disabled={globalLoading || globalSaving}
+            onClick={handleToggleGlobal}
+            className={
+              globalEnabled
+                ? "bg-emerald-600 hover:bg-emerald-700"
+                : "border-amber-300 text-amber-800 hover:bg-amber-50"
+            }
+            title="Liga ou desliga todas as ofertas no site público"
+          >
+            <Power className="mr-2 h-4 w-4" />
+            {globalLoading || globalSaving
+              ? "Aguarde…"
+              : globalEnabled
+                ? "Ofertas no site: Ligadas"
+                : "Ofertas no site: Desligadas"}
+          </Button>
+          <Button asChild>
+            <Link href="/admin/blog/ofertas/novo">
+              <Plus className="mr-2 h-4 w-4" />
+              Nova Oferta
+            </Link>
+          </Button>
+        </div>
       </div>
+
+      {!globalLoading && !globalEnabled && (
+        <div
+          className="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
+          role="status"
+        >
+          Interruptor mestre desligado: nenhuma oferta aparece no site público.
+          O cadastro abaixo continua intacto — use o botão acima para ligar quando
+          estiver pronto.
+        </div>
+      )}
 
       <Card>
         <CardHeader>
