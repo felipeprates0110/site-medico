@@ -7,6 +7,7 @@ import {
   brazilLocalToIso,
   isValidArticleStatus,
 } from "@/lib/blog-calendar";
+import { isAffiliateDisplayMode } from "@/lib/affiliate-offers";
 
 export async function GET() {
   try {
@@ -51,11 +52,24 @@ export async function POST(request: Request) {
       seo_title,
       seo_description,
       scheduled_at,
+      affiliate_display,
+      affiliate_offer_id,
     } = body;
 
     if (!title || !slug || !content) {
       return NextResponse.json(
         { error: "Título, slug e conteúdo são obrigatórios" },
+        { status: 400 }
+      );
+    }
+
+    const displayMode = isAffiliateDisplayMode(affiliate_display)
+      ? affiliate_display
+      : "auto";
+
+    if (displayMode === "offer" && !affiliate_offer_id) {
+      return NextResponse.json(
+        { error: "Selecione a oferta específica para este artigo." },
         { status: 400 }
       );
     }
@@ -119,6 +133,11 @@ export async function POST(request: Request) {
           scheduled_at: nextStatus === "scheduled" ? scheduledAtIso : null,
           seo_title,
           seo_description,
+          affiliate_display: displayMode,
+          affiliate_offer_id:
+            displayMode === "offer" && affiliate_offer_id
+              ? affiliate_offer_id
+              : null,
         },
       ])
       .select()

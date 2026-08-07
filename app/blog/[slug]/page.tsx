@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import {
+  getActiveAffiliateOfferById,
   getActiveAffiliateOffersByCategoryId,
   getApprovedCommentsByArticleId,
   getContactInfo,
@@ -9,7 +10,7 @@ import {
   getSiteConfig,
 } from "@/lib/data";
 import {
-  pickWeightedOffer,
+  resolveArticleAffiliateOffer,
   resolveOfferProducts,
 } from "@/lib/affiliate-offers";
 import { AuthorBox } from "@/components/blog/AuthorBox";
@@ -125,15 +126,30 @@ export default async function BlogPostPage({
     ? article.category[0]
     : article.category;
   const categoryId = category?.id as string | undefined;
+  const affiliateDisplay = (article.affiliate_display as string) || "auto";
+  const forcedOfferId =
+    affiliateDisplay === "offer"
+      ? (article.affiliate_offer_id as string | null)
+      : null;
 
-  const [comments, affiliateOffers] = await Promise.all([
+  const [comments, affiliateOffers, forcedOffer] = await Promise.all([
     getApprovedCommentsByArticleId(article.id),
-    categoryId
+    categoryId && affiliateDisplay !== "hide"
       ? getActiveAffiliateOffersByCategoryId(categoryId)
       : Promise.resolve([]),
+    forcedOfferId
+      ? getActiveAffiliateOfferById(forcedOfferId)
+      : Promise.resolve(null),
   ]);
 
-  const affiliateOffer = pickWeightedOffer(affiliateOffers, article.id);
+  const affiliateOffer = resolveArticleAffiliateOffer({
+    display: affiliateDisplay,
+    offerId: forcedOfferId,
+    articleId: article.id,
+    categoryId,
+    forcedOffer,
+    categoryOffers: affiliateOffers,
+  });
   const affiliateProducts = affiliateOffer
     ? resolveOfferProducts(affiliateOffer)
     : [];

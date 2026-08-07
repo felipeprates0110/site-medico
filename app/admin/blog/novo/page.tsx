@@ -18,6 +18,8 @@ import {
   type AiGeneratedFields,
 } from "@/components/admin/ai-article-panel";
 import { CategorySelect } from "@/components/admin/category-select";
+import { AffiliateOfferControl } from "@/components/admin/affiliate-offer-control";
+import type { AffiliateDisplayMode } from "@/lib/affiliate-offers";
 
 export default function NovoArtigoPage() {
   const router = useRouter();
@@ -37,6 +39,8 @@ export default function NovoArtigoPage() {
     status: "draft",
     seo_title: "",
     seo_description: "",
+    affiliate_display: "auto" as AffiliateDisplayMode,
+    affiliate_offer_id: "",
   });
 
   useEffect(() => {
@@ -76,6 +80,13 @@ export default function NovoArtigoPage() {
       toast.error("Escolha uma categoria para colocar o artigo na fila.");
       return;
     }
+    if (
+      formData.affiliate_display === "offer" &&
+      !formData.affiliate_offer_id
+    ) {
+      toast.error("Selecione a oferta específica ou mude para Automático.");
+      return;
+    }
     if (status === "scheduled" && !extra?.scheduled_at && !scheduledLocal) {
       toast.error("Escolha a data e hora do agendamento.");
       return;
@@ -85,6 +96,10 @@ export default function NovoArtigoPage() {
     try {
       const payload = {
         ...formData,
+        affiliate_offer_id:
+          formData.affiliate_display === "offer"
+            ? formData.affiliate_offer_id
+            : null,
         status,
         scheduled_at:
           status === "scheduled"
@@ -310,9 +325,34 @@ export default function NovoArtigoPage() {
                   setFormData((prev) => ({
                     ...prev,
                     category_id: categoryId,
+                    // Trocar a prateleira invalida a oferta forçada antiga
+                    affiliate_offer_id:
+                      prev.category_id === categoryId
+                        ? prev.affiliate_offer_id
+                        : "",
                   }))
                 }
                 onCategoriesChange={setCategories}
+              />
+
+              <AffiliateOfferControl
+                categoryId={formData.category_id}
+                display={formData.affiliate_display}
+                offerId={formData.affiliate_offer_id}
+                onDisplayChange={(mode) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    affiliate_display: mode,
+                    affiliate_offer_id:
+                      mode === "offer" ? prev.affiliate_offer_id : "",
+                  }))
+                }
+                onOfferIdChange={(offerId) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    affiliate_offer_id: offerId,
+                  }))
+                }
               />
 
               <div className="space-y-3 rounded-lg border border-amber-200 bg-amber-50/50 p-3">

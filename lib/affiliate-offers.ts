@@ -29,6 +29,48 @@ export type AffiliateOffer = {
   sort_order?: number;
 };
 
+/** Como o artigo controla a caixa de oferta. */
+export type AffiliateDisplayMode = "auto" | "offer" | "hide";
+
+export function isAffiliateDisplayMode(
+  value: unknown
+): value is AffiliateDisplayMode {
+  return value === "auto" || value === "offer" || value === "hide";
+}
+
+/**
+ * Decide qual oferta mostrar no artigo.
+ * Analogia: automático = ar-condicionado sozinho; offer = temperatura fixa; hide = desligado.
+ */
+export function resolveArticleAffiliateOffer(input: {
+  display?: string | null;
+  offerId?: string | null;
+  articleId: string;
+  categoryId?: string | null;
+  forcedOffer?: AffiliateOffer | null;
+  categoryOffers: AffiliateOffer[];
+}): AffiliateOffer | null {
+  const mode: AffiliateDisplayMode = isAffiliateDisplayMode(input.display)
+    ? input.display
+    : "auto";
+
+  if (mode === "hide") return null;
+
+  if (mode === "offer") {
+    const forced = input.forcedOffer;
+    if (
+      forced &&
+      forced.is_active !== false &&
+      (!input.categoryId || forced.category_id === input.categoryId)
+    ) {
+      return forced;
+    }
+    // Oferta inválida/inativa/outra categoria → cai no automático
+  }
+
+  return pickWeightedOffer(input.categoryOffers, input.articleId);
+}
+
 export function isValidHttpUrl(url: string): boolean {
   try {
     const parsed = new URL(url);

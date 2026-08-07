@@ -7,6 +7,7 @@ import {
   brazilLocalToIso,
   isValidArticleStatus,
 } from "@/lib/blog-calendar";
+import { isAffiliateDisplayMode } from "@/lib/affiliate-offers";
 
 export async function GET(
   request: Request,
@@ -57,10 +58,23 @@ export async function PUT(
       seo_title,
       seo_description,
       scheduled_at,
+      affiliate_display,
+      affiliate_offer_id,
     } = body;
 
     if (status && !isValidArticleStatus(status)) {
       return NextResponse.json({ error: "Status inválido." }, { status: 400 });
+    }
+
+    const displayMode = isAffiliateDisplayMode(affiliate_display)
+      ? affiliate_display
+      : "auto";
+
+    if (displayMode === "offer" && !affiliate_offer_id) {
+      return NextResponse.json(
+        { error: "Selecione a oferta específica para este artigo." },
+        { status: 400 }
+      );
     }
 
     if (status === "ready" && !category_id) {
@@ -128,6 +142,11 @@ export async function PUT(
         scheduled_at: status === "scheduled" ? scheduledAtIso : null,
         seo_title,
         seo_description,
+        affiliate_display: displayMode,
+        affiliate_offer_id:
+          displayMode === "offer" && affiliate_offer_id
+            ? affiliate_offer_id
+            : null,
         updated_at: new Date().toISOString(),
       })
       .eq("id", resolvedParams.id)

@@ -19,6 +19,8 @@ import {
   type AiGeneratedFields,
 } from "@/components/admin/ai-article-panel";
 import { CategorySelect } from "@/components/admin/category-select";
+import { AffiliateOfferControl } from "@/components/admin/affiliate-offer-control";
+import type { AffiliateDisplayMode } from "@/lib/affiliate-offers";
 import {
   STATUS_LABEL,
   type ArticleStatus,
@@ -56,6 +58,8 @@ export default function EditarArtigoPage({
     status: "draft" as string,
     seo_title: "",
     seo_description: "",
+    affiliate_display: "auto" as AffiliateDisplayMode,
+    affiliate_offer_id: "",
   });
 
   useEffect(() => {
@@ -83,6 +87,10 @@ export default function EditarArtigoPage({
       );
       if (!response.ok) throw new Error("Falha ao carregar artigo");
       const data = await response.json();
+      const display =
+        data.affiliate_display === "offer" || data.affiliate_display === "hide"
+          ? data.affiliate_display
+          : "auto";
       setFormData({
         title: data.title || "",
         slug: data.slug || "",
@@ -93,6 +101,8 @@ export default function EditarArtigoPage({
         status: data.status || "draft",
         seo_title: data.seo_title || "",
         seo_description: data.seo_description || "",
+        affiliate_display: display,
+        affiliate_offer_id: data.affiliate_offer_id || "",
       });
       setScheduledLocal(isoToBrazilLocalInput(data.scheduled_at));
     } catch {
@@ -136,6 +146,13 @@ export default function EditarArtigoPage({
       toast.error("Escolha uma categoria para colocar o artigo na fila.");
       return;
     }
+    if (
+      formData.affiliate_display === "offer" &&
+      !formData.affiliate_offer_id
+    ) {
+      toast.error("Selecione a oferta específica ou mude para Automático.");
+      return;
+    }
     if (status === "scheduled" && !scheduledLocal) {
       toast.error("Escolha a data e hora do agendamento.");
       return;
@@ -144,6 +161,10 @@ export default function EditarArtigoPage({
     setLoading(true);
     const submitData = {
       ...formData,
+      affiliate_offer_id:
+        formData.affiliate_display === "offer"
+          ? formData.affiliate_offer_id
+          : null,
       status,
       scheduled_at: status === "scheduled" ? scheduledLocal : undefined,
     };
@@ -411,10 +432,34 @@ export default function EditarArtigoPage({
                   setFormData((prev) => ({
                     ...prev,
                     category_id: categoryId,
+                    affiliate_offer_id:
+                      prev.category_id === categoryId
+                        ? prev.affiliate_offer_id
+                        : "",
                   }))
                 }
                 onCategoriesChange={setCategories}
                 hint=""
+              />
+
+              <AffiliateOfferControl
+                categoryId={formData.category_id}
+                display={formData.affiliate_display}
+                offerId={formData.affiliate_offer_id}
+                onDisplayChange={(mode) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    affiliate_display: mode,
+                    affiliate_offer_id:
+                      mode === "offer" ? prev.affiliate_offer_id : "",
+                  }))
+                }
+                onOfferIdChange={(offerId) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    affiliate_offer_id: offerId,
+                  }))
+                }
               />
 
               <div className="space-y-3 rounded-lg border border-amber-200 bg-amber-50/50 p-3">

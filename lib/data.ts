@@ -261,6 +261,31 @@ export async function getActiveAffiliateOffersByCategoryId(
   );
 }
 
+/** Uma oferta ativa por id (para override no artigo). */
+export async function getActiveAffiliateOfferById(
+  offerId: string
+): Promise<AffiliateOffer | null> {
+  if (!offerId) return null;
+
+  return withFallback(
+    "getActiveAffiliateOfferById",
+    async () => {
+      const { data, error } = await supabase
+        .from("affiliate_offers")
+        .select(
+          "id, category_id, title, description, button_text, url, products, weight, is_active, sort_order"
+        )
+        .eq("id", offerId)
+        .eq("is_active", true)
+        .maybeSingle();
+
+      if (error) throw error;
+      return (data as AffiliateOffer) ?? null;
+    },
+    null
+  );
+}
+
 /** Comentários aprovados de um artigo (só o que o público pode ver). */
 export async function getApprovedCommentsByArticleId(articleId: string) {
   return withFallback(
