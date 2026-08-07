@@ -1,6 +1,39 @@
 import type { FAQItem } from "@/types";
 
+/**
+ * Perguntas frequentes do site.
+ * Os primeiros itens alinham com "As pessoas também perguntam" do Google
+ * (busca arritmologista Brasília) para SEO e citação em AI Overview.
+ */
 export const faqItems: FAQItem[] = [
+  {
+    id: "paa-1",
+    question: "Qual a diferença entre cardiologista e arritmologista?",
+    answer:
+      "O cardiologista cuida do coração de forma ampla: pressão alta, colesterol, prevenção de infarto, insuficiência cardíaca e check-up. O arritmologista é o cardiologista com formação adicional em distúrbios do ritmo — palpitações, fibrilação atrial, taquicardias, bradicardias e, quando necessário, indicação de procedimentos como ablação, marca-passo ou CDI. Em Brasília, o Dr. Pedro Felipe atua nas duas frentes, com foco em arritmologia e eletrofisiologia.",
+    category: "geral",
+  },
+  {
+    id: "paa-2",
+    question: "Quando devo procurar um arritmologista?",
+    answer:
+      "Vale buscar avaliação de arritmologista se você tem palpitações frequentes, coração acelerado ou irregular, tonturas, quase desmaio ou desmaio, diagnóstico de fibrilação atrial ou outra arritmia, ou se o cardiologista clínico indicou avaliação especializada. Procure pronto-socorro com urgência se houver desmaio, dor forte no peito, falta de ar intensa ou tontura severa. Para sintomas leves ou avaliação eletiva, agende consulta no consultório.",
+    category: "geral",
+  },
+  {
+    id: "paa-3",
+    question: "Qual é o outro nome para arritmologista?",
+    answer:
+      "Arritmologista e eletrofisiologista são termos próximos na prática. Em geral, “arritmologista” destaca o cuidado clínico das arritmias; “eletrofisiologista” destaca o domínio dos procedimentos invasivos (estudo eletrofisiológico e ablação). Muitos especialistas atuam nas duas áreas. No Brasil, a subespecialidade costuma aparecer como Eletrofisiologia Clínica e Invasiva.",
+    category: "geral",
+  },
+  {
+    id: "paa-4",
+    question: "Como escolher um arritmologista em Brasília?",
+    answer:
+      "Em vez de rankings genéricos, prefira critérios objetivos: formação e títulos em cardiologia e eletrofisiologia (CRM/RQE), experiência com o tipo de arritmia que você tem, clareza na explicação das opções (medicação, ablação, dispositivos), possibilidade de segunda opinião e atendimento em serviço estruturado. O Dr. Pedro Felipe Prates Silva (CRM DF 18951) atende na IDC — Instituto de Doenças Cardiovasculares, Asa Sul, Brasília.",
+    category: "geral",
+  },
   {
     id: "1",
     question:

@@ -6,33 +6,18 @@ import { Button } from "@/components/ui/button";
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import { faqItems } from "@/data/faq";
 import { toJsonLdScript } from "@/lib/json-ld";
-import { siteConfig } from "@/lib/metadata";
+import { buildPageMetadata } from "@/lib/page-metadata";
+import { buildFaqPageSchema } from "@/lib/schema";
 
-export const metadata: Metadata = {
-  title: "Perguntas Frequentes",
+export const metadata: Metadata = buildPageMetadata({
+  title: "Perguntas Frequentes | Arritmologista em Brasília",
   description:
-    "Tire dúvidas sobre arritmias, ablação por cateter, fibrilação atrial, marca-passo, CDI e agendamento com o Dr. Pedro Felipe Prates Silva em Brasília.",
-};
-
-/** Schema FAQPage ajuda o Google a entender as perguntas e respostas da página. */
-function buildFaqJsonLd(items: typeof faqItems) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: items.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
-      },
-    })),
-    url: `${siteConfig.url}/faq`,
-  };
-}
+    "Tire dúvidas: diferença entre cardiologista e arritmologista, quando procurar, ablação, fibrilação atrial, marca-passo e agendamento em Brasília.",
+  path: "/faq",
+});
 
 export default function FaqPage() {
-  const jsonLd = buildFaqJsonLd(faqItems);
+  const jsonLd = buildFaqPageSchema(faqItems);
 
   return (
     <div className="flex flex-col">

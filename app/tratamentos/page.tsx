@@ -3,12 +3,14 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { treatments } from "@/data/treatments";
 import { Button } from "@/components/ui/button";
+import { buildPageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
-  title: "Tratamentos e Doenças Cardíacas",
+export const metadata: Metadata = buildPageMetadata({
+  title: "Tratamentos | Arritmias e Cardiologia em Brasília",
   description:
-    "Conheça os principais tratamentos oferecidos: fibrilação atrial, ablação por cateter, flutter atrial, bloqueio cardíaco, hipertensão e mais.",
-};
+    "Fibrilação atrial, ablação por cateter, flutter atrial, WPW, bloqueio cardíaco e hipertensão. Informações e tratamento em Brasília com o Dr. Pedro Felipe.",
+  path: "/tratamentos",
+});
 
 export default function TratamentosPage() {
   return (

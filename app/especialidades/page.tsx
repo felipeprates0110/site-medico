@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import { SpecialtyCard } from "@/components/specialty-card";
 import { specialties } from "@/data/specialties";
 import { WhatsAppButton } from "@/components/whatsapp-button";
+import { buildPageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
-  title: "Áreas de Atuação Especializada",
+export const metadata: Metadata = buildPageMetadata({
+  title: "Especialidades | Cardiologia e Arritmologia em Brasília",
   description:
-    "Da avaliação de palpitações e tonturas ao acompanhamento especializado de arritmias cardíacas. Cardiologia geral, arritmologia e eletrofisiologia em Brasília.",
-};
+    "Cardiologia, arritmologia e eletrofisiologia em Brasília. Palpitações, arritmias e acompanhamento especializado com o Dr. Pedro Felipe na IDC.",
+  path: "/especialidades",
+});
 
 export default function EspecialidadesPage() {
   return (

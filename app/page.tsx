@@ -316,6 +316,14 @@ export default async function Home() {
             </h2>
           </div>
           <FAQAccordion items={faq.slice(0, 6)} />
+          <div className="mt-8 text-center">
+            <Link
+              href="/faq"
+              className="text-sm font-semibold text-primary-600 hover:text-primary-700"
+            >
+              Ver todas as perguntas frequentes
+            </Link>
+          </div>
           <div className="mt-10 text-center">
             <WhatsAppButton size="lg" className="rounded-xl" />
           </div>

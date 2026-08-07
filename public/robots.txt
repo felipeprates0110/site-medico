@@ -1,22 +1,25 @@
 # Robots.txt para Site Médico
+# Diz aos buscadores o que podem (e o que não precisam) rastrear.
 
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /api
+Disallow: /login
 
 # Sitemap
 Sitemap: https://drpedrofelipe.com.br/sitemap.xml
 
-# Disallow admin or private areas (if any in the future)
-# Disallow: /admin
-# Disallow: /api
-
 # Google
 User-agent: Googlebot
 Allow: /
+Disallow: /admin
+Disallow: /api
+Disallow: /login
 
 # Bing
 User-agent: Bingbot
 Allow: /
-
-# Crawl-delay (optional - ajustar se necessário)
-# Crawl-delay: 1
+Disallow: /admin
+Disallow: /api
+Disallow: /login

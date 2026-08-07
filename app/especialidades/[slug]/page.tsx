@@ -15,6 +15,7 @@ import { specialties } from "@/data/specialties";
 import { Button } from "@/components/ui/button";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { TrackedLink } from "@/components/analytics/tracked-link";
+import { buildPageMetadata } from "@/lib/page-metadata";
 import Link from "next/link";
 
 const SEGUNDA_OPINIAO_SPECIALTY_SLUGS = new Set([
@@ -48,10 +49,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  return {
-    title: specialty.title,
-    description: specialty.description,
-  };
+  // Title/description locais + canonical/OG: cartão da página no Google e no WhatsApp
+  return buildPageMetadata({
+    title: specialty.seoTitle || specialty.title,
+    description: specialty.seoDescription || specialty.shortDescription,
+    path: `/especialidades/${specialty.slug}`,
+  });
 }
 
 export default async function EspecialidadePage({ params }: PageProps) {

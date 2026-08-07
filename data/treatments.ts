@@ -5,6 +5,9 @@ export const treatments: Treatment[] = [
     id: "1",
     slug: "fibrilacao-atrial",
     title: "Fibrilação Atrial",
+    seoTitle: "Fibrilação Atrial em Brasília | Diagnóstico e Tratamento",
+    seoDescription:
+      "Fibrilação atrial em Brasília: sintomas, risco de AVC, anticoagulação e opções de tratamento com arritmologista. Dr. Pedro Felipe — IDC.",
     shortDescription:
       "Arritmia cardíaca mais comum que aumenta risco de AVC e demência.",
     description:
@@ -46,6 +49,9 @@ export const treatments: Treatment[] = [
     id: "2",
     slug: "ablacao-por-cateter",
     title: "Ablação por Cateter de Arritmias",
+    seoTitle: "Ablação por Cateter em Brasília | Tratamento de Arritmias",
+    seoDescription:
+      "Ablação por cateter em Brasília: procedimento minimamente invasivo para arritmias selecionadas. Avaliação com eletrofisiologista na IDC.",
     shortDescription:
       "Procedimento minimamente invasivo indicado para o tratamento de determinadas arritmias.",
     description:
@@ -76,6 +82,9 @@ export const treatments: Treatment[] = [
     id: "3",
     slug: "flutter-atrial",
     title: "Flutter Atrial",
+    seoTitle: "Flutter Atrial em Brasília | Tratamento e Ablação",
+    seoDescription:
+      "Flutter atrial em Brasília: sintomas, risco de AVC e tratamento, inclusive ablação quando indicada. Arritmologista na IDC — Asa Sul.",
     shortDescription:
       "Arritmia cardíaca que, em casos selecionados, pode ser tratada com ablação por cateter.",
     description:
@@ -103,6 +112,9 @@ export const treatments: Treatment[] = [
     id: "4",
     slug: "bloqueio-cardiaco",
     title: "Bloqueio Cardíaco",
+    seoTitle: "Bloqueio Cardíaco em Brasília | Avaliação e Marca-passo",
+    seoDescription:
+      "Bloqueio cardíaco em Brasília: sintomas, diagnóstico e indicação de marca-passo quando necessário. Avaliação com eletrofisiologista na IDC.",
     shortDescription:
       "Alteração na condução elétrica do coração que pode necessitar marca-passo.",
     description:
@@ -131,6 +143,9 @@ export const treatments: Treatment[] = [
     id: "5",
     slug: "sindrome-wolff-parkinson-white",
     title: "Síndrome de Wolff-Parkinson-White (WPW)",
+    seoTitle: "WPW em Brasília | Síndrome de Wolff-Parkinson-White",
+    seoDescription:
+      "Síndrome de Wolff-Parkinson-White (WPW) em Brasília: sintomas, diagnóstico e ablação por cateter quando indicada. Atendimento na IDC.",
     shortDescription:
       "Arritmia congênita que, em casos selecionados, pode ser tratada com ablação por cateter.",
     description:
@@ -159,6 +174,9 @@ export const treatments: Treatment[] = [
     id: "6",
     slug: "hipertensao-arterial",
     title: "Hipertensão Arterial",
+    seoTitle: "Hipertensão Arterial em Brasília | Controle da Pressão Alta",
+    seoDescription:
+      "Hipertensão arterial em Brasília: diagnóstico, controle da pressão alta e prevenção de complicações. Cardiologista na IDC — Asa Sul.",
     shortDescription:
       "Pressão alta - principal fator de risco para doenças cardiovasculares.",
     description:

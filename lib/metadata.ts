@@ -100,6 +100,7 @@ export const defaultMetadata: Metadata = {
     },
   },
   verification: {
-    google: "your-google-site-verification-code", // Atualizar após criar Google Search Console
+    // Valor da meta tag do Google Search Console (só o token, sem o prefixo google-site-verification=)
+    google: "Js6AKU9u42hE94NSh77jv-amyhXgqOYOT8abZqNT7pc",
   },
 };

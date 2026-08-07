@@ -4,13 +4,15 @@ import { Button } from "@/components/ui/button";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { DEFAULT_DOCTOR_PHOTO } from "@/lib/doctor-photo";
 import { siteConfig } from "@/lib/metadata";
+import { buildPageMetadata } from "@/lib/page-metadata";
 import Link from "next/link";
 
-export const metadata: Metadata = {
-  title: "Sobre o Dr. Pedro Felipe Prates Silva",
+export const metadata: Metadata = buildPageMetadata({
+  title: "Sobre | Cardiologista e Arritmologista em Brasília",
   description:
-    "Conheça a formação, experiência e trajetória do Dr. Pedro Felipe Prates Silva, cardiologista e arritmologista especialista em eletrofisiologia. Atendimento presencial na IDC Brasília — Asa Sul.",
-};
+    "Dr. Pedro Felipe Prates Silva — cardiologista e arritmologista (CRM DF 18951). Formação, trajetória e atendimento presencial na IDC Brasília — Asa Sul.",
+  path: "/sobre",
+});
 
 export default function SobrePage() {
   return (

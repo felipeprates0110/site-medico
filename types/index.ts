@@ -28,6 +28,10 @@ export interface Specialty {
   id: string;
   slug: string;
   title: string;
+  /** Title otimizado para Google (serviço + cidade). Se ausente, usa title. */
+  seoTitle?: string;
+  /** Description curta para SERP (~150–160 chars). Se ausente, usa shortDescription. */
+  seoDescription?: string;
   shortDescription: string;
   description: string;
   icon: string;
@@ -51,6 +55,10 @@ export interface Treatment {
   id: string;
   slug: string;
   title: string;
+  /** Title otimizado para Google (condição + cidade). Se ausente, usa title. */
+  seoTitle?: string;
+  /** Description curta para SERP (~150–160 chars). Se ausente, usa shortDescription. */
+  seoDescription?: string;
   shortDescription: string;
   description: string;
   symptoms: string[];

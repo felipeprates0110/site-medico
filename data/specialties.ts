@@ -5,6 +5,9 @@ export const specialties: Specialty[] = [
     id: "1",
     slug: "cardiologia",
     title: "Cardiologia Geral",
+    seoTitle: "Cardiologista em Brasília | Check-up e Prevenção",
+    seoDescription:
+      "Cardiologista em Brasília-DF. Avaliação cardiovascular, hipertensão e prevenção de infarto e AVC. Dr. Pedro Felipe na IDC — Asa Sul.",
     shortDescription:
       "Avaliação cardiovascular completa, check-up de rotina, controle da pressão arterial e prevenção de doenças do coração.",
     description:
@@ -85,6 +88,9 @@ export const specialties: Specialty[] = [
     id: "2",
     slug: "arritmologia",
     title: "Arritmologia",
+    seoTitle: "Arritmologista em Brasília | Fibrilação Atrial e Arritmias",
+    seoDescription:
+      "Arritmologista em Brasília. Diagnóstico e tratamento de palpitações, fibrilação atrial e arritmias cardíacas. Atendimento na IDC — Asa Sul.",
     shortDescription:
       "Investigação e diagnóstico de palpitações, tonturas, síncope (desmaio) e acompanhamento de arritmias cardíacas e Fibrilação Atrial.",
     description:
@@ -163,6 +169,9 @@ export const specialties: Specialty[] = [
     id: "3",
     slug: "eletrofisiologia",
     title: "Eletrofisiologia Clínica e Invasiva",
+    seoTitle: "Eletrofisiologia em Brasília | Ablação e Marca-passo",
+    seoDescription:
+      "Eletrofisiologia em Brasília: estudo eletrofisiológico, ablação por cateter, marca-passo e CDI. Dr. Pedro Felipe na IDC — Asa Sul.",
     shortDescription:
       "Realização de Estudo Eletrofisiológico, ablação por cateter e indicação e acompanhamento de marcapasso e CDI.",
     description:

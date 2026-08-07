@@ -3,13 +3,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { SegundaOpiniaoForm } from "@/components/segunda-opiniao-form";
 import { WhatsAppButton } from "@/components/whatsapp-button";
+import { buildPageMetadata } from "@/lib/page-metadata";
 import { getContactInfo, getPrimaryAddress } from "@/lib/data";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Segunda Opinião em Arritmias | Brasília",
   description:
-    "Solicite segunda opinião presencial em arritmologia e eletrofisiologia com o Dr. Pedro Felipe na IDC Brasília. Avaliação de fibrilação atrial, indicação de ablação, anticoagulação e dispositivos.",
-};
+    "Segunda opinião presencial em arritmologia e eletrofisiologia na IDC Brasília. Fibrilação atrial, ablação, anticoagulação e dispositivos com o Dr. Pedro Felipe.",
+  path: "/segunda-opiniao",
+});
 
 export const revalidate = 60;
 

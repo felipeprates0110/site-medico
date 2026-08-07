@@ -12,13 +12,15 @@ import { Button } from "@/components/ui/button";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { TrackedAnchor, TrackedLink } from "@/components/analytics/tracked-link";
 import { siteConfig } from "@/lib/metadata";
+import { buildPageMetadata } from "@/lib/page-metadata";
 import { getContactInfo, getPrimaryAddress } from "@/lib/data";
 
-export const metadata: Metadata = {
-  title: "Contato - Agende sua Consulta",
+export const metadata: Metadata = buildPageMetadata({
+  title: "Contato | Agende Consulta em Brasília",
   description:
-    "Entre em contato com o Dr. Pedro Felipe Prates Silva. Telefone, WhatsApp e endereço do consultório na IDC Brasília — Asa Sul/DF.",
-};
+    "Telefone, WhatsApp e endereço do Dr. Pedro Felipe na IDC Brasília — SHLS 716, Asa Sul/DF. Agende sua consulta de cardiologia ou arritmologia.",
+  path: "/contato",
+});
 
 export const revalidate = 60;
 

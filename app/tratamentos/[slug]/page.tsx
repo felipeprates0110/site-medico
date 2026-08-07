@@ -13,6 +13,7 @@ import { treatments } from "@/data/treatments";
 import { Button } from "@/components/ui/button";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { TrackedLink } from "@/components/analytics/tracked-link";
+import { buildPageMetadata } from "@/lib/page-metadata";
 import Link from "next/link";
 
 const SEGUNDA_OPINIAO_TREATMENT_SLUGS = new Set([
@@ -40,10 +41,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  return {
-    title: treatment.title,
-    description: treatment.description,
-  };
+  // Title/description locais + canonical/OG: cartão da página no Google e no WhatsApp
+  return buildPageMetadata({
+    title: treatment.seoTitle || treatment.title,
+    description: treatment.seoDescription || treatment.shortDescription,
+    path: `/tratamentos/${treatment.slug}`,
+  });
 }
 
 export default async function TratamentoPage({ params }: PageProps) {

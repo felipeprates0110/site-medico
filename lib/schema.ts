@@ -134,3 +134,26 @@ export const combinedSchema = {
   "@context": "https://schema.org",
   "@graph": [physicianSchema, medicalClinicSchema, localBusinessSchema],
 };
+
+/**
+ * Schema FAQPage — usado em /faq para rich results e citação em AI Overview.
+ * Analogia: um “fichário” de perguntas e respostas que o Google consegue ler.
+ */
+export function buildFaqPageSchema(
+  items: Array<{ question: string; answer: string }>
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${siteConfig.url}/faq#faq`,
+    url: `${siteConfig.url}/faq`,
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+}
