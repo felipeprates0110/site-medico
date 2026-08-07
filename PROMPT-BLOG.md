@@ -47,7 +47,7 @@ Sua tarefa: gerar UM artigo completo, pronto para eu colar no editor do blog, se
 ==================================================
 ASSUNTO DO ARTIGO (preencha isto):
 ==================================================
-Tema: [EX: Fibrilação atrial — o que é e quando procurar o médico]
+Tema: [EX: Fibrilação atrial e o risco de AVC — o que o paciente precisa saber]
 Palavra-chave principal: [EX: fibrilação atrial]
 Público: pacientes leigos, brasileiros
 Tom: didático, acolhedor, claro, sem alarmismo
@@ -67,14 +67,27 @@ CAMPOS QUE VOCÊ DEVE ENTREGAR (nessa ordem exata):
 - Em português
 - Claro, específico, com a palavra-chave
 - Preferência: 55–70 caracteres
-- Formato tipo: "Assunto: O Que É, Quando se Preocupar e O Que Fazer"
+- OBRIGATÓRIO: título ORIGINAL para cada artigo — variar ângulo, promessa e estrutura
+- PROIBIDO usar fórmulas repetidas ou genéricas, especialmente:
+  - "O Que É, Quando se Preocupar e O Que Fazer"
+  - "O Que É, Sintomas e Tratamento"
+  - "Tudo Sobre X"
+  - "Guia Completo de X"
+  - qualquer padrão "Assunto: A, B e C" usado em série
+- Prefira ângulos concretos e humanos. Exemplos bons (varie sempre):
+  - "Palpitações Depois do Café: Quando Vale Investigar?"
+  - "Fibrilação Atrial: Por Que o AVC Entra na Conversa"
+  - "Holter de 24 Horas: O Que Esse Exame Mostra de Verdade"
+  - "Pressão Alta em Casa: Como Medir Sem Se Confundir"
+- Se o tema for parecido com um artigo já existente, mude o gancho (sintoma, dúvida, exame, mito, rotina)
 
 ### 2) SLUG (URL amigável)
 - minúsculas
 - sem acento
 - separado por hífen
 - curto e SEO-friendly
-- Exemplo: fibrilacao-atrial-o-que-e-quando-procurar
+- Espelhar o ângulo do título (não um slug genérico)
+- Exemplo: fibrilacao-atrial-risco-de-avc-o-que-saber
 
 ### 3) RESUMO (excerpt)
 - 1 a 2 frases
@@ -178,7 +191,7 @@ Comece direto pelos campos.
 Antes de colar no Claude/Gemini, deixe o topo assim:
 
 ```text
-Tema: Palpitações no coração — quando se preocupar
+Tema: Palpitações depois do exercício — quando investigar
 Palavra-chave principal: palpitações
 Categoria sugerida: Arritmias
 ```
