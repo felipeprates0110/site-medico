@@ -64,7 +64,7 @@ export default async function Home() {
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <div className="max-w-xl">
               <p className="section-eyebrow mb-5">
-                {siteConfig.specialty} · Brasília
+                Cardiologia e Arritmologia · Brasília
               </p>
 
               <h1 className="mb-6 text-4xl font-bold leading-[1.1] tracking-tight text-gray-900 sm:text-5xl lg:text-[3.25rem]">

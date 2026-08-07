@@ -62,7 +62,7 @@ export function Header() {
               Dr. Pedro Felipe
             </span>
             <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-600">
-              Cardiologia
+              Cardiologia | Arritmologia
             </span>
           </div>
         </Link>
