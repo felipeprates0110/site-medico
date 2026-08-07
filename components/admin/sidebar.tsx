@@ -30,7 +30,7 @@ const menuItems = [
   {
     title: "Calendário editorial",
     href: "/admin/blog/calendario",
-    icon: CalendarDays,
+    icon: CalendarDays, // publicação automática por categoria/dia
   },
   {
     title: "Blog (Categorias)",
