@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, Lightbulb, Loader2, X } from "lucide-react";
+import { ClipboardCopy, ClipboardPaste, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { buildBlogArticlePrompt } from "@/lib/ai/prompt-template";
+import { parseAiPasteResponse } from "@/lib/ai/parse-paste";
 
 export type AiGeneratedFields = {
   title: string;
@@ -18,13 +20,6 @@ export type AiGeneratedFields = {
   category_hint: string;
   cover_image_description?: string;
   cover_image_alt?: string;
-};
-
-type TopicItem = {
-  title: string;
-  keyword: string;
-  angle: string;
-  categoryHint?: string;
 };
 
 type AiArticlePanelProps = {
@@ -54,106 +49,86 @@ export function AiArticlePanel({ categories, onApply }: AiArticlePanelProps) {
   const [keyword, setKeyword] = useState("");
   const [categoryHint, setCategoryHint] = useState("");
   const [referenceUrlsText, setReferenceUrlsText] = useState("");
-  const [topics, setTopics] = useState<TopicItem[]>([]);
-  const [suggesting, setSuggesting] = useState(false);
-  const [generating, setGenerating] = useState(false);
+  const [pasteText, setPasteText] = useState("");
   const [coverHint, setCoverHint] = useState<{
     description: string;
     alt: string;
   } | null>(null);
 
-  const busy = suggesting || generating;
+  const referenceUrls = referenceUrlsText
+    .split(/\n|,/)
+    .map((u) => u.trim())
+    .filter(Boolean);
 
-  const parseReferenceUrls = () =>
-    referenceUrlsText
-      .split(/\n|,/)
-      .map((u) => u.trim())
-      .filter(Boolean);
-
-  const handleSuggestTopics = async () => {
-    setSuggesting(true);
-    setTopics([]);
-    try {
-      const res = await fetch("/api/admin/ai/suggest-topics", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          seed: topic || keyword || undefined,
-          category: categoryHint || undefined,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Falha ao sugerir temas");
-      setTopics(data.topics || []);
-      toast.success("Temas sugeridos! Clique em um para usar.");
-    } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : "Erro ao sugerir temas";
-      toast.error(message);
-    } finally {
-      setSuggesting(false);
-    }
-  };
-
-  const handleGenerate = async () => {
+  const handleCopyPrompt = async () => {
     if (!topic.trim()) {
-      toast.error("Informe o tema do artigo (ou escolha uma sugestão).");
+      toast.error("Informe o tema antes de copiar o prompt.");
       return;
     }
 
-    setGenerating(true);
-    setCoverHint(null);
-    try {
-      const res = await fetch("/api/admin/ai/generate-article", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          topic: topic.trim(),
-          keyword: keyword.trim() || undefined,
-          categoryHint: categoryHint.trim() || undefined,
-          referenceUrls: parseReferenceUrls(),
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Falha ao gerar artigo");
+    const prompt = buildBlogArticlePrompt({
+      topic: topic.trim(),
+      keyword: keyword.trim() || undefined,
+      categoryHint: categoryHint.trim() || undefined,
+      referenceUrls,
+    });
 
+    try {
+      await navigator.clipboard.writeText(prompt);
+      toast.success(
+        "Prompt copiado! Cole no Claude ou Gemini Pro, gere o artigo e volte aqui."
+      );
+    } catch {
+      toast.error(
+        "Não foi possível copiar automaticamente. Selecione o texto e copie manualmente."
+      );
+    }
+  };
+
+  const handleApplyPaste = () => {
+    if (!pasteText.trim()) {
+      toast.error("Cole a resposta da IA no campo abaixo.");
+      return;
+    }
+
+    try {
+      const article = parseAiPasteResponse(pasteText);
       const categoryId = matchCategoryId(
-        data.category_hint || categoryHint,
+        article.category_hint || categoryHint,
         categories
       );
 
       onApply(
         {
-          title: data.title || "",
-          slug: data.slug || "",
-          excerpt: data.excerpt || "",
-          seo_title: data.seo_title || "",
-          seo_description: data.seo_description || "",
-          content: data.content || "",
-          category_hint: data.category_hint || "",
-          cover_image_description: data.cover_image_description,
-          cover_image_alt: data.cover_image_alt,
+          title: article.title,
+          slug: article.slug,
+          excerpt: article.excerpt,
+          seo_title: article.seo_title,
+          seo_description: article.seo_description,
+          content: article.content,
+          category_hint: article.category_hint,
+          cover_image_description: article.cover_image_description,
+          cover_image_alt: article.cover_image_alt,
         },
         categoryId
       );
 
-      if (data.cover_hint?.description || data.cover_image_description) {
+      if (article.cover_image_description || article.cover_image_alt) {
         setCoverHint({
-          description:
-            data.cover_hint?.description || data.cover_image_description || "",
-          alt: data.cover_hint?.alt || data.cover_image_alt || "",
+          description: article.cover_image_description,
+          alt: article.cover_image_alt,
         });
+      } else {
+        setCoverHint(null);
       }
 
       toast.success(
-        "Artigo gerado! Revise o texto e salve como rascunho quando quiser."
+        "Campos preenchidos! Revise o texto e salve como rascunho quando quiser."
       );
     } catch (error: unknown) {
       const message =
-        error instanceof Error ? error.message : "Erro ao gerar artigo";
+        error instanceof Error ? error.message : "Não consegui ler a resposta";
       toast.error(message);
-    } finally {
-      setGenerating(false);
     }
   };
 
@@ -162,10 +137,11 @@ export function AiArticlePanel({ categories, onApply }: AiArticlePanelProps) {
       <div className="flex flex-wrap items-center gap-3 rounded-xl border border-primary-200 bg-primary-50/40 px-4 py-3">
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium text-primary-900">
-            Máquina de artigos (IA)
+            Assistente de artigo (copiar / colar)
           </p>
           <p className="text-xs text-gray-600">
-            Opcional — a escrita manual abaixo continua igual.
+            Use Claude ou Gemini Pro no chat — sem API paga. A escrita manual
+            abaixo continua igual.
           </p>
         </div>
         <Button
@@ -176,7 +152,7 @@ export function AiArticlePanel({ categories, onApply }: AiArticlePanelProps) {
           className="border-primary-200 text-primary-800 hover:bg-white"
         >
           <Sparkles className="h-4 w-4 mr-1.5" />
-          Gerar com IA
+          Abrir assistente
         </Button>
       </div>
     );
@@ -188,11 +164,11 @@ export function AiArticlePanel({ categories, onApply }: AiArticlePanelProps) {
         <div>
           <CardTitle className="flex items-center gap-2 text-base">
             <Sparkles className="h-4 w-4 text-primary-700" />
-            Máquina de artigos (IA)
+            Assistente de artigo (copiar / colar)
           </CardTitle>
           <p className="mt-1 text-sm text-gray-600">
-            Opcional: sugere temas e preenche o formulário. Você revisa e
-            publica. A escrita manual continua disponível abaixo.
+            1) Copie o prompt → 2) Cole no chat Pro → 3) Cole a resposta aqui →
+            4) Revise e publique. Sem API.
           </p>
         </div>
         <Button
@@ -200,24 +176,36 @@ export function AiArticlePanel({ categories, onApply }: AiArticlePanelProps) {
           variant="ghost"
           size="icon"
           onClick={() => setOpen(false)}
-          disabled={busy}
-          aria-label="Fechar painel de IA"
+          aria-label="Fechar assistente"
         >
           <X className="h-4 w-4" />
         </Button>
       </CardHeader>
       <CardContent className="space-y-4">
+        <ol className="list-decimal space-y-1 pl-5 text-xs text-gray-600">
+          <li>Preencha tema (e opcionalmente keyword, categoria, links).</li>
+          <li>
+            Clique em <b>Copiar prompt</b> e cole no Claude ou Gemini Pro.
+          </li>
+          <li>
+            Copie a resposta completa (com TÍTULO:, SLUG:, CONTEÚDO HTML:…) e
+            cole abaixo.
+          </li>
+          <li>
+            Clique em <b>Preencher formulário</b> e revise antes de publicar.
+          </li>
+        </ol>
+
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-2 sm:col-span-2">
             <label className="text-sm font-medium" htmlFor="ai-topic">
-              Tema
+              Tema *
             </label>
             <Input
               id="ai-topic"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               placeholder="Ex: Fibrilação atrial — o que é e quando procurar"
-              disabled={busy}
             />
           </div>
           <div className="space-y-2">
@@ -229,7 +217,6 @@ export function AiArticlePanel({ categories, onApply }: AiArticlePanelProps) {
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               placeholder="Ex: fibrilação atrial"
-              disabled={busy}
             />
           </div>
           <div className="space-y-2">
@@ -242,7 +229,6 @@ export function AiArticlePanel({ categories, onApply }: AiArticlePanelProps) {
               onChange={(e) => setCategoryHint(e.target.value)}
               placeholder="Ex: Arritmias"
               list="ai-category-hints"
-              disabled={busy}
             />
             <datalist id="ai-category-hints">
               {categories.map((c) => (
@@ -256,83 +242,52 @@ export function AiArticlePanel({ categories, onApply }: AiArticlePanelProps) {
           </div>
           <div className="space-y-2 sm:col-span-2">
             <label className="text-sm font-medium" htmlFor="ai-refs">
-              Links de referência (1 por linha)
+              Links de referência (1 por linha, opcional)
             </label>
             <Textarea
               id="ai-refs"
-              rows={3}
+              rows={2}
               value={referenceUrlsText}
               onChange={(e) => setReferenceUrlsText(e.target.value)}
               placeholder="https://..."
-              disabled={busy}
             />
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={handleSuggestTopics}
-            disabled={busy}
-          >
-            {suggesting ? (
-              <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />
-            ) : (
-              <Lightbulb className="h-4 w-4 mr-1.5" />
-            )}
-            Sugerir temas
-          </Button>
-          <Button
-            type="button"
-            size="sm"
-            onClick={handleGenerate}
-            disabled={busy}
-          >
-            {generating ? (
-              <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />
-            ) : (
-              <Sparkles className="h-4 w-4 mr-1.5" />
-            )}
-            {generating ? "Gerando artigo…" : "Gerar artigo"}
-          </Button>
+        <Button
+          type="button"
+          size="sm"
+          onClick={handleCopyPrompt}
+          className="w-full sm:w-auto"
+        >
+          <ClipboardCopy className="h-4 w-4 mr-1.5" />
+          Copiar prompt para o chat
+        </Button>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium" htmlFor="ai-paste">
+            Resposta da IA (cole aqui)
+          </label>
+          <Textarea
+            id="ai-paste"
+            rows={10}
+            value={pasteText}
+            onChange={(e) => setPasteText(e.target.value)}
+            placeholder={`Cole a resposta completa, começando por:\n\nTÍTULO:\n...\n\nSLUG:\n...\n\n... até CONTEÚDO HTML:`}
+            className="font-mono text-xs"
+          />
         </div>
 
-        {generating && (
-          <p className="text-xs text-gray-600">
-            A IA está escrevendo o artigo (~1–2 min). Não feche a página.
-          </p>
-        )}
-
-        {topics.length > 0 && (
-          <div className="space-y-2">
-            <p className="text-sm font-medium">Sugestões — clique para usar</p>
-            <ul className="space-y-2">
-              {topics.map((t) => (
-                <li key={`${t.title}-${t.keyword}`}>
-                  <button
-                    type="button"
-                    disabled={busy}
-                    onClick={() => {
-                      setTopic(t.title);
-                      setKeyword(t.keyword);
-                      if (t.categoryHint) setCategoryHint(t.categoryHint);
-                    }}
-                    className="w-full rounded-lg border bg-white px-3 py-2 text-left text-sm hover:border-primary-300 hover:bg-primary-50/50 disabled:opacity-50"
-                  >
-                    <span className="font-medium text-gray-900">{t.title}</span>
-                    <span className="mt-0.5 block text-xs text-gray-600">
-                      {t.angle}
-                      {t.keyword ? ` · keyword: ${t.keyword}` : ""}
-                      {t.categoryHint ? ` · ${t.categoryHint}` : ""}
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={handleApplyPaste}
+          className="w-full sm:w-auto"
+        >
+          <ClipboardPaste className="h-4 w-4 mr-1.5" />
+          Preencher formulário
+        </Button>
 
         {coverHint && (
           <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950">
@@ -344,8 +299,7 @@ export function AiArticlePanel({ categories, onApply }: AiArticlePanelProps) {
               </p>
             )}
             <p className="mt-1 text-xs">
-              Busque a imagem e cole a URL no campo de capa — a IA não inventa
-              URL.
+              Busque a imagem e cole a URL no campo de capa.
             </p>
           </div>
         )}

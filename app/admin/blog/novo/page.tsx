@@ -154,7 +154,7 @@ export default function NovoArtigoPage() {
               Novo Artigo
             </h1>
             <p className="mt-1 text-gray-600">
-              Escreva manualmente ou use a IA — depois revise e publique.
+              Escreva manualmente ou use o assistente (copiar/colar do chat Pro).
             </p>
           </div>
         </div>

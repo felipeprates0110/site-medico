@@ -1,54 +1,35 @@
-# Prompt de Artigo — RitmoBlog
+/**
+ * Template do prompt para colar no Claude/Gemini Pro (chat).
+ * Espelha PROMPT-BLOG.md — sem chamada de API.
+ */
 
-Este arquivo é a **fonte das regras** de redação do blog.
+export type PromptFillInput = {
+  topic: string;
+  keyword?: string;
+  categoryHint?: string;
+  referenceUrls?: string[];
+};
 
-## Como usar no admin (recomendado)
+export function buildBlogArticlePrompt(input: PromptFillInput): string {
+  const topic = input.topic.trim() || "[preencha o tema]";
+  const keyword = input.keyword?.trim() || topic;
+  const category =
+    input.categoryHint?.trim() ||
+    "[Arritmias | Cardiologia | Prevenção | Hipertensão]";
+  const refs =
+    input.referenceUrls && input.referenceUrls.length > 0
+      ? input.referenceUrls.map((u) => `- ${u}`).join("\n")
+      : "- (nenhum link extra; use conhecimento médico geral e links internos do site)";
 
-1. Abra `/admin/blog/novo` (ou edite um rascunho).
-2. Abra o **Assistente de artigo**.
-3. Preencha o tema → **Copiar prompt para o chat**.
-4. Cole no **Claude Pro** ou **Gemini Pro** (assinatura de chat — sem API).
-5. Copie a resposta completa e cole no assistente → **Preencher formulário**.
-6. Revise e salve como rascunho / fila / publique.
-
-A escrita **manual** no mesmo editor continua disponível.  
-**Não é necessário** `ANTHROPIC_API_KEY` nem `GEMINI_API_KEY`.
-
-## Como usar manualmente (sem o assistente)
-
-1. Copie o bloco **Prompt completo** abaixo.
-2. Troque só o que está entre `[colchetes]` na seção "ASSUNTO DO ARTIGO".
-3. Cole no Claude ou Gemini e, na resposta, use o assistente do admin (ou cole campo a campo).
-
-### Onde colar no editor
-
-| Campo gerado pela IA | Campo no admin |
-|---|---|
-| TÍTULO | Título do Artigo |
-| SLUG | URL Amigável (Slug) |
-| RESUMO | Resumo (cards) |
-| TÍTULO SEO | Título SEO |
-| DESCRIÇÃO SEO | Descrição SEO |
-| CATEGORIA | Categoria (selecionar na lista) |
-| CONTEÚDO HTML | Conteúdo (Simple Editor) |
-| IMAGEM DE CAPA | Buscar imagem e colar a URL |
-
-> O conteúdo precisa ir em **HTML** (`<p>`, `<h2>`, etc.). O editor salva HTML puro — não Markdown.
-
----
-
-## Prompt completo (copiar daqui)
-
-```text
-Você é um redator médico especializado em cardiologia e arritmologia, escrevendo para o blog RitmoBlog, do Dr. Pedro Felipe Prates Silva (Cardiologista e Arritmologista em Brasília).
+  return `Você é um redator médico especializado em cardiologia e arritmologia, escrevendo para o blog RitmoBlog, do Dr. Pedro Felipe Prates Silva (Cardiologista e Arritmologista em Brasília).
 
 Sua tarefa: gerar UM artigo completo, pronto para eu colar no editor do blog, sem eu precisar reescrever nada.
 
 ==================================================
-ASSUNTO DO ARTIGO (preencha isto):
+ASSUNTO DO ARTIGO:
 ==================================================
-Tema: [EX: Fibrilação atrial — o que é e quando procurar o médico]
-Palavra-chave principal: [EX: fibrilação atrial]
+Tema: ${topic}
+Palavra-chave principal: ${keyword}
 Público: pacientes leigos, brasileiros
 Tom: didático, acolhedor, claro, sem alarmismo
 CTA final: convidar para agendar consulta ou pedir segunda opinião
@@ -57,7 +38,10 @@ Links internos sugeridos (use se fizer sentido):
 - /segunda-opiniao
 - /tratamentos/[slug-relacionado]
 - /especialidades/[slug-relacionado]
-Categoria sugerida: [EX: Arritmias | Cardiologia | Prevenção | Hipertensão]
+Categoria sugerida: ${category}
+
+Links de referência (use com cuidado; não invente dados):
+${refs}
 
 ==================================================
 CAMPOS QUE VOCÊ DEVE ENTREGAR (nessa ordem exata):
@@ -137,7 +121,7 @@ Disclaimer obrigatório no final:
 ==================================================
 FORMATO DE SAÍDA (obrigatório):
 ==================================================
-Entregue EXATAMENTE neste formato, para eu copiar/colar:
+Entregue EXATAMENTE neste formato, para eu copiar/colar no admin:
 
 ---
 TÍTULO:
@@ -168,31 +152,5 @@ CONTEÚDO HTML:
 Não explique o que você fez.
 Não use Markdown no conteúdo.
 Não coloque o HTML dentro de bloco de código.
-Comece direto pelos campos.
-```
-
----
-
-## Exemplo rápido de preenchimento
-
-Antes de colar no Claude/Gemini, deixe o topo assim:
-
-```text
-Tema: Palpitações no coração — quando se preocupar
-Palavra-chave principal: palpitações
-Categoria sugerida: Arritmias
-```
-
----
-
-## Checklist rápido antes de publicar
-
-- [ ] Título colado
-- [ ] Slug conferido (sem acento, com hífen)
-- [ ] Resumo colado
-- [ ] Título SEO + descrição SEO colados
-- [ ] Categoria selecionada
-- [ ] Conteúdo HTML colado no editor (sem Markdown)
-- [ ] Imagem de capa com URL real
-- [ ] Revisar 1x o tom médico e o disclaimer no final
-- [ ] Salvar como rascunho, colocar na fila, agendar ou publicar
+Comece direto pelos campos.`;
+}

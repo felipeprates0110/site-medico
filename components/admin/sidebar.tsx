@@ -222,21 +222,8 @@ export function Sidebar() {
         </ul>
       </nav>
 
-      {/* Footer / User Profile */}
+      {/* Footer */}
       <div className="border-t p-4">
-        <div className="mb-4 flex items-center gap-3 px-3 py-2">
-          <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-bold border border-gray-200">
-            PF
-          </div>
-          <div className="flex flex-col overflow-hidden">
-            <span className="truncate text-sm font-semibold text-gray-900">
-              Dr. Pedro Felipe
-            </span>
-            <span className="truncate text-xs text-gray-500">
-              admin@drpedrofelipe.com.br
-            </span>
-          </div>
-        </div>
         <button
           onClick={handleLogout}
           className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
