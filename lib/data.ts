@@ -196,6 +196,7 @@ export async function getPublishedArticles() {
           title,
           slug,
           excerpt,
+          content,
           cover_image_url,
           created_at,
           published_at,

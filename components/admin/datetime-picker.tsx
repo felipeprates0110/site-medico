@@ -385,28 +385,34 @@ export function DateTimePicker({
             </div>
           </div>
 
-          <div className="flex items-center justify-between gap-2 border-t border-gray-100 bg-gray-50/60 px-3 py-2.5">
-            <Button type="button" variant="ghost" size="sm" onClick={clear}>
+          <div className="grid grid-cols-[auto_1fr_1fr] items-center gap-1.5 border-t border-gray-100 bg-gray-50/60 px-3 py-2.5">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="px-2.5"
+              onClick={clear}
+            >
               Limpar
             </Button>
-            <div className="flex gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={selectToday}
-              >
-                Hoje
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                onClick={() => setOpen(false)}
-                disabled={!value}
-              >
-                Confirmar
-              </Button>
-            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="px-2"
+              onClick={selectToday}
+            >
+              Hoje
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              className="px-2"
+              onClick={() => setOpen(false)}
+              disabled={!value}
+            >
+              Confirmar
+            </Button>
           </div>
         </div>
       )}

@@ -20,6 +20,7 @@ import {
   getSiteConfig,
   getPublishedArticles,
 } from "@/lib/data";
+import { getReadingMinutes } from "@/lib/reading-time";
 import { reviewStats } from "@/data/reviews";
 import { specialties } from "@/data/specialties";
 import { insurancePlans } from "@/data/insurance";
@@ -241,6 +242,7 @@ export default async function Home() {
                     authorName={siteConfig.doctor_name || "Dr. Pedro Felipe"}
                     authorPhotoUrl={siteConfig.profile_photo_url}
                     coverImageUrl={article.cover_image_url}
+                    readingMinutes={getReadingMinutes(article.content || "")}
                   />
                 );
               })}

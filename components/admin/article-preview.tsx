@@ -10,6 +10,10 @@ import {
   DEFAULT_DOCTOR_PHOTO,
   resolveDoctorPhoto,
 } from "@/lib/doctor-photo";
+import {
+  formatReadingTime,
+  getReadingMinutes,
+} from "@/lib/reading-time";
 
 export interface ArticlePreviewData {
   title: string;
@@ -129,6 +133,12 @@ export function ArticlePreview({ open, onClose, article }: ArticlePreviewProps) 
                 <time>
                   Atualizado em {new Date().toLocaleDateString("pt-BR")}
                 </time>
+                <span className="hidden text-gray-300 sm:inline">|</span>
+                <span>
+                  {formatReadingTime(
+                    getReadingMinutes(article.content || "")
+                  )}
+                </span>
                 <span className="hidden text-gray-300 sm:inline">|</span>
                 <span className="flex items-center gap-1.5 text-primary-700">
                   Conteúdo verificado por especialista

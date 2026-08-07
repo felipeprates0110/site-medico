@@ -3,6 +3,7 @@ import { getPublishedArticles, getSiteConfig } from "@/lib/data";
 import { AdSenseUnit } from "@/components/blog/AdSenseUnit";
 import { BlogCard } from "@/components/blog/BlogCard";
 import { DEFAULT_DOCTOR_PHOTO } from "@/lib/doctor-photo";
+import { getReadingMinutes } from "@/lib/reading-time";
 
 export const metadata: Metadata = {
   title: "RitmoBlog - Excelência em Cardiologia e Arritmologia",
@@ -74,6 +75,7 @@ export default async function BlogFeedPage() {
                   authorName={authorName}
                   authorPhotoUrl={authorPhoto}
                   coverImageUrl={article.cover_image_url}
+                  readingMinutes={getReadingMinutes(article.content || "")}
                 />
               );
             })}

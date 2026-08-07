@@ -17,6 +17,13 @@ import { TrackedLink } from "@/components/analytics/tracked-link";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { DEFAULT_DOCTOR_PHOTO } from "@/lib/doctor-photo";
 import { siteConfig as metadataSiteConfig } from "@/lib/metadata";
+import {
+  formatReadingTime,
+  getReadingMinutes,
+  readingTimeIsoDuration,
+  stripHtml,
+} from "@/lib/reading-time";
+import { ListenArticleButton } from "@/components/blog/ListenArticleButton";
 
 export const revalidate = 60;
 
@@ -121,6 +128,8 @@ export default async function BlogPostPage({
     siteConfig?.doctor_rqe
   );
 
+  const readingMinutes = getReadingMinutes(article.content || "");
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "MedicalWebPage",
@@ -129,6 +138,7 @@ export default async function BlogPostPage({
     image: toAbsoluteImageUrl(article.cover_image_url),
     datePublished: article.published_at,
     dateModified: article.updated_at,
+    timeRequired: readingTimeIsoDuration(readingMinutes),
     author: {
       "@type": "Physician",
       name: doctorName,
@@ -169,6 +179,24 @@ export default async function BlogPostPage({
                 ).toLocaleDateString("pt-BR")}
               </time>
               <span className="hidden text-gray-300 sm:inline">|</span>
+              <span className="inline-flex items-center gap-1.5">
+                <svg
+                  className="h-4 w-4 shrink-0 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  aria-hidden
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 6v6l4 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                {formatReadingTime(readingMinutes)}
+              </span>
+              <span className="hidden text-gray-300 sm:inline">|</span>
               <span className="flex items-center gap-1.5 text-primary-700">
                 <svg
                   className="h-4 w-4"
@@ -184,6 +212,12 @@ export default async function BlogPostPage({
                 Conteúdo verificado por especialista
               </span>
             </div>
+
+            <ListenArticleButton
+              className="mt-5"
+              title={article.title}
+              text={stripHtml(article.content || "")}
+            />
           </div>
 
           {article.cover_image_url && (

@@ -10,6 +10,8 @@ interface BlogCardProps {
   coverImageUrl?: string;
   authorPhotoUrl?: string;
   categoryColor?: string;
+  /** Minutos de leitura (calculados no servidor). */
+  readingMinutes?: number;
 }
 
 export function BlogCard({
@@ -21,6 +23,7 @@ export function BlogCard({
   coverImageUrl,
   authorPhotoUrl,
   categoryColor = "text-primary-600",
+  readingMinutes,
 }: BlogCardProps) {
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary-200 hover:shadow-lg">
@@ -39,11 +42,37 @@ export function BlogCard({
         )}
       </div>
       <div className="flex flex-grow flex-col p-7">
-        <span
-          className={`mb-3 block text-xs font-bold uppercase tracking-widest ${categoryColor}`}
-        >
-          {category}
-        </span>
+        <div className="mb-3 flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span
+            className={`text-xs font-bold uppercase tracking-widest ${categoryColor}`}
+          >
+            {category}
+          </span>
+          {typeof readingMinutes === "number" && readingMinutes > 0 && (
+            <>
+              <span className="text-gray-300" aria-hidden>
+                ·
+              </span>
+              <span className="inline-flex items-center gap-1 text-xs font-medium text-gray-500">
+                <svg
+                  className="h-3.5 w-3.5 shrink-0"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  aria-hidden
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 6v6l4 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                {readingMinutes} min
+              </span>
+            </>
+          )}
+        </div>
         <h3 className="relative mb-3 text-xl font-bold leading-snug text-gray-900 transition-colors duration-300 group-hover:text-primary-700">
           <Link href={`/blog/${slug}`} className="before:absolute before:inset-0">
             {title}
