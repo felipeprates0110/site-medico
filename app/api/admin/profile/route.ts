@@ -47,7 +47,11 @@ export async function PUT(request: NextRequest) {
       .update({
         doctor_name: body.doctor_name,
         doctor_crm: body.doctor_crm,
-        doctor_rqe: body.doctor_rqe,
+        doctor_rqe: Array.isArray(body.doctor_rqe)
+          ? body.doctor_rqe
+              .map((item: unknown) => String(item ?? "").trim())
+              .filter(Boolean)
+          : [],
         specialty: body.specialty,
         subspecialty: body.subspecialty,
         bio: body.bio,

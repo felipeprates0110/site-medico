@@ -9,6 +9,7 @@ import {
 } from "@/lib/data";
 import { AuthorBox } from "@/components/blog/AuthorBox";
 import { resolveAuthorCardBio } from "@/lib/author-bio";
+import { formatDoctorCrmBadge } from "@/lib/doctor-credentials";
 import { AdSenseUnit } from "@/components/blog/AdSenseUnit";
 import { AffiliateBox } from "@/components/blog/AffiliateBox";
 import { BlogComments } from "@/components/blog/BlogComments";
@@ -115,20 +116,10 @@ export default async function BlogPostPage({
   const subspecialty = siteConfig?.subspecialty
     ? `e ${siteConfig.subspecialty}`
     : "";
-  // O perfil já pode salvar "CRM DF 18951" — evitamos "CRM CRM..."
-  const rawCrm = (siteConfig?.doctor_crm || "").trim();
-  const crmLabel = !rawCrm
-    ? "CRM"
-    : rawCrm.toUpperCase().startsWith("CRM")
-      ? rawCrm
-      : `CRM ${rawCrm}`;
-  const rawRqe = siteConfig?.doctor_rqe?.[0]?.trim() || "";
-  const rqeLabel = !rawRqe
-    ? ""
-    : rawRqe.toUpperCase().startsWith("RQE")
-      ? rawRqe
-      : `RQE ${rawRqe}`;
-  const crm = rqeLabel ? `${crmLabel} / ${rqeLabel}` : crmLabel;
+  const crm = formatDoctorCrmBadge(
+    siteConfig?.doctor_crm,
+    siteConfig?.doctor_rqe
+  );
 
   const jsonLd = {
     "@context": "https://schema.org",

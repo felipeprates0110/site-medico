@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthorBox } from "@/components/blog/AuthorBox";
 import { resolveAuthorCardBio } from "@/lib/author-bio";
+import { formatDoctorCrmBadge } from "@/lib/doctor-credentials";
 import {
   DEFAULT_DOCTOR_PHOTO,
   resolveDoctorPhoto,
@@ -34,28 +35,6 @@ interface AuthorProfile {
   bio: string | null;
   bio_short: string | null;
   profile_photo_url: string | null;
-}
-
-function formatCrm(crm: string | null | undefined, rqe: string[] | null | undefined) {
-  const raw = (crm || "").trim();
-  // O perfil já pode salvar "CRM DF 18951" — evitamos "CRM CRM..."
-  const crmLabel = !raw
-    ? "CRM"
-    : raw.toUpperCase().startsWith("CRM")
-      ? raw
-      : `CRM ${raw}`;
-
-  if (!rqe?.length) return crmLabel;
-
-  // O perfil já pode salvar "RQE 16475" — evitamos "RQE RQE..."
-  const rawRqe = (rqe[0] || "").trim();
-  const rqeLabel = !rawRqe
-    ? ""
-    : rawRqe.toUpperCase().startsWith("RQE")
-      ? rawRqe
-      : `RQE ${rawRqe}`;
-
-  return rqeLabel ? `${crmLabel} / ${rqeLabel}` : crmLabel;
 }
 
 function formatRole(
@@ -105,7 +84,10 @@ export function ArticlePreview({ open, onClose, article }: ArticlePreviewProps) 
 
   const doctorName = profile?.doctor_name?.trim() || "Dr. Pedro Felipe";
   const role = formatRole(profile?.specialty, profile?.subspecialty);
-  const crm = formatCrm(profile?.doctor_crm, profile?.doctor_rqe);
+  const crm = formatDoctorCrmBadge(
+    profile?.doctor_crm,
+    profile?.doctor_rqe
+  );
   // Bio curta, se houver; senão um trecho da biografia completa.
   const bio = resolveAuthorCardBio(profile?.bio_short, profile?.bio);
   const photoUrl = resolveDoctorPhoto(
