@@ -1,4 +1,8 @@
 import { NextResponse } from "next/server";
+import {
+  containsBlockedTerm,
+  parseBlockedTerms,
+} from "@/lib/blog/blocked-terms";
 import { supabaseAdmin } from "@/lib/supabase";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -6,6 +10,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 /**
  * POST público: leitor envia dúvida/comentário.
  * Entra como "pending" e só aparece no artigo depois da moderação.
+ * Termos da blocklist (lista da portaria) são rejeitados antes de gravar.
  */
 export async function POST(request: Request) {
   try {
@@ -47,6 +52,28 @@ export async function POST(request: Request) {
     if (authorEmail && !EMAIL_REGEX.test(authorEmail)) {
       return NextResponse.json(
         { error: "E-mail inválido." },
+        { status: 400 }
+      );
+    }
+
+    // Blocklist editável no admin — bloqueia antes da fila de moderação
+    const { data: siteConfig } = await supabaseAdmin
+      .from("site_config")
+      .select("blocked_comment_terms")
+      .limit(1)
+      .maybeSingle();
+
+    const blockedTerms = parseBlockedTerms(siteConfig?.blocked_comment_terms);
+
+    if (
+      containsBlockedTerm(content, blockedTerms) ||
+      containsBlockedTerm(authorName, blockedTerms)
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Sua mensagem não pôde ser enviada. Por favor, use linguagem respeitosa.",
+        },
         { status: 400 }
       );
     }

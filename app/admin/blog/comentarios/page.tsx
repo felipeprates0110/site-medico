@@ -5,7 +5,9 @@ import Link from "next/link";
 import {
   Check,
   MessageSquareText,
+  Save,
   Search,
+  ShieldAlert,
   Trash2,
   X,
   ExternalLink,
@@ -60,9 +62,14 @@ export default function BlogCommentsAdminPage() {
   );
   const [replyDrafts, setReplyDrafts] = useState<Record<string, string>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [blockedTermsText, setBlockedTermsText] = useState("");
+  const [blockedTermsCount, setBlockedTermsCount] = useState(0);
+  const [loadingBlockedTerms, setLoadingBlockedTerms] = useState(true);
+  const [savingBlockedTerms, setSavingBlockedTerms] = useState(false);
 
   useEffect(() => {
     fetchComments();
+    fetchBlockedTerms();
   }, []);
 
   const fetchComments = async () => {
@@ -80,6 +87,54 @@ export default function BlogCommentsAdminPage() {
       toast.error("Erro ao carregar comentários");
     } finally {
       setLoading(false);
+    }
+  };
+
+  /** Carrega a "lista da portaria" (termos que bloqueiam o envio automático). */
+  const fetchBlockedTerms = async () => {
+    try {
+      const response = await fetch("/api/admin/blog/blocked-terms");
+      if (!response.ok) throw new Error("Falha ao carregar termos");
+      const data = await response.json();
+      setBlockedTermsText(data.blocked_comment_terms || "");
+      setBlockedTermsCount(
+        Array.isArray(data.terms) ? data.terms.length : 0
+      );
+    } catch {
+      toast.error("Erro ao carregar termos proibidos");
+    } finally {
+      setLoadingBlockedTerms(false);
+    }
+  };
+
+  const saveBlockedTerms = async () => {
+    setSavingBlockedTerms(true);
+    try {
+      const response = await fetch("/api/admin/blog/blocked-terms", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ blocked_comment_terms: blockedTermsText }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Falha ao salvar");
+      }
+      setBlockedTermsText(data.blocked_comment_terms || "");
+      setBlockedTermsCount(
+        Array.isArray(data.terms) ? data.terms.length : 0
+      );
+      toast.success(
+        data.message ||
+          `Lista salva (${Array.isArray(data.terms) ? data.terms.length : 0} termo${
+            Array.isArray(data.terms) && data.terms.length === 1 ? "" : "s"
+          }).`
+      );
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Erro ao salvar termos"
+      );
+    } finally {
+      setSavingBlockedTerms(false);
     }
   };
 
@@ -167,6 +222,56 @@ export default function BlogCommentsAdminPage() {
           )}
         </p>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <ShieldAlert className="h-5 w-5 text-primary-600" />
+            Termos proibidos (bloqueio automático)
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-sm text-gray-600">
+            Escreva uma palavra ou expressão por linha. Se o comentário (ou o
+            nome) contiver algum termo desta lista, o envio é bloqueado e{" "}
+            <strong className="font-medium text-gray-800">
+              não entra na fila de moderação
+            </strong>
+            . Você pode ir alimentando a lista aqui, sem precisar republicar o
+            site.
+          </p>
+          {loadingBlockedTerms ? (
+            <div className="flex h-24 items-center justify-center">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-600 border-t-transparent" />
+            </div>
+          ) : (
+            <>
+              <Textarea
+                rows={6}
+                value={blockedTermsText}
+                onChange={(e) => setBlockedTermsText(e.target.value)}
+                placeholder={"exemplo1\nexemplo2\nofensa"}
+                className="font-mono text-sm"
+              />
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <p className="text-xs text-gray-500">
+                  {blockedTermsCount} termo
+                  {blockedTermsCount === 1 ? "" : "s"} ativo
+                  {blockedTermsCount === 1 ? "" : "s"} após o último salvamento.
+                  Acentos são ignorados na comparação.
+                </p>
+                <Button
+                  onClick={saveBlockedTerms}
+                  disabled={savingBlockedTerms}
+                >
+                  <Save className="mr-2 h-4 w-4" />
+                  {savingBlockedTerms ? "Salvando..." : "Salvar lista"}
+                </Button>
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

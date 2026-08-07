@@ -94,6 +94,11 @@ export interface SiteConfig {
   bio: string | null;
   /** Bio curta opcional do card do autor no blog (não substitui o currículo completo). */
   bio_short: string | null;
+  /**
+   * Termos proibidos em comentários do blog (um por linha).
+   * Usado só no admin/API — não precisa aparecer no site público.
+   */
+  blocked_comment_terms: string | null;
   profile_photo_url: string | null;
   updated_at: string;
 }

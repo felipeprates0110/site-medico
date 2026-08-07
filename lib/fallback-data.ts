@@ -25,6 +25,7 @@ export const fallbackSiteConfig: SiteConfig = {
   subspecialty: metadataConfig.doctor.subspecialty,
   bio: metadataConfig.description,
   bio_short: null,
+  blocked_comment_terms: "",
   profile_photo_url: DEFAULT_DOCTOR_PHOTO,
   updated_at: timestamp,
 };
