@@ -8,7 +8,19 @@ import {
   isValidArticleStatus,
 } from "@/lib/blog-calendar";
 import { isAffiliateDisplayMode } from "@/lib/affiliate-offers";
-import { sanitizeArticleHtml } from "@/lib/sanitize-html";
+
+function errorMessage(error: unknown, fallback = "Erro interno"): string {
+  if (error instanceof Error && error.message) return error.message;
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "message" in error &&
+    typeof (error as { message: unknown }).message === "string"
+  ) {
+    return (error as { message: string }).message;
+  }
+  return fallback;
+}
 
 export async function GET(
   request: Request,
@@ -31,8 +43,11 @@ export async function GET(
 
     return NextResponse.json(data);
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Erro interno";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[admin/blog/articles/:id GET]", errorMessage(error));
+    return NextResponse.json(
+      { error: errorMessage(error) },
+      { status: 500 }
+    );
   }
 }
 
@@ -130,7 +145,9 @@ export async function PUT(
     }
 
     const safeContent =
-      typeof content === "string" ? sanitizeArticleHtml(content) : content;
+      typeof content === "string"
+        ? (await import("@/lib/sanitize-html")).sanitizeArticleHtml(content)
+        : content;
 
     const { data, error } = await supabaseAdmin
       .from("blog_articles")
@@ -165,8 +182,11 @@ export async function PUT(
 
     return NextResponse.json(data);
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Erro interno";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[admin/blog/articles/:id PUT]", errorMessage(error));
+    return NextResponse.json(
+      { error: errorMessage(error) },
+      { status: 500 }
+    );
   }
 }
 
@@ -192,7 +212,10 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Erro interno";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[admin/blog/articles/:id DELETE]", errorMessage(error));
+    return NextResponse.json(
+      { error: errorMessage(error) },
+      { status: 500 }
+    );
   }
 }

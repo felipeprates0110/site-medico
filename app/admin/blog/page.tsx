@@ -56,12 +56,37 @@ export default function BlogArticlesPage() {
 
   const fetchArticles = async () => {
     try {
-      const response = await fetch("/api/admin/blog/articles");
-      if (!response.ok) throw new Error("Falha ao carregar artigos");
-      const data = await response.json();
+      // credentials: "include" garante que o cookie da sessão (login) vá junto na API
+      const response = await fetch("/api/admin/blog/articles", {
+        credentials: "include",
+      });
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        const apiError =
+          data &&
+          typeof data === "object" &&
+          "error" in data &&
+          typeof data.error === "string"
+            ? data.error
+            : `Falha ao carregar artigos (${response.status})`;
+        throw new Error(apiError);
+      }
+
+      if (!Array.isArray(data)) {
+        throw new Error("Resposta inválida da API de artigos");
+      }
+
       setArticles(data);
-    } catch {
-      toast.error("Erro ao carregar artigos");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Erro ao carregar artigos";
+      // 401 = sessão expirada (como um crachá vencido no prédio)
+      if (message.toLowerCase().includes("não autorizado") || message.includes("401")) {
+        toast.error("Sessão expirada. Faça login novamente.");
+      } else {
+        toast.error(message);
+      }
     } finally {
       setLoading(false);
     }

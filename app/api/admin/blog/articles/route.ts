@@ -8,7 +8,20 @@ import {
   isValidArticleStatus,
 } from "@/lib/blog-calendar";
 import { isAffiliateDisplayMode } from "@/lib/affiliate-offers";
-import { sanitizeArticleHtml } from "@/lib/sanitize-html";
+
+/** Extrai mensagem útil de Error ou do erro do Supabase (objeto com .message). */
+function errorMessage(error: unknown, fallback = "Erro interno"): string {
+  if (error instanceof Error && error.message) return error.message;
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "message" in error &&
+    typeof (error as { message: unknown }).message === "string"
+  ) {
+    return (error as { message: string }).message;
+  }
+  return fallback;
+}
 
 export async function GET() {
   try {
@@ -17,20 +30,36 @@ export async function GET() {
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
     }
 
+    // Lista do admin: só metadados (sem content/HTML).
+    // Analogia: o índice da biblioteca, não o livro inteiro — evita resposta
+    // gigante que estoura o limite do serverless na Vercel.
     const { data, error } = await supabaseAdmin
       .from("blog_articles")
-      .select(`
-        *,
-        category:blog_categories(name)
-      `)
+      .select(
+        `
+        id,
+        title,
+        slug,
+        status,
+        created_at,
+        updated_at,
+        published_at,
+        scheduled_at,
+        category_id,
+        category:blog_categories!category_id(name)
+      `
+      )
       .order("created_at", { ascending: false });
 
     if (error) throw error;
 
-    return NextResponse.json(data);
+    return NextResponse.json(data ?? []);
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Erro interno";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[admin/blog/articles GET]", errorMessage(error));
+    return NextResponse.json(
+      { error: errorMessage(error) },
+      { status: 500 }
+    );
   }
 }
 
@@ -117,6 +146,8 @@ export async function POST(request: Request) {
       .eq("email", session.user?.email)
       .single();
 
+    // Import dinâmico: DOMPurify só entra no ar ao criar artigo (não na listagem).
+    const { sanitizeArticleHtml } = await import("@/lib/sanitize-html");
     const safeContent = sanitizeArticleHtml(String(content));
 
     const { data, error } = await supabaseAdmin
@@ -154,7 +185,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json(data);
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Erro interno";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[admin/blog/articles POST]", errorMessage(error));
+    return NextResponse.json(
+      { error: errorMessage(error) },
+      { status: 500 }
+    );
   }
 }
