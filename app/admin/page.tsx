@@ -64,9 +64,218 @@ const emptyAnalytics: AnalyticsSummary = {
   daily: [],
 };
 
+type DailyPoint = { date: string; views: number; visitors: number };
+
+const MONTH_SHORT = [
+  "jan",
+  "fev",
+  "mar",
+  "abr",
+  "mai",
+  "jun",
+  "jul",
+  "ago",
+  "set",
+  "out",
+  "nov",
+  "dez",
+] as const;
+
 function formatDayLabel(isoDate: string) {
   const [, month, day] = isoDate.split("-");
   return `${day}/${month}`;
+}
+
+/** Label curto no eixo X: "6 ago" (mais legível que 30x "06/08"). */
+function formatAxisLabel(isoDate: string) {
+  const [, month, day] = isoDate.split("-");
+  const m = Number(month);
+  const d = Number(day);
+  return `${d} ${MONTH_SHORT[m - 1] ?? month}`;
+}
+
+/**
+ * Em 7 dias: mostra todos os rótulos.
+ * Em 30 dias: só ~6 pontos (primeiro, último e espaçados) — evita "sopa" de datas.
+ */
+function shouldShowAxisLabel(index: number, total: number) {
+  if (total <= 10) return true;
+  if (index === 0 || index === total - 1) return true;
+  const step = Math.max(1, Math.round((total - 1) / 5));
+  return index % step === 0;
+}
+
+function buildDailyInsights(daily: DailyPoint[]) {
+  const totalViews = daily.reduce((sum, d) => sum + d.views, 0);
+  const days = daily.length || 1;
+  const avg = totalViews / days;
+  const peak = daily.reduce(
+    (best, d) => (d.views > best.views ? d : best),
+    daily[0] ?? { date: "", views: 0, visitors: 0 }
+  );
+  const last7 = daily.slice(-7);
+  const last7Views = last7.reduce((sum, d) => sum + d.views, 0);
+  const last7Share =
+    totalViews > 0 ? Math.round((last7Views / totalViews) * 100) : 0;
+
+  return {
+    avg: Math.round(avg * 10) / 10,
+    peak,
+    last7Share,
+  };
+}
+
+function DailyViewsChart({
+  daily,
+  periodDays,
+}: {
+  daily: DailyPoint[];
+  periodDays: number;
+}) {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const maxViews = Math.max(1, ...daily.map((d) => d.views));
+  const chartHeight = periodDays > 10 ? 180 : 144;
+  const insights = buildDailyInsights(daily);
+  const yTicks = [maxViews, Math.round(maxViews / 2), 0];
+  const isDense = daily.length > 10;
+  const gapClass = isDense ? "gap-px sm:gap-0.5" : "gap-1.5";
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600">
+        <span>
+          <span className="font-medium text-gray-800">Média:</span>{" "}
+          {insights.avg.toLocaleString("pt-BR")} / dia
+        </span>
+        <span className="text-gray-300" aria-hidden>
+          ·
+        </span>
+        <span>
+          <span className="font-medium text-gray-800">Pico:</span>{" "}
+          {insights.peak.views.toLocaleString("pt-BR")} em{" "}
+          {formatDayLabel(insights.peak.date)}
+        </span>
+        {periodDays > 7 && (
+          <>
+            <span className="text-gray-300" aria-hidden>
+              ·
+            </span>
+            <span>
+              <span className="font-medium text-gray-800">Últimos 7 dias:</span>{" "}
+              {insights.last7Share}% do total
+            </span>
+          </>
+        )}
+      </div>
+
+      <div className="flex gap-3">
+        {/* Escala Y — ajuda a ler se o pico é “alto de verdade” */}
+        <div
+          className="flex w-8 shrink-0 flex-col justify-between pb-6 text-right text-[10px] tabular-nums text-gray-400"
+          style={{ height: chartHeight + 24 }}
+          aria-hidden
+        >
+          {yTicks.map((tick) => (
+            <span key={`y-${tick}`}>{tick}</span>
+          ))}
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <div
+            className="relative"
+            onMouseLeave={() => setActiveIndex(null)}
+          >
+            {/* Linhas guia horizontais */}
+            <div
+              className="pointer-events-none absolute inset-x-0 top-0 border-t border-dashed border-gray-100"
+              style={{ height: chartHeight }}
+              aria-hidden
+            >
+              <div className="absolute inset-x-0 top-1/2 border-t border-dashed border-gray-100" />
+              <div className="absolute inset-x-0 bottom-0 border-t border-gray-100" />
+            </div>
+
+            <div
+              className={cn("relative flex items-end", gapClass)}
+              style={{ height: chartHeight }}
+              role="img"
+              aria-label="Gráfico de visualizações por dia"
+            >
+              {daily.map((day, index) => {
+                const barPx =
+                  day.views <= 0
+                    ? 1
+                    : Math.max(4, Math.round((day.views / maxViews) * (chartHeight - 8)));
+                const isActive = activeIndex === index;
+
+                return (
+                  <button
+                    key={day.date}
+                    type="button"
+                    className="group relative flex h-full min-w-0 flex-1 flex-col items-center justify-end focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/40"
+                    onMouseEnter={() => setActiveIndex(index)}
+                    onFocus={() => setActiveIndex(index)}
+                    onClick={() =>
+                      setActiveIndex((prev) => (prev === index ? null : index))
+                    }
+                    aria-label={`${formatDayLabel(day.date)}: ${day.views} visualizações, ${day.visitors} visitantes`}
+                  >
+                    <div
+                      className={cn(
+                        "w-full max-w-[28px] rounded-t transition-colors",
+                        isActive
+                          ? "bg-teal-600"
+                          : day.views > 0
+                            ? "bg-teal-500/85 group-hover:bg-teal-600"
+                            : "bg-gray-200/80"
+                      )}
+                      style={{ height: `${barPx}px` }}
+                    />
+
+                    {isActive && (
+                      <div
+                        className={cn(
+                          "pointer-events-none absolute bottom-full z-20 mb-2 w-max max-w-[170px] rounded-md bg-gray-900 px-2.5 py-1.5 text-left text-[11px] leading-snug text-white shadow-lg",
+                          index < 3
+                            ? "left-0"
+                            : index > daily.length - 4
+                              ? "right-0"
+                              : "left-1/2 -translate-x-1/2"
+                        )}
+                      >
+                        <p className="font-semibold">{formatDayLabel(day.date)}</p>
+                        <p>
+                          {day.views.toLocaleString("pt-BR")} views ·{" "}
+                          {day.visitors.toLocaleString("pt-BR")} visitantes
+                        </p>
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className={cn("mt-2 flex", gapClass)}>
+            {daily.map((day, index) => (
+              <span
+                key={`${day.date}-label`}
+                className="min-w-0 flex-1 text-center text-[10px] tabular-nums text-gray-400"
+              >
+                {shouldShowAxisLabel(index, daily.length)
+                  ? formatAxisLabel(day.date)
+                  : ""}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <p className="text-[11px] text-gray-400">
+        Passe o mouse ou toque numa barra para ver o detalhe do dia.
+      </p>
+    </div>
+  );
 }
 
 export default function AdminDashboard() {
@@ -263,8 +472,6 @@ export default function AdminDashboard() {
     },
   ];
 
-  const maxDailyViews = Math.max(1, ...analytics.daily.map((d) => d.views));
-
   return (
     <div className="space-y-8">
       <div>
@@ -399,12 +606,13 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          <Card>
+        <div className="grid gap-6 xl:grid-cols-3">
+          {/* Gráfico ocupa 2/3 da largura — em 30 dias precisa de espaço para ler tendência */}
+          <Card className="xl:col-span-2">
             <CardHeader>
               <CardTitle>Visualizações por dia</CardTitle>
               <CardDescription>
-                Quantas páginas foram abertas a cada dia do período
+                Tendência do período · passe o mouse (ou toque) para inspecionar um dia
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -417,47 +625,10 @@ export default function AdminDashboard() {
                   navegue um pouco — os números aparecem aqui.
                 </p>
               ) : (
-                <div className="space-y-2">
-                  {/*
-                    As barras ficam numa faixa com altura fixa (h-36).
-                    Antes a altura era em % dentro de um pai sem altura —
-                    no CSS isso vira 0px e o gráfico parece vazio.
-                  */}
-                  <div className="flex h-36 items-end gap-1.5">
-                    {analytics.daily.map((day) => {
-                      // Altura em pixels (não %), deixando espaço pro número no hover
-                      const barPx =
-                        day.views <= 0
-                          ? 2
-                          : Math.max(8, Math.round((day.views / maxDailyViews) * 120));
-                      return (
-                        <div
-                          key={day.date}
-                          className="group flex h-full min-w-0 flex-1 flex-col items-center justify-end"
-                          title={`${formatDayLabel(day.date)}: ${day.views} views, ${day.visitors} visitantes`}
-                        >
-                          <span className="mb-1 text-[10px] font-medium text-gray-500 opacity-0 transition-opacity group-hover:opacity-100">
-                            {day.views}
-                          </span>
-                          <div
-                            className="w-full rounded-t bg-teal-500/80 transition-all group-hover:bg-teal-600"
-                            style={{ height: `${barPx}px` }}
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <div className="flex gap-1.5">
-                    {analytics.daily.map((day) => (
-                      <span
-                        key={`${day.date}-label`}
-                        className="min-w-0 flex-1 truncate text-center text-[10px] text-gray-400"
-                      >
-                        {formatDayLabel(day.date)}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                <DailyViewsChart
+                  daily={analytics.daily}
+                  periodDays={analytics.days}
+                />
               )}
             </CardContent>
           </Card>
