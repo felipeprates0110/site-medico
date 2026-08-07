@@ -42,6 +42,9 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Em produção, não expor source maps no browser
   productionBrowserSourceMaps: false,
+  // Evita bundlear jsdom/DOMPurify de forma quebrada no serverless (Vercel).
+  // Analogia: a gente deixa essas libs "de fora da caixa" e o Node carrega nativo.
+  serverExternalPackages: ["isomorphic-dompurify", "jsdom"],
   turbopack: {
     root: path.resolve(process.cwd()),
   },
