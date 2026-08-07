@@ -4,11 +4,14 @@ interface AuthorBoxProps {
   name: string;
   role: string;
   crm: string;
-  bio: string;
+  /** Bio curta opcional — se vazia, o card não mostra parágrafo de biografia. */
+  bio?: string;
   photoUrl?: string;
 }
 
 export function AuthorBox({ name, role, crm, bio, photoUrl }: AuthorBoxProps) {
+  const shortBio = bio?.trim();
+
   return (
     <div className="my-12 flex flex-col items-center gap-6 rounded-2xl border border-gray-100 bg-white p-8 shadow-sm sm:flex-row sm:items-start">
       <div className="relative flex h-24 w-24 flex-shrink-0 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-gray-100 text-gray-300 shadow-md">
@@ -22,15 +25,21 @@ export function AuthorBox({ name, role, crm, bio, photoUrl }: AuthorBoxProps) {
       </div>
       <div className="text-center sm:text-left">
         <h3 className="mb-1 text-xl font-bold text-gray-900">{name}</h3>
-        <p className="mb-3 text-sm font-semibold text-primary-700">
+        <p
+          className={`text-sm font-semibold text-primary-700 ${
+            shortBio ? "mb-3" : ""
+          }`}
+        >
           {role}
           <span className="ml-2 inline-block rounded bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500">
             {crm}
           </span>
         </p>
-        <p className="whitespace-pre-line text-sm leading-relaxed text-gray-600">
-          {bio}
-        </p>
+        {shortBio ? (
+          <p className="whitespace-pre-line text-sm leading-relaxed text-gray-600">
+            {shortBio}
+          </p>
+        ) : null}
       </div>
     </div>
   );

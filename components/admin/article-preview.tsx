@@ -35,9 +35,6 @@ interface AuthorProfile {
   profile_photo_url: string | null;
 }
 
-const FALLBACK_BIO =
-  "Especialista dedicado a traduzir a medicina complexa em prevenção prática para o dia a dia.";
-
 function formatCrm(crm: string | null | undefined, rqe: string[] | null | undefined) {
   const raw = (crm || "").trim();
   // O perfil já pode salvar "CRM DF 18951" — evitamos "CRM CRM..."
@@ -47,10 +44,17 @@ function formatCrm(crm: string | null | undefined, rqe: string[] | null | undefi
       ? raw
       : `CRM ${raw}`;
 
-  if (rqe?.length) {
-    return `${crmLabel} / RQE ${rqe[0]}`;
-  }
-  return crmLabel;
+  if (!rqe?.length) return crmLabel;
+
+  // O perfil já pode salvar "RQE 16475" — evitamos "RQE RQE..."
+  const rawRqe = (rqe[0] || "").trim();
+  const rqeLabel = !rawRqe
+    ? ""
+    : rawRqe.toUpperCase().startsWith("RQE")
+      ? rawRqe
+      : `RQE ${rawRqe}`;
+
+  return rqeLabel ? `${crmLabel} / ${rqeLabel}` : crmLabel;
 }
 
 function formatRole(
@@ -101,8 +105,8 @@ export function ArticlePreview({ open, onClose, article }: ArticlePreviewProps) 
   const doctorName = profile?.doctor_name?.trim() || "Dr. Pedro Felipe";
   const role = formatRole(profile?.specialty, profile?.subspecialty);
   const crm = formatCrm(profile?.doctor_crm, profile?.doctor_rqe);
-  // Preferimos a bio curta do perfil; a bio longa (currículo) não cabe no card.
-  const bio = profile?.bio_short?.trim() || FALLBACK_BIO;
+  // Só mostra biografia se a bio curta estiver preenchida (campo opcional).
+  const bio = profile?.bio_short?.trim() || undefined;
   const photoUrl = resolveDoctorPhoto(
     profile?.profile_photo_url || DEFAULT_DOCTOR_PHOTO
   );

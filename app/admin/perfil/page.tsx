@@ -431,8 +431,8 @@ export default function PerfilPage() {
               placeholder="Uma frase curta para o card do autor nos artigos do blog..."
             />
             <p className="mt-1 text-xs text-gray-500">
-              Aparece só no card do autor do artigo. Se ficar vazia, usamos um
-              texto padrão. {formData.bio_short.length}/280
+              Aparece só no card do autor do artigo. Se ficar vazia, o card não
+              mostra biografia. {formData.bio_short.length}/280
             </p>
           </div>
         </div>

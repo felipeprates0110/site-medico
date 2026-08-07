@@ -121,9 +121,13 @@ export default async function BlogPostPage({
     : rawCrm.toUpperCase().startsWith("CRM")
       ? rawCrm
       : `CRM ${rawCrm}`;
-  const crm = siteConfig?.doctor_rqe?.length
-    ? `${crmLabel} / RQE ${siteConfig.doctor_rqe[0]}`
-    : crmLabel;
+  const rawRqe = siteConfig?.doctor_rqe?.[0]?.trim() || "";
+  const rqeLabel = !rawRqe
+    ? ""
+    : rawRqe.toUpperCase().startsWith("RQE")
+      ? rawRqe
+      : `RQE ${rawRqe}`;
+  const crm = rqeLabel ? `${crmLabel} / ${rqeLabel}` : crmLabel;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -207,10 +211,7 @@ export default async function BlogPostPage({
             name={doctorName}
             role={`${specialty} ${subspecialty}`.trim()}
             crm={crm}
-            bio={
-              siteConfig?.bio_short?.trim() ||
-              "Especialista dedicado a traduzir a medicina complexa em prevenção prática para o dia a dia."
-            }
+            bio={siteConfig?.bio_short?.trim() || undefined}
             photoUrl={siteConfig?.profile_photo_url || DEFAULT_DOCTOR_PHOTO}
           />
 

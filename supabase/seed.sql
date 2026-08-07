@@ -36,7 +36,7 @@ SELECT
   'Cardiologia e Arritmologia',
   'Eletrofisiologia Clínica e Invasiva',
   'Cardiologista e Arritmologista especialista em Eletrofisiologia Clínica e Invasiva pela UNIFESP/EPM. Tratamento de arritmias cardíacas, fibrilação atrial e ablação por cateter em Brasília - DF.',
-  'Especialista dedicado a traduzir a medicina complexa em prevenção prática para o dia a dia.'
+  NULL
 WHERE NOT EXISTS (SELECT 1 FROM site_config LIMIT 1);
 
 -- ============================================
