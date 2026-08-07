@@ -12,6 +12,13 @@ interface PhotoCropDialogProps {
   onConfirm: (file: File) => void;
   /** Envia a imagem original sem recortar */
   onSkipCrop: () => void;
+  /** Proporção do recorte (ex.: 1 para perfil, 16/9 para capa) */
+  aspect?: number;
+  /** Formato da área de recorte */
+  cropShape?: "rect" | "round";
+  title?: string;
+  description?: string;
+  fileNamePrefix?: string;
 }
 
 export function PhotoCropDialog({
@@ -20,6 +27,11 @@ export function PhotoCropDialog({
   onCancel,
   onConfirm,
   onSkipCrop,
+  aspect = 1,
+  cropShape = "round",
+  title = "Ajustar foto de perfil",
+  description = "Arraste para enquadrar e use o zoom. Se preferir, envie sem recortar.",
+  fileNamePrefix = "perfil",
 }: PhotoCropDialogProps) {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -39,7 +51,7 @@ export function PhotoCropDialog({
       const file = await getCroppedImageFile(
         imageSrc,
         croppedAreaPixels,
-        `perfil-${Date.now()}.jpg`
+        `${fileNamePrefix}-${Date.now()}.jpg`
       );
       onConfirm(file);
     } catch (error) {
@@ -54,12 +66,8 @@ export function PhotoCropDialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
       <div className="w-full max-w-lg rounded-xl bg-white shadow-xl">
         <div className="border-b px-5 py-4">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Ajustar foto de perfil
-          </h3>
-          <p className="mt-1 text-sm text-gray-600">
-            Arraste para enquadrar e use o zoom. Se preferir, envie sem recortar.
-          </p>
+          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+          <p className="mt-1 text-sm text-gray-600">{description}</p>
         </div>
 
         <div className="relative h-72 w-full bg-gray-900">
@@ -67,9 +75,9 @@ export function PhotoCropDialog({
             image={imageSrc}
             crop={crop}
             zoom={zoom}
-            aspect={1}
-            cropShape="round"
-            showGrid={false}
+            aspect={aspect}
+            cropShape={cropShape}
+            showGrid={cropShape === "rect"}
             onCropChange={setCrop}
             onZoomChange={setZoom}
             onCropComplete={onCropComplete}

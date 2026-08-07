@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Save, ListOrdered, CalendarClock } from "lucide-react";
+import { ArrowLeft, Save, ListOrdered, CalendarClock, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,6 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { SimpleEditor } from "@/components/admin/simple-editor";
+import { CoverImageField } from "@/components/admin/cover-image-field";
+import { ArticlePreview } from "@/components/admin/article-preview";
 import {
   STATUS_LABEL,
   type ArticleStatus,
@@ -26,6 +28,7 @@ export default function EditarArtigoPage({
   const resolvedParams = use(params);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
+  const [showPreview, setShowPreview] = useState(false);
   const [categories, setCategories] = useState<{ id: string; name: string }[]>(
     []
   );
@@ -149,6 +152,9 @@ export default function EditarArtigoPage({
   }
 
   const statusKey = formData.status as ArticleStatus;
+  const selectedCategoryName = categories.find(
+    (cat) => cat.id === formData.category_id
+  )?.name;
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-20">
@@ -180,6 +186,14 @@ export default function EditarArtigoPage({
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setShowPreview(true)}
+          >
+            <Eye className="h-4 w-4 mr-2" />
+            Pré-visualizar
+          </Button>
           <Button
             variant="outline"
             onClick={(e) => handleSubmit(e, "draft")}
@@ -355,39 +369,29 @@ export default function EditarArtigoPage({
                 />
               </div>
 
-              <div className="space-y-2">
-                <label htmlFor="cover_image" className="text-sm font-medium">
-                  URL da Imagem de Capa
-                </label>
-                <Input
-                  id="cover_image"
-                  value={formData.cover_image_url}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      cover_image_url: e.target.value,
-                    })
-                  }
-                />
-                {formData.cover_image_url && (
-                  <div className="mt-2 relative aspect-video rounded-lg overflow-hidden bg-slate-100 border">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={formData.cover_image_url}
-                      alt="Preview da capa"
-                      className="object-cover w-full h-full"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src =
-                          'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%23cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>';
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
+              <CoverImageField
+                value={formData.cover_image_url}
+                altText={formData.title || "Capa do artigo"}
+                onChange={(url) =>
+                  setFormData({ ...formData, cover_image_url: url })
+                }
+              />
             </CardContent>
           </Card>
         </div>
       </div>
+
+      <ArticlePreview
+        open={showPreview}
+        onClose={() => setShowPreview(false)}
+        article={{
+          title: formData.title,
+          content: formData.content,
+          excerpt: formData.excerpt,
+          cover_image_url: formData.cover_image_url,
+          categoryName: selectedCategoryName,
+        }}
+      />
     </div>
   );
 }

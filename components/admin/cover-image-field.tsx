@@ -1,0 +1,214 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { ImagePlus, Link2, Loader2, Trash2, Upload } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PhotoCropDialog } from "@/components/admin/photo-crop-dialog";
+
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+
+interface CoverImageFieldProps {
+  value: string;
+  onChange: (url: string) => void;
+  altText?: string;
+}
+
+/**
+ * Campo de capa do artigo: permite colar uma URL ou fazer upload com recorte 16:9
+ * (mesma proporção usada na página pública do blog).
+ */
+export function CoverImageField({
+  value,
+  onChange,
+  altText = "Capa do artigo",
+}: CoverImageFieldProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [showUrlInput, setShowUrlInput] = useState(Boolean(value));
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (cropSrc) URL.revokeObjectURL(cropSrc);
+    };
+  }, [cropSrc]);
+
+  useEffect(() => {
+    if (value) setShowUrlInput(true);
+  }, [value]);
+
+  const closeCropDialog = () => {
+    if (cropSrc) URL.revokeObjectURL(cropSrc);
+    setCropSrc(null);
+    setPendingFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const uploadCover = async (file: File) => {
+    setIsUploading(true);
+    try {
+      const body = new FormData();
+      body.append("file", file);
+      body.append("type", "cover");
+      body.append("alt_text", altText);
+
+      const response = await fetch("/api/admin/media", {
+        method: "POST",
+        body,
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Falha no upload");
+      }
+
+      onChange(data.url);
+      setShowUrlInput(true);
+      toast.success("Capa enviada com sucesso!");
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Erro ao enviar a capa. Tente novamente."
+      );
+    } finally {
+      setIsUploading(false);
+      closeCropDialog();
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      toast.error("Tipo de arquivo não permitido. Use JPG, PNG, WEBP ou GIF.");
+      e.target.value = "";
+      return;
+    }
+
+    if (file.size > MAX_SIZE) {
+      toast.error("Arquivo muito grande. Máximo: 5MB.");
+      e.target.value = "";
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    setPendingFile(file);
+    setCropSrc(objectUrl);
+  };
+
+  return (
+    <div className="space-y-3">
+      <label className="text-sm font-medium">Imagem de Capa</label>
+
+      {value ? (
+        <div className="relative aspect-video overflow-hidden rounded-lg border bg-slate-100">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={value}
+            alt="Prévia da capa"
+            className="h-full w-full object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src =
+                'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%23cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>';
+            }}
+          />
+        </div>
+      ) : (
+        <div className="flex aspect-video flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 bg-slate-50 px-4 text-center">
+          <ImagePlus className="h-8 w-8 text-gray-400" />
+          <p className="text-sm text-gray-500">
+            Nenhuma capa ainda. Envie um arquivo ou cole uma URL.
+          </p>
+        </div>
+      )}
+
+      <div className="flex flex-wrap gap-2">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={isUploading}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          {isUploading ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Upload className="mr-2 h-4 w-4" />
+          )}
+          {isUploading ? "Enviando..." : "Enviar imagem"}
+        </Button>
+
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setShowUrlInput((prev) => !prev)}
+        >
+          <Link2 className="mr-2 h-4 w-4" />
+          {showUrlInput ? "Ocultar URL" : "Usar URL"}
+        </Button>
+
+        {value && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => onChange("")}
+            disabled={isUploading}
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Remover
+          </Button>
+        )}
+      </div>
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/gif"
+        className="hidden"
+        onChange={handleFileSelect}
+        disabled={isUploading}
+      />
+
+      {showUrlInput && (
+        <div className="space-y-1">
+          <label htmlFor="cover_image_url" className="text-xs text-gray-500">
+            Ou cole a URL da imagem
+          </label>
+          <Input
+            id="cover_image_url"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder="https://..."
+          />
+        </div>
+      )}
+
+      <p className="text-xs text-gray-500">
+        Proporção recomendada: 16:9 (mesma do blog). Máximo 5MB.
+      </p>
+
+      {cropSrc && pendingFile && (
+        <PhotoCropDialog
+          open
+          imageSrc={cropSrc}
+          aspect={16 / 9}
+          cropShape="rect"
+          title="Ajustar capa do artigo"
+          description="Arraste e use o zoom para enquadrar a capa no formato 16:9 do blog."
+          fileNamePrefix="capa"
+          onCancel={closeCropDialog}
+          onSkipCrop={() => uploadCover(pendingFile)}
+          onConfirm={(croppedFile) => uploadCover(croppedFile)}
+        />
+      )}
+    </div>
+  );
+}

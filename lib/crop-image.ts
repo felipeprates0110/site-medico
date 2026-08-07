@@ -2,12 +2,13 @@ import type { Area } from "react-easy-crop";
 
 /**
  * Recorta a imagem no canvas e devolve um File pronto para upload.
- * Analogia: é como cortar uma foto com tesoura e guardar o pedaço escolhido.
+ * Analogia: é como cortar uma foto com tesoura e guardar só o pedaço escolhido.
+ * Funciona tanto para foto quadrada (perfil) quanto para capa 16:9 (blog).
  */
 export async function getCroppedImageFile(
   imageSrc: string,
   pixelCrop: Area,
-  fileName = "perfil.jpg"
+  fileName = "imagem.jpg"
 ): Promise<File> {
   const image = await loadImage(imageSrc);
   const canvas = document.createElement("canvas");
@@ -17,9 +18,11 @@ export async function getCroppedImageFile(
     throw new Error("Não foi possível processar a imagem");
   }
 
-  const size = Math.max(pixelCrop.width, pixelCrop.height);
-  canvas.width = size;
-  canvas.height = size;
+  // Mantém as proporções reais do recorte (não força quadrado)
+  const width = Math.max(1, Math.round(pixelCrop.width));
+  const height = Math.max(1, Math.round(pixelCrop.height));
+  canvas.width = width;
+  canvas.height = height;
 
   ctx.drawImage(
     image,
@@ -29,8 +32,8 @@ export async function getCroppedImageFile(
     pixelCrop.height,
     0,
     0,
-    size,
-    size
+    width,
+    height
   );
 
   const blob = await new Promise<Blob>((resolve, reject) => {
