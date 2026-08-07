@@ -13,6 +13,7 @@ import {
   MessageSquareText,
   CalendarDays,
   Newspaper,
+  ShoppingBag,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
@@ -71,6 +72,11 @@ const menuItems: MenuItem[] = [
         icon: FolderTree,
       },
       {
+        title: "Ofertas",
+        href: "/admin/blog/ofertas",
+        icon: ShoppingBag,
+      },
+      {
         title: "Comentários",
         href: "/admin/blog/comentarios",
         icon: MessageSquareText,
@@ -96,14 +102,15 @@ function isMenuItemActive(pathname: string, href: string) {
     return pathname.startsWith("/admin/blog/calendario");
   }
 
-  // Artigos: /admin/blog e /admin/blog/[id|novo], mas não categorias/comentários/calendário
+  // Artigos: /admin/blog e /admin/blog/[id|novo], mas não submenus dedicados
   if (href === "/admin/blog") {
     if (pathname === "/admin/blog") return true;
     if (!pathname.startsWith("/admin/blog/")) return false;
     return (
       !pathname.startsWith("/admin/blog/categorias") &&
       !pathname.startsWith("/admin/blog/comentarios") &&
-      !pathname.startsWith("/admin/blog/calendario")
+      !pathname.startsWith("/admin/blog/calendario") &&
+      !pathname.startsWith("/admin/blog/ofertas")
     );
   }
 

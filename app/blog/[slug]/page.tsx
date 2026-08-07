@@ -2,11 +2,13 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import {
+  getActiveAffiliateOffersByCategoryId,
   getApprovedCommentsByArticleId,
   getContactInfo,
   getPublishedArticleBySlug,
   getSiteConfig,
 } from "@/lib/data";
+import { pickWeightedOffer } from "@/lib/affiliate-offers";
 import { AuthorBox } from "@/components/blog/AuthorBox";
 import { resolveAuthorCardBio } from "@/lib/author-bio";
 import { formatDoctorCrmBadge } from "@/lib/doctor-credentials";
@@ -116,7 +118,19 @@ export default async function BlogPostPage({
     notFound();
   }
 
-  const comments = await getApprovedCommentsByArticleId(article.id);
+  const category = Array.isArray(article.category)
+    ? article.category[0]
+    : article.category;
+  const categoryId = category?.id as string | undefined;
+
+  const [comments, affiliateOffers] = await Promise.all([
+    getApprovedCommentsByArticleId(article.id),
+    categoryId
+      ? getActiveAffiliateOffersByCategoryId(categoryId)
+      : Promise.resolve([]),
+  ]);
+
+  const affiliateOffer = pickWeightedOffer(affiliateOffers, article.id);
 
   const doctorName = siteConfig?.doctor_name || "Dr. Pedro Felipe";
   const specialty = siteConfig?.specialty || "Cardiologista";
@@ -160,9 +174,9 @@ export default async function BlogPostPage({
       <main className="w-full pt-28 pb-12 md:pt-32 md:pb-20">
         <article className="mx-auto max-w-3xl px-4 sm:px-6">
           <div className="mb-10 text-center md:text-left">
-            {article.category && (
+            {category?.name && (
               <span className="mb-6 inline-block rounded-lg bg-primary-50 px-3 py-1 text-xs font-bold uppercase tracking-widest text-primary-700">
-                {article.category.name}
+                {category.name}
               </span>
             )}
             <h1 className="mb-6 text-4xl font-bold tracking-tight leading-tight text-gray-900 md:text-5xl">
@@ -251,12 +265,14 @@ export default async function BlogPostPage({
 
           <AdSenseUnit slot="middle_article" />
 
-          <AffiliateBox
-            title="Monitoramento Residencial Recomendado"
-            description="Para pacientes que precisam monitorar a pressão arterial em casa, podem ser indicados aparelhos digitais de braço validados clinicamente, que ajudam a obter medições mais confiáveis para a avaliação do cardiologista."
-            buttonText="Ver Monitores Aprovados na Amazon"
-            url="https://amazon.com.br"
-          />
+          {affiliateOffer && (
+            <AffiliateBox
+              title={affiliateOffer.title}
+              description={affiliateOffer.description}
+              buttonText={affiliateOffer.button_text}
+              url={affiliateOffer.url}
+            />
+          )}
 
           <BlogComments
             articleId={article.id}

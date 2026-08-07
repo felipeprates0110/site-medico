@@ -7,6 +7,7 @@ import {
   fallbackSiteConfig,
   fallbackSpecialties,
 } from "./fallback-data";
+import type { AffiliateOffer } from "./affiliate-offers";
 import { resolveDoctorPhoto } from "./doctor-photo";
 import { isSupabaseConfigured, supabase } from "./supabase";
 
@@ -221,7 +222,7 @@ export async function getPublishedArticleBySlug(slug: string) {
         .from("blog_articles")
         .select(`
           *,
-          category:blog_categories(name)
+          category:blog_categories(id, name)
         `)
         .eq("slug", slug)
         .eq("status", "published")
@@ -231,6 +232,32 @@ export async function getPublishedArticleBySlug(slug: string) {
       return data;
     },
     null
+  );
+}
+
+/** Ofertas afiliadas ativas de uma categoria (leitura pública). */
+export async function getActiveAffiliateOffersByCategoryId(
+  categoryId: string
+): Promise<AffiliateOffer[]> {
+  if (!categoryId) return [];
+
+  return withFallback(
+    "getActiveAffiliateOffersByCategoryId",
+    async () => {
+      const { data, error } = await supabase
+        .from("affiliate_offers")
+        .select(
+          "id, category_id, title, description, button_text, url, weight, is_active, sort_order"
+        )
+        .eq("category_id", categoryId)
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: true });
+
+      if (error) throw error;
+      return (data as AffiliateOffer[]) ?? [];
+    },
+    []
   );
 }
 
