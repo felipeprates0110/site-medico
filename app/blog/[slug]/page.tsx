@@ -7,6 +7,7 @@ import {
   getApprovedCommentsByArticleId,
   getContactInfo,
   getPublishedArticleBySlug,
+  getRelatedPublishedArticles,
   getSiteConfig,
 } from "@/lib/data";
 import {
@@ -19,6 +20,7 @@ import { formatDoctorCrmBadge } from "@/lib/doctor-credentials";
 import { AdSenseUnit } from "@/components/blog/AdSenseUnit";
 import { AffiliateBox } from "@/components/blog/AffiliateBox";
 import { BlogComments } from "@/components/blog/BlogComments";
+import { RelatedArticles } from "@/components/blog/RelatedArticles";
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { DEFAULT_DOCTOR_PHOTO } from "@/lib/doctor-photo";
@@ -137,17 +139,26 @@ export default async function BlogPostPage({
       ? (article.affiliate_offer_id as string | null)
       : null;
 
-  const [comments, affiliateOffers, forcedOffer] = await Promise.all([
-    getApprovedCommentsByArticleId(article.id),
-    affiliateOffersGloballyEnabled &&
-      categoryId &&
-      affiliateDisplay !== "hide"
-      ? getActiveAffiliateOffersByCategoryId(categoryId)
-      : Promise.resolve([]),
-    forcedOfferId
-      ? getActiveAffiliateOfferById(forcedOfferId)
-      : Promise.resolve(null),
-  ]);
+  const [comments, affiliateOffers, forcedOffer, relatedPool] =
+    await Promise.all([
+      getApprovedCommentsByArticleId(article.id),
+      affiliateOffersGloballyEnabled &&
+        categoryId &&
+        affiliateDisplay !== "hide"
+        ? getActiveAffiliateOffersByCategoryId(categoryId)
+        : Promise.resolve([]),
+      forcedOfferId
+        ? getActiveAffiliateOfferById(forcedOfferId)
+        : Promise.resolve(null),
+      getRelatedPublishedArticles({
+        excludeId: article.id,
+        categoryId,
+        limit: 4,
+      }),
+    ]);
+
+  const nextArticle = relatedPool[0] ?? null;
+  const relatedArticles = relatedPool.slice(1, 4);
 
   const affiliateOffer = affiliateOffersGloballyEnabled
     ? resolveArticleAffiliateOffer({
@@ -303,6 +314,15 @@ export default async function BlogPostPage({
               products={affiliateProducts}
             />
           )}
+
+          <RelatedArticles
+            nextArticle={nextArticle}
+            relatedArticles={relatedArticles}
+            authorName={doctorName}
+            authorPhotoUrl={
+              siteConfig?.profile_photo_url || DEFAULT_DOCTOR_PHOTO
+            }
+          />
 
           <BlogComments
             articleId={article.id}

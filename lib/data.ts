@@ -235,6 +235,106 @@ export async function getPublishedArticleBySlug(slug: string) {
   );
 }
 
+const RELATED_ARTICLE_SELECT = `
+  id,
+  title,
+  slug,
+  excerpt,
+  content,
+  cover_image_url,
+  published_at,
+  category:blog_categories(name)
+`;
+
+type RelatedArticleRow = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string | null;
+  cover_image_url: string | null;
+  published_at: string | null;
+  category:
+    | { name: string }
+    | { name: string }[]
+    | null;
+};
+
+/**
+ * Artigos relacionados para a página do post.
+ * Preferência: mesma categoria → completa com recentes do blog.
+ */
+export async function getRelatedPublishedArticles({
+  excludeId,
+  categoryId,
+  limit = 4,
+}: {
+  excludeId: string;
+  categoryId?: string;
+  limit?: number;
+}): Promise<RelatedArticleRow[]> {
+  if (!excludeId || limit <= 0) return [];
+
+  return withFallback(
+    "getRelatedPublishedArticles",
+    async () => {
+      const results: RelatedArticleRow[] = [];
+      const seen = new Set<string>([excludeId]);
+
+      if (categoryId) {
+        const { data, error } = await supabase
+          .from("blog_articles")
+          .select(RELATED_ARTICLE_SELECT)
+          .eq("status", "published")
+          .eq("category_id", categoryId)
+          .neq("id", excludeId)
+          .order("published_at", { ascending: false })
+          .limit(limit);
+
+        if (error) throw error;
+
+        for (const row of (data as RelatedArticleRow[] | null) ?? []) {
+          if (seen.has(row.id)) continue;
+          seen.add(row.id);
+          results.push(row);
+          if (results.length >= limit) return results;
+        }
+      }
+
+      const remaining = limit - results.length;
+      if (remaining <= 0) return results;
+
+      const excludeList = Array.from(seen);
+      let query = supabase
+        .from("blog_articles")
+        .select(RELATED_ARTICLE_SELECT)
+        .eq("status", "published")
+        .order("published_at", { ascending: false })
+        .limit(remaining);
+
+      // Supabase: not.in espera lista no formato ("id1","id2")
+      query = query.not(
+        "id",
+        "in",
+        `(${excludeList.map((id) => `"${id}"`).join(",")})`
+      );
+
+      const { data, error } = await query;
+      if (error) throw error;
+
+      for (const row of (data as RelatedArticleRow[] | null) ?? []) {
+        if (seen.has(row.id)) continue;
+        seen.add(row.id);
+        results.push(row);
+        if (results.length >= limit) break;
+      }
+
+      return results;
+    },
+    []
+  );
+}
+
 /** Ofertas afiliadas ativas de uma categoria (leitura pública). */
 export async function getActiveAffiliateOffersByCategoryId(
   categoryId: string
